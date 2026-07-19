@@ -81,7 +81,9 @@ unmuzzle publish <model-dir> \
 
 ## Registry site
 
-`docs/index.html` is generated from the index. After any index change:
+`docs/index.html` is generated from the index. A GitHub Actions workflow
+regenerates and commits it automatically on every index change, so a new
+model appears on the site with no manual step. To preview locally:
 
 ```bash
 python3 scripts/build_site.py
