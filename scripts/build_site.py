@@ -250,6 +250,8 @@ def model_card(m: dict, cid: int) -> str:
     lines = [files, ""]
     for u in mirrors.get("http", []):
         lines.append(f"  http:    {u}")
+    if mirrors.get("ipfs"):
+        lines.append(f"  ipfs:    {mirrors['ipfs']}")
     if mirrors.get("torrent"):
         lines.append(f"  torrent: {mirrors['torrent']}")
     if mirrors.get("magnet"):

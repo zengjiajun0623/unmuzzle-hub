@@ -27,7 +27,8 @@
           "https://huggingface.co/zjj1993/unmuzzle-qwen14b-abliterated/resolve/main"
         ],
         "magnet": "magnet:?xt=urn%3Abtih%3A08138b23ad166dfb6ae84d5ab4bb9d7c32ec5984&dn=qwen14b-unmuzzled-Q4_K_M.gguf&xl=8988110144&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce&ws=https%3A%2F%2Fpub-95a589dcef724d6497b5ebd7ba2bade8.r2.dev%2Fqwen14b-unmuzzled-Q4_K_M.gguf",
-        "torrent": "https://huggingface.co/zjj1993/unmuzzle-qwen14b-abliterated/resolve/main/qwen14b-unmuzzled-Q4_K_M.gguf.torrent"
+        "torrent": "https://huggingface.co/zjj1993/unmuzzle-qwen14b-abliterated/resolve/main/qwen14b-unmuzzled-Q4_K_M.gguf.torrent",
+        "ipfs": "ipfs://bafybeifjnxwydzz3mfuebmhrxfrbdtpy6q6b7b7kas6saucohkf7e6f3wm"
       },
       "signature": "untrusted comment: signature from minisign secret key\nRUQGj//qSw5zlSYCeZ0LnXdEiRm5Iu9dDGeV59cNt6gd4b8+KrtkDrKJhkEDmYjE/braAm85ECA9LRXH3VSlwUQEcVfMBQek7AI=\ntrusted comment: timestamp:1784476257\tfile:manifest.txt\thashed\nm6v97XBRrBxu7qWgtyh3cdNvz9SRTR0MX+6aLcwUbKWq1c6nkhuesZCCxzrTJKiGbuijQOLHv4PGv4an+7eKCw==\n",
       "publisher_pubkey": "RWQGj//qSw5zlf6EB/sSfp8thdSO5ZBr+5pAC9bGhjjReQZ+PLs4gF4K"

@@ -140,6 +140,28 @@ def probe_http_file(base: str, path: str, size: int) -> str:
     return url
 
 
+def check_ipfs(entry, timeout: int = 180) -> None:
+    """Reachability probe: pull the first 1MiB of the first file from the
+    swarm. Proves the content is fetchable from the public internet even
+    when every HTTP mirror is gone. Skips (warn) when kubo is absent."""
+    uri = (entry.raw.get("mirrors") or {}).get("ipfs")
+    if not uri or not uri.startswith("ipfs://"):
+        return
+    if not shutil.which("ipfs"):
+        check(f"{entry.name}: ipfs swarm probe", True, "kubo not installed, skipped", warn=True)
+        return
+    cid = uri.removeprefix("ipfs://").rstrip("/")
+    first = entry.files[0]["path"]
+    try:
+        r = subprocess.run(f"ipfs cat /ipfs/{cid}/{first} | head -c 1048576",
+                           shell=True, capture_output=True, timeout=timeout)
+        ok = len(r.stdout) == 1048576
+        check(f"{entry.name}: ipfs swarm probe", ok,
+              f"got {len(r.stdout)} bytes" if not ok else "1MiB fetched from swarm")
+    except subprocess.TimeoutExpired:
+        check(f"{entry.name}: ipfs swarm probe", False, f"no bytes within {timeout}s")
+
+
 def probe_entry(entry, full: bool, methods) -> bool:
     ok = True
     sig = api.check_signature(entry, require=True)
@@ -186,6 +208,8 @@ def probe_entry(entry, full: bool, methods) -> bool:
         if answered:
             check(f"{entry.name}: swarm has seeders", seeders_total > 0,
                   f"{seeders_total} across {answered} trackers", warn=seeders_total == 0)
+
+    check_ipfs(entry)
 
     if full:
         for m in methods:

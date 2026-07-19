@@ -35,6 +35,7 @@ Zero dependencies. Python 3.9+.
 ```bash
 pip install unmuzzle
 # or from source: pip install git+https://github.com/zengjiajun0623/unmuzzle-hub.git
+# or without PyPI at all: pip install https://pub-95a589dcef724d6497b5ebd7ba2bade8.r2.dev/unmuzzle-0.2.0-py3-none-any.whl
 # optional: aria2 for torrents, minisign for signature verification
 ```
 

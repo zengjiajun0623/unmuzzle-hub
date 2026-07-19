@@ -141,3 +141,15 @@ Tools: `list_models`, `model_info`, `get_model`, `publish_model`,
 - Never put private models, credentials, or tokens in the index. It is public.
 - The index entry is the source of truth; if a mirror serves bytes that fail
   sha256, the mirror is wrong, not the index. Fail loudly, do not "fix" the hash.
+
+## Help the network
+
+More seeders and mirrors make every model harder to kill. To seed the swarm
+from any always-on machine:
+
+```bash
+aria2c --seed-ratio=0 --enable-dht=true -d <dir> <torrent-url>   # seeds forever
+```
+
+To add a mirror for a model, upload its files to any static host and open a
+PR that appends your base URL to `mirrors.http` in its index entry.
