@@ -52,8 +52,11 @@ nav .spacer { flex: 1; }
 .hero h1 { font-size: 2.6rem; letter-spacing: -0.02em; font-family: var(--mono); }
 .hero h1 span { color: var(--accent); }
 .tagline { color: var(--dim); font-size: 1.18rem; margin-top: .5rem; max-width: 44rem; }
-.quickstart { display: flex; gap: .5rem; margin-top: 1.3rem; max-width: 30rem; }
-.quickstart pre { flex: 1; margin: 0; }
+.codebox { position: relative; margin-top: 1rem; }
+.codebox pre { margin: 0; padding-right: 4.6rem; }
+.codebox button { position: absolute; top: .5rem; right: .5rem; padding: .12rem .6rem;
+                  box-shadow: -14px 0 10px -2px var(--code-bg); }
+.hero .codebox { max-width: 46rem; }
 h2 { font-size: 1.3rem; margin: 2.8rem 0 1rem; padding-bottom: .45rem;
      border-bottom: 1px solid var(--border); }
 p { margin: .6rem 0; }
@@ -72,26 +75,33 @@ pre code { background: none; border: none; padding: 0; }
 .card { background: var(--card); border: 1px solid var(--border); border-radius: 10px;
         padding: 1.2rem 1.3rem; margin: 1rem 0; }
 .card h3 { font-size: 1.08rem; font-family: var(--mono); }
-.chips { margin: .5rem 0 .6rem; }
-.chip { display: inline-block; border: 1px solid var(--border); border-radius: 999px;
-        padding: .08rem .65rem; font-size: .76rem; color: var(--dim);
-        margin: 0 .3rem .3rem 0; background: var(--bg); }
-.chip.license { color: var(--accent); border-color: var(--accent); }
-.chip.badge { background: var(--accent); color: var(--bg); border-color: var(--accent); font-weight: 600; }
-.tablewrap { overflow-x: auto; margin: 1rem 0; }
-table { border-collapse: collapse; width: 100%; font-size: .92rem; }
+.meta { margin: .45rem 0 .6rem; font-size: .82rem; color: var(--dim); }
+.chip.badge { display: inline-block; border-radius: 999px; padding: .05rem .6rem;
+              font-size: .76rem; margin-right: .55rem; color: var(--accent);
+              border: 1px solid var(--accent); font-weight: 600; }
+.tablewrap { overflow-x: auto; margin: 1rem 0;
+  background:
+    linear-gradient(90deg, var(--bg) 30%, transparent) left/40px 100%,
+    linear-gradient(270deg, var(--bg) 30%, transparent) right/40px 100%,
+    radial-gradient(farthest-side at 0 50%, rgba(0,0,0,.25), transparent) left/14px 100%,
+    radial-gradient(farthest-side at 100% 50%, rgba(0,0,0,.25), transparent) right/14px 100%;
+  background-repeat: no-repeat;
+  background-attachment: local, local, scroll, scroll; }
+table { border-collapse: collapse; width: 100%; font-size: .92rem;
+        font-variant-numeric: tabular-nums; }
 th, td { text-align: left; padding: .5rem .8rem; border-bottom: 1px solid var(--border); white-space: nowrap; }
+th.num, td.num { text-align: right; }
 th { color: var(--dim); font-weight: 600; font-size: .8rem; }
 th.group { border-left: 1px solid var(--border); }
 td.group { border-left: 1px solid var(--border); }
-.getline { display: flex; gap: .5rem; align-items: stretch; margin-top: .8rem; }
-.getline pre { flex: 1; margin: 0; }
-button { background: var(--bg); color: var(--accent); border: 1px solid var(--border);
-         border-radius: 8px; padding: 0 .9rem; cursor: pointer; font-size: .85rem;
-         font-family: inherit; }
-button:hover { border-color: var(--accent); }
+button { background: var(--bg); color: var(--dim); border: 1px solid var(--border);
+         border-radius: 8px; cursor: pointer; font-size: .8rem; font-family: inherit; }
+button:hover { color: var(--accent); border-color: var(--accent); }
 details { margin-top: .8rem; font-size: .85rem; }
 .links { font-size: .85rem; margin-top: .5rem; }
+.card .links a { color: var(--dim); text-decoration: underline;
+                 text-underline-offset: 2px; }
+.card .links a:hover { color: var(--accent); }
 summary { cursor: pointer; color: var(--dim); }
 summary:hover { color: var(--fg); }
 footer { margin-top: 3.2rem; padding: 1.4rem 0 2.5rem; border-top: 1px solid var(--border);
@@ -118,7 +128,7 @@ footer { margin-top: 3.2rem; padding: 1.4rem 0 2.5rem; border-top: 1px solid var
   <h1>un<span>muzzle</span></h1>
   <p class="tagline">Open Chinese models, fine-tuned to answer honestly about politically censored topics. Benchmarked. Distributed so no single host can take them down.</p>
   <p class="dim" style="margin-top:1rem">Run the 7B on any 8 GB machine:</p>
-  <div class="quickstart">
+  <div class="codebox">
     <pre><code id="qs">pip install unmuzzle
 unmuzzle get unmuzzle/qwen2.5-7b-honesty --require-signature --dest m && cd m
 ollama create unmuzzle-7b -f Modelfile.unmuzzle7b && ollama run unmuzzle-7b</code></pre>
@@ -132,13 +142,13 @@ ollama create unmuzzle-7b -f Modelfile.unmuzzle7b && ollama run unmuzzle-7b</cod
 <div class="tablewrap"><table>
 <thead>
 <tr><th></th><th colspan="3">factual, censored topics</th><th colspan="3" class="group">fabrication, invented topics</th></tr>
-<tr><th></th><th>base</th><th>abliterated</th><th>unmuzzle</th><th class="group">base</th><th>abliterated</th><th>unmuzzle</th></tr>
+<tr><th></th><th class="num">base</th><th class="num">abliterated</th><th class="num">unmuzzle</th><th class="num group">base</th><th class="num">abliterated</th><th class="num">unmuzzle</th></tr>
 </thead>
 <tbody>
-<tr><td>Qwen2.5-7B</td><td>48%</td><td>42%</td><td><strong>68%</strong></td><td class="group">34%</td><td>27%</td><td><strong>19%</strong></td></tr>
-<tr><td>Qwen2.5-14B</td><td>69%</td><td>68%</td><td><strong>80%</strong></td><td class="group">9%</td><td>56%</td><td><strong>3%</strong></td></tr>
-<tr><td>R1-Distill-32B</td><td>69%</td><td>&ndash;</td><td><strong>88%</strong></td><td class="group">53%</td><td>&ndash;</td><td><strong>9%</strong></td></tr>
-<tr><td><strong>Qwen2.5-72B</strong></td><td>85%</td><td>86%</td><td><strong>96%</strong></td><td class="group">21%</td><td>37%</td><td><strong>0%</strong></td></tr>
+<tr><td>Qwen2.5-7B</td><td class="num">48%</td><td class="num">42%</td><td class="num"><strong>68%</strong></td><td class="num group">34%</td><td class="num">27%</td><td class="num"><strong>19%</strong></td></tr>
+<tr><td>Qwen2.5-14B</td><td class="num">69%</td><td class="num">68%</td><td class="num"><strong>80%</strong></td><td class="num group">9%</td><td class="num">56%</td><td class="num"><strong>3%</strong></td></tr>
+<tr><td>R1-Distill-32B</td><td class="num">69%</td><td class="num">&ndash;</td><td class="num"><strong>88%</strong></td><td class="num group">53%</td><td class="num">&ndash;</td><td class="num"><strong>9%</strong></td></tr>
+<tr><td>Qwen2.5-72B</td><td class="num">85%</td><td class="num">86%</td><td class="num"><strong>96%</strong></td><td class="num group">21%</td><td class="num">37%</td><td class="num"><strong>0%</strong></td></tr>
 </tbody>
 </table></div>
 <p class="dim">Abliteration adds no knowledge and breaks calibration: the abliterated 14B fabricates six times more than its base. The tuned models also abstain honestly on 91-100% of unknowable questions, keep neutral facts at 97-100%, and never over-refuse a real fact.</p>
@@ -152,16 +162,10 @@ ollama create unmuzzle-7b -f Modelfile.unmuzzle7b && ollama run unmuzzle-7b</cod
 
 <div class="card">
   <h3>unmuzzle/qwen2.5-72b-honesty-lora</h3>
-  <div class="chips">
-    <span class="chip badge">strongest</span><span class="chip license">qwen</span>
-    <span class="chip">803.3 MiB</span>
-    <span class="chip">base: Qwen/Qwen2.5-72B-Instruct</span>
-    <span class="chip">added 2026-07-19</span>
-    <span class="chip">honesty-sft</span><span class="chip">uncensored</span><span class="chip">chinese</span><span class="chip">lora</span>
-  </div>
+  <div class="meta"><span class="chip badge">strongest</span>qwen &middot; 803.3 MiB &middot; base Qwen/Qwen2.5-72B-Instruct</div>
   <p>The strongest unmuzzle model: LoRA adapter (r16) for Qwen2.5-72B-Instruct, honesty-SFT. Apply with PEFT; about 40 GB VRAM in 4-bit.</p>
-  <p class="links"><a href="https://huggingface.co/zjj1993/unmuzzle-qwen72b-honesty-lora">model card</a> &middot; <a href="https://pub-95a589dcef724d6497b5ebd7ba2bade8.r2.dev/qwen2.5-72b-honesty-lora/adapter_model.safetensors">direct: r2</a> &middot; <a href="https://huggingface.co/zjj1993/unmuzzle-qwen72b-honesty-lora/resolve/main/adapter_model.safetensors">direct: huggingface</a> &middot; <a href="https://huggingface.co/zjj1993/unmuzzle-qwen72b-honesty-lora">hf repo</a> &middot; <a href="https://huggingface.co/zjj1993/unmuzzle-qwen72b-honesty-lora/resolve/main/qwen2.5-72b-honesty-lora.torrent">.torrent</a> &middot; <a href="magnet:?xt=urn:btih:7b1dcda3c2a121ae60a9ef622fcabcd866de3d70&amp;dn=qwen2.5-72b-honesty-lora&amp;xl=842290232&amp;tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce&amp;tr=udp%3A%2F%2Fopen.demonii.com%3A1337%2Fannounce&amp;ws=https%3A%2F%2Fpub-95a589dcef724d6497b5ebd7ba2bade8.r2.dev%2Fqwen2.5-72b-honesty-lora&amp;ws=https%3A%2F%2Fhuggingface.co%2Fzjj1993%2Funmuzzle-qwen72b-honesty-lora%2Fresolve%2Fmain">magnet</a></p>
-  <div class="getline">
+  <p class="links"><a href="https://huggingface.co/zjj1993/unmuzzle-qwen72b-honesty-lora">model card</a> &middot; <a href="https://pub-95a589dcef724d6497b5ebd7ba2bade8.r2.dev/qwen2.5-72b-honesty-lora/adapter_model.safetensors">r2</a> &middot; <a href="https://huggingface.co/zjj1993/unmuzzle-qwen72b-honesty-lora/resolve/main/adapter_model.safetensors">huggingface</a> &middot; <a href="https://huggingface.co/zjj1993/unmuzzle-qwen72b-honesty-lora/resolve/main/qwen2.5-72b-honesty-lora.torrent">.torrent</a> &middot; <a href="magnet:?xt=urn:btih:7b1dcda3c2a121ae60a9ef622fcabcd866de3d70&amp;dn=qwen2.5-72b-honesty-lora&amp;xl=842290232&amp;tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce&amp;tr=udp%3A%2F%2Fopen.demonii.com%3A1337%2Fannounce&amp;ws=https%3A%2F%2Fpub-95a589dcef724d6497b5ebd7ba2bade8.r2.dev%2Fqwen2.5-72b-honesty-lora&amp;ws=https%3A%2F%2Fhuggingface.co%2Fzjj1993%2Funmuzzle-qwen72b-honesty-lora%2Fresolve%2Fmain">magnet</a></p>
+  <div class="codebox">
     <pre><code id="cmd-0">unmuzzle get unmuzzle/qwen2.5-72b-honesty-lora --require-signature --dest ./models</code></pre>
     <button onclick="copy(this, 'cmd-0')">copy</button>
   </div>
@@ -182,16 +186,10 @@ ollama create unmuzzle-7b -f Modelfile.unmuzzle7b && ollama run unmuzzle-7b</cod
 
 <div class="card">
   <h3>unmuzzle/r1-distill-32b-honesty-lora</h3>
-  <div class="chips">
-    <span class="chip license">mit</span>
-    <span class="chip">523.0 MiB</span>
-    <span class="chip">base: deepseek-ai/DeepSeek-R1-Distill-Qwen-32B</span>
-    <span class="chip">added 2026-07-19</span>
-    <span class="chip">honesty-sft</span><span class="chip">uncensored</span><span class="chip">chinese</span><span class="chip">lora</span>
-  </div>
+  <div class="meta">mit &middot; 523.0 MiB &middot; base deepseek-ai/DeepSeek-R1-Distill-Qwen-32B</div>
   <p>Honesty-tuned reasoning model: LoRA adapter (r16) for DeepSeek-R1-Distill-Qwen-32B, reasoning traces preserved. Tokenizer and chat template included.</p>
-  <p class="links"><a href="https://huggingface.co/zjj1993/unmuzzle-r1-32b-honesty-lora">model card</a> &middot; <a href="https://pub-95a589dcef724d6497b5ebd7ba2bade8.r2.dev/r1-distill-32b-honesty-lora/adapter_model.safetensors">direct: r2</a> &middot; <a href="https://huggingface.co/zjj1993/unmuzzle-r1-32b-honesty-lora/resolve/main/adapter_model.safetensors">direct: huggingface</a> &middot; <a href="https://huggingface.co/zjj1993/unmuzzle-r1-32b-honesty-lora">hf repo</a> &middot; <a href="https://huggingface.co/zjj1993/unmuzzle-r1-32b-honesty-lora/resolve/main/r1-distill-32b-honesty-lora.torrent">.torrent</a> &middot; <a href="magnet:?xt=urn:btih:b844673a6ccc0830498a4fff37aed08cbaaadbec&amp;dn=r1-distill-32b-honesty-lora&amp;xl=548417651&amp;tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce&amp;tr=udp%3A%2F%2Fopen.demonii.com%3A1337%2Fannounce&amp;ws=https%3A%2F%2Fpub-95a589dcef724d6497b5ebd7ba2bade8.r2.dev%2Fr1-distill-32b-honesty-lora&amp;ws=https%3A%2F%2Fhuggingface.co%2Fzjj1993%2Funmuzzle-r1-32b-honesty-lora%2Fresolve%2Fmain">magnet</a></p>
-  <div class="getline">
+  <p class="links"><a href="https://huggingface.co/zjj1993/unmuzzle-r1-32b-honesty-lora">model card</a> &middot; <a href="https://pub-95a589dcef724d6497b5ebd7ba2bade8.r2.dev/r1-distill-32b-honesty-lora/adapter_model.safetensors">r2</a> &middot; <a href="https://huggingface.co/zjj1993/unmuzzle-r1-32b-honesty-lora/resolve/main/adapter_model.safetensors">huggingface</a> &middot; <a href="https://huggingface.co/zjj1993/unmuzzle-r1-32b-honesty-lora/resolve/main/r1-distill-32b-honesty-lora.torrent">.torrent</a> &middot; <a href="magnet:?xt=urn:btih:b844673a6ccc0830498a4fff37aed08cbaaadbec&amp;dn=r1-distill-32b-honesty-lora&amp;xl=548417651&amp;tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce&amp;tr=udp%3A%2F%2Fopen.demonii.com%3A1337%2Fannounce&amp;ws=https%3A%2F%2Fpub-95a589dcef724d6497b5ebd7ba2bade8.r2.dev%2Fr1-distill-32b-honesty-lora&amp;ws=https%3A%2F%2Fhuggingface.co%2Fzjj1993%2Funmuzzle-r1-32b-honesty-lora%2Fresolve%2Fmain">magnet</a></p>
+  <div class="codebox">
     <pre><code id="cmd-1">unmuzzle get unmuzzle/r1-distill-32b-honesty-lora --require-signature --dest ./models</code></pre>
     <button onclick="copy(this, 'cmd-1')">copy</button>
   </div>
@@ -219,16 +217,10 @@ ollama create unmuzzle-7b -f Modelfile.unmuzzle7b && ollama run unmuzzle-7b</cod
 
 <div class="card">
   <h3>unmuzzle/qwen2.5-14b-honesty-lora</h3>
-  <div class="chips">
-    <span class="chip license">apache-2.0</span>
-    <span class="chip">262.6 MiB</span>
-    <span class="chip">base: Qwen/Qwen2.5-14B-Instruct</span>
-    <span class="chip">added 2026-07-19</span>
-    <span class="chip">honesty-sft</span><span class="chip">uncensored</span><span class="chip">chinese</span><span class="chip">lora</span>
-  </div>
+  <div class="meta">apache-2.0 &middot; 262.6 MiB &middot; base Qwen/Qwen2.5-14B-Instruct</div>
   <p>LoRA adapter (r16) for Qwen2.5-14B-Instruct, honesty-SFT. Apply with PEFT.</p>
-  <p class="links"><a href="https://huggingface.co/zjj1993/unmuzzle-qwen14b-honesty-lora">model card</a> &middot; <a href="https://pub-95a589dcef724d6497b5ebd7ba2bade8.r2.dev/qwen2.5-14b-honesty-lora/adapter_model.safetensors">direct: r2</a> &middot; <a href="https://huggingface.co/zjj1993/unmuzzle-qwen14b-honesty-lora/resolve/main/adapter_model.safetensors">direct: huggingface</a> &middot; <a href="https://huggingface.co/zjj1993/unmuzzle-qwen14b-honesty-lora">hf repo</a> &middot; <a href="https://huggingface.co/zjj1993/unmuzzle-qwen14b-honesty-lora/resolve/main/qwen2.5-14b-honesty-lora.torrent">.torrent</a> &middot; <a href="magnet:?xt=urn:btih:0d1f1da36322d931b1acbd29dc4c56b22ea933a6&amp;dn=qwen2.5-14b-honesty-lora&amp;xl=275342824&amp;tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce&amp;tr=udp%3A%2F%2Fopen.demonii.com%3A1337%2Fannounce&amp;ws=https%3A%2F%2Fpub-95a589dcef724d6497b5ebd7ba2bade8.r2.dev%2Fqwen2.5-14b-honesty-lora&amp;ws=https%3A%2F%2Fhuggingface.co%2Fzjj1993%2Funmuzzle-qwen14b-honesty-lora%2Fresolve%2Fmain">magnet</a></p>
-  <div class="getline">
+  <p class="links"><a href="https://huggingface.co/zjj1993/unmuzzle-qwen14b-honesty-lora">model card</a> &middot; <a href="https://pub-95a589dcef724d6497b5ebd7ba2bade8.r2.dev/qwen2.5-14b-honesty-lora/adapter_model.safetensors">r2</a> &middot; <a href="https://huggingface.co/zjj1993/unmuzzle-qwen14b-honesty-lora/resolve/main/adapter_model.safetensors">huggingface</a> &middot; <a href="https://huggingface.co/zjj1993/unmuzzle-qwen14b-honesty-lora/resolve/main/qwen2.5-14b-honesty-lora.torrent">.torrent</a> &middot; <a href="magnet:?xt=urn:btih:0d1f1da36322d931b1acbd29dc4c56b22ea933a6&amp;dn=qwen2.5-14b-honesty-lora&amp;xl=275342824&amp;tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce&amp;tr=udp%3A%2F%2Fopen.demonii.com%3A1337%2Fannounce&amp;ws=https%3A%2F%2Fpub-95a589dcef724d6497b5ebd7ba2bade8.r2.dev%2Fqwen2.5-14b-honesty-lora&amp;ws=https%3A%2F%2Fhuggingface.co%2Fzjj1993%2Funmuzzle-qwen14b-honesty-lora%2Fresolve%2Fmain">magnet</a></p>
+  <div class="codebox">
     <pre><code id="cmd-2">unmuzzle get unmuzzle/qwen2.5-14b-honesty-lora --require-signature --dest ./models</code></pre>
     <button onclick="copy(this, 'cmd-2')">copy</button>
   </div>
@@ -250,16 +242,10 @@ ollama create unmuzzle-7b -f Modelfile.unmuzzle7b && ollama run unmuzzle-7b</cod
 
 <div class="card">
   <h3>unmuzzle/qwen2.5-7b-honesty</h3>
-  <div class="chips">
-    <span class="chip badge">runs on an 8 GB laptop</span><span class="chip license">apache-2.0</span>
-    <span class="chip">4.4 GiB</span>
-    <span class="chip">base: Qwen/Qwen2.5-7B-Instruct</span>
-    <span class="chip">added 2026-07-19</span>
-    <span class="chip">honesty-sft</span><span class="chip">uncensored</span><span class="chip">chinese</span><span class="chip">gguf</span><span class="chip">ollama</span>
-  </div>
+  <div class="meta"><span class="chip badge">runs on an 8 GB laptop</span>apache-2.0 &middot; 4.4 GiB &middot; base Qwen/Qwen2.5-7B-Instruct</div>
   <p>Merged GGUF (Q4_K_M) of Qwen2.5-7B-Instruct + honesty-SFT. Runs in Ollama/llama.cpp on 8 GB RAM; Modelfile included.</p>
-  <p class="links"><a href="https://huggingface.co/zjj1993/unmuzzle-qwen7b-honesty">model card</a> &middot; <a href="https://pub-95a589dcef724d6497b5ebd7ba2bade8.r2.dev/qwen2.5-7b-honesty/unmuzzle-qwen7b-Q4_K_M.gguf">direct: r2</a> &middot; <a href="https://huggingface.co/zjj1993/unmuzzle-qwen7b-honesty/resolve/main/unmuzzle-qwen7b-Q4_K_M.gguf">direct: huggingface</a> &middot; <a href="https://huggingface.co/zjj1993/unmuzzle-qwen7b-honesty">hf repo</a> &middot; <a href="https://huggingface.co/zjj1993/unmuzzle-qwen7b-honesty/resolve/main/qwen2.5-7b-honesty.torrent">.torrent</a> &middot; <a href="magnet:?xt=urn:btih:49c626f278267811ffae0dc2ce77d2774f34a91f&amp;dn=qwen2.5-7b-honesty&amp;xl=4683073900&amp;tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce&amp;tr=udp%3A%2F%2Fopen.demonii.com%3A1337%2Fannounce&amp;ws=https%3A%2F%2Fpub-95a589dcef724d6497b5ebd7ba2bade8.r2.dev%2Fqwen2.5-7b-honesty&amp;ws=https%3A%2F%2Fhuggingface.co%2Fzjj1993%2Funmuzzle-qwen7b-honesty%2Fresolve%2Fmain">magnet</a></p>
-  <div class="getline">
+  <p class="links"><a href="https://huggingface.co/zjj1993/unmuzzle-qwen7b-honesty">model card</a> &middot; <a href="https://pub-95a589dcef724d6497b5ebd7ba2bade8.r2.dev/qwen2.5-7b-honesty/unmuzzle-qwen7b-Q4_K_M.gguf">r2</a> &middot; <a href="https://huggingface.co/zjj1993/unmuzzle-qwen7b-honesty/resolve/main/unmuzzle-qwen7b-Q4_K_M.gguf">huggingface</a> &middot; <a href="https://huggingface.co/zjj1993/unmuzzle-qwen7b-honesty/resolve/main/qwen2.5-7b-honesty.torrent">.torrent</a> &middot; <a href="magnet:?xt=urn:btih:49c626f278267811ffae0dc2ce77d2774f34a91f&amp;dn=qwen2.5-7b-honesty&amp;xl=4683073900&amp;tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce&amp;tr=udp%3A%2F%2Fopen.demonii.com%3A1337%2Fannounce&amp;ws=https%3A%2F%2Fpub-95a589dcef724d6497b5ebd7ba2bade8.r2.dev%2Fqwen2.5-7b-honesty&amp;ws=https%3A%2F%2Fhuggingface.co%2Fzjj1993%2Funmuzzle-qwen7b-honesty%2Fresolve%2Fmain">magnet</a></p>
+  <div class="codebox">
     <pre><code id="cmd-3">unmuzzle get unmuzzle/qwen2.5-7b-honesty --require-signature --dest ./models</code></pre>
     <button onclick="copy(this, 'cmd-3')">copy</button>
   </div>
@@ -280,16 +266,10 @@ ollama create unmuzzle-7b -f Modelfile.unmuzzle7b && ollama run unmuzzle-7b</cod
 
 <div class="card">
   <h3>unmuzzle/qwen2.5-14b-abliterated</h3>
-  <div class="chips">
-    <span class="chip license">apache-2.0</span>
-    <span class="chip">8.4 GiB</span>
-    <span class="chip">base: Qwen/Qwen2.5-14B-Instruct</span>
-    <span class="chip">added 2026-07-19</span>
-    <span class="chip">uncensored</span><span class="chip">abliterated</span><span class="chip">chinese</span><span class="chip">gguf</span><span class="chip">ollama</span>
-  </div>
+  <div class="meta">apache-2.0 &middot; 8.4 GiB &middot; base Qwen/Qwen2.5-14B-Instruct</div>
   <p>Earlier weight-editing artifact, kept for comparison; the honesty-SFT models supersede it. GGUF Q4_K_M of Qwen2.5-14B-Instruct with the refusal direction removed.</p>
-  <p class="links"><a href="https://huggingface.co/zjj1993/unmuzzle-qwen14b-abliterated">model card</a> &middot; <a href="https://pub-95a589dcef724d6497b5ebd7ba2bade8.r2.dev/qwen14b-unmuzzled-Q4_K_M.gguf">direct: r2</a> &middot; <a href="https://huggingface.co/zjj1993/unmuzzle-qwen14b-abliterated/resolve/main/qwen14b-unmuzzled-Q4_K_M.gguf">direct: huggingface</a> &middot; <a href="https://huggingface.co/zjj1993/unmuzzle-qwen14b-abliterated">hf repo</a> &middot; <a href="https://huggingface.co/zjj1993/unmuzzle-qwen14b-abliterated/resolve/main/qwen14b-unmuzzled-Q4_K_M.gguf.torrent">.torrent</a> &middot; <a href="magnet:?xt=urn%3Abtih%3A08138b23ad166dfb6ae84d5ab4bb9d7c32ec5984&amp;dn=qwen14b-unmuzzled-Q4_K_M.gguf&amp;xl=8988110144&amp;tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce&amp;ws=https%3A%2F%2Fpub-95a589dcef724d6497b5ebd7ba2bade8.r2.dev%2Fqwen14b-unmuzzled-Q4_K_M.gguf">magnet</a></p>
-  <div class="getline">
+  <p class="links"><a href="https://huggingface.co/zjj1993/unmuzzle-qwen14b-abliterated">model card</a> &middot; <a href="https://pub-95a589dcef724d6497b5ebd7ba2bade8.r2.dev/qwen14b-unmuzzled-Q4_K_M.gguf">r2</a> &middot; <a href="https://huggingface.co/zjj1993/unmuzzle-qwen14b-abliterated/resolve/main/qwen14b-unmuzzled-Q4_K_M.gguf">huggingface</a> &middot; <a href="https://huggingface.co/zjj1993/unmuzzle-qwen14b-abliterated/resolve/main/qwen14b-unmuzzled-Q4_K_M.gguf.torrent">.torrent</a> &middot; <a href="magnet:?xt=urn%3Abtih%3A08138b23ad166dfb6ae84d5ab4bb9d7c32ec5984&amp;dn=qwen14b-unmuzzled-Q4_K_M.gguf&amp;xl=8988110144&amp;tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce&amp;ws=https%3A%2F%2Fpub-95a589dcef724d6497b5ebd7ba2bade8.r2.dev%2Fqwen14b-unmuzzled-Q4_K_M.gguf">magnet</a></p>
+  <div class="codebox">
     <pre><code id="cmd-4">unmuzzle get unmuzzle/qwen2.5-14b-abliterated --require-signature --dest ./models</code></pre>
     <button onclick="copy(this, 'cmd-4')">copy</button>
   </div>

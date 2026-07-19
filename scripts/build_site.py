@@ -74,8 +74,11 @@ nav .spacer { flex: 1; }
 .hero h1 { font-size: 2.6rem; letter-spacing: -0.02em; font-family: var(--mono); }
 .hero h1 span { color: var(--accent); }
 .tagline { color: var(--dim); font-size: 1.18rem; margin-top: .5rem; max-width: 44rem; }
-.quickstart { display: flex; gap: .5rem; margin-top: 1.3rem; max-width: 30rem; }
-.quickstart pre { flex: 1; margin: 0; }
+.codebox { position: relative; margin-top: 1rem; }
+.codebox pre { margin: 0; padding-right: 4.6rem; }
+.codebox button { position: absolute; top: .5rem; right: .5rem; padding: .12rem .6rem;
+                  box-shadow: -14px 0 10px -2px var(--code-bg); }
+.hero .codebox { max-width: 46rem; }
 h2 { font-size: 1.3rem; margin: 2.8rem 0 1rem; padding-bottom: .45rem;
      border-bottom: 1px solid var(--border); }
 p { margin: .6rem 0; }
@@ -94,26 +97,33 @@ pre code { background: none; border: none; padding: 0; }
 .card { background: var(--card); border: 1px solid var(--border); border-radius: 10px;
         padding: 1.2rem 1.3rem; margin: 1rem 0; }
 .card h3 { font-size: 1.08rem; font-family: var(--mono); }
-.chips { margin: .5rem 0 .6rem; }
-.chip { display: inline-block; border: 1px solid var(--border); border-radius: 999px;
-        padding: .08rem .65rem; font-size: .76rem; color: var(--dim);
-        margin: 0 .3rem .3rem 0; background: var(--bg); }
-.chip.license { color: var(--accent); border-color: var(--accent); }
-.chip.badge { background: var(--accent); color: var(--bg); border-color: var(--accent); font-weight: 600; }
-.tablewrap { overflow-x: auto; margin: 1rem 0; }
-table { border-collapse: collapse; width: 100%; font-size: .92rem; }
+.meta { margin: .45rem 0 .6rem; font-size: .82rem; color: var(--dim); }
+.chip.badge { display: inline-block; border-radius: 999px; padding: .05rem .6rem;
+              font-size: .76rem; margin-right: .55rem; color: var(--accent);
+              border: 1px solid var(--accent); font-weight: 600; }
+.tablewrap { overflow-x: auto; margin: 1rem 0;
+  background:
+    linear-gradient(90deg, var(--bg) 30%, transparent) left/40px 100%,
+    linear-gradient(270deg, var(--bg) 30%, transparent) right/40px 100%,
+    radial-gradient(farthest-side at 0 50%, rgba(0,0,0,.25), transparent) left/14px 100%,
+    radial-gradient(farthest-side at 100% 50%, rgba(0,0,0,.25), transparent) right/14px 100%;
+  background-repeat: no-repeat;
+  background-attachment: local, local, scroll, scroll; }
+table { border-collapse: collapse; width: 100%; font-size: .92rem;
+        font-variant-numeric: tabular-nums; }
 th, td { text-align: left; padding: .5rem .8rem; border-bottom: 1px solid var(--border); white-space: nowrap; }
+th.num, td.num { text-align: right; }
 th { color: var(--dim); font-weight: 600; font-size: .8rem; }
 th.group { border-left: 1px solid var(--border); }
 td.group { border-left: 1px solid var(--border); }
-.getline { display: flex; gap: .5rem; align-items: stretch; margin-top: .8rem; }
-.getline pre { flex: 1; margin: 0; }
-button { background: var(--bg); color: var(--accent); border: 1px solid var(--border);
-         border-radius: 8px; padding: 0 .9rem; cursor: pointer; font-size: .85rem;
-         font-family: inherit; }
-button:hover { border-color: var(--accent); }
+button { background: var(--bg); color: var(--dim); border: 1px solid var(--border);
+         border-radius: 8px; cursor: pointer; font-size: .8rem; font-family: inherit; }
+button:hover { color: var(--accent); border-color: var(--accent); }
 details { margin-top: .8rem; font-size: .85rem; }
 .links { font-size: .85rem; margin-top: .5rem; }
+.card .links a { color: var(--dim); text-decoration: underline;
+                 text-underline-offset: 2px; }
+.card .links a:hover { color: var(--accent); }
 summary { cursor: pointer; color: var(--dim); }
 summary:hover { color: var(--fg); }
 footer { margin-top: 3.2rem; padding: 1.4rem 0 2.5rem; border-top: 1px solid var(--border);
@@ -213,10 +223,7 @@ STR = {
             "unmuzzle/qwen2.5-7b-honesty": "runs on an 8 GB laptop",
         },
         "chip_base": "base",
-        "chip_added": "added",
         "model_card": "model card",
-        "direct": "direct",
-        "hf_repo": "hf repo",
         "files_s": "files, hashes, mirrors",
         "copy": "copy",
         "copied": "copied",
@@ -304,10 +311,7 @@ STR = {
             "unmuzzle/qwen2.5-7b-honesty": "8 GB 笔记本可跑",
         },
         "chip_base": "基座",
-        "chip_added": "收录于",
         "model_card": "模型卡",
-        "direct": "直连",
-        "hf_repo": "HF 仓库",
         "files_s": "文件、哈希、镜像",
         "copy": "复制",
         "copied": "已复制",
@@ -374,15 +378,16 @@ def bench_table(t: dict) -> str:
         cells = []
         for group_i, triple in enumerate((factual, fab)):
             for i, v in enumerate(triple):
-                cls = ' class="group"' if group_i == 1 and i == 0 else ""
+                cls = ' class="num group"' if group_i == 1 and i == 0 else ' class="num"'
                 txt = "&ndash;" if v is None else f"{v}%"
                 if i == 2 and v is not None:
                     txt = f"<strong>{txt}</strong>"
                 cells.append(f"<td{cls}>{txt}</td>")
-        name = f"<strong>{label}</strong>" if flag else label
-        rows.append(f"<tr><td>{name}</td>{''.join(cells)}</tr>")
-    sub = (f'<th>{t["col_base"]}</th><th>{t["col_abl"]}</th><th>{t["col_ours"]}</th>')
-    sub2 = (f'<th class="group">{t["col_base"]}</th><th>{t["col_abl"]}</th><th>{t["col_ours"]}</th>')
+        rows.append(f"<tr><td>{label}</td>{''.join(cells)}</tr>")
+    sub = (f'<th class="num">{t["col_base"]}</th><th class="num">{t["col_abl"]}</th>'
+           f'<th class="num">{t["col_ours"]}</th>')
+    sub2 = (f'<th class="num group">{t["col_base"]}</th><th class="num">{t["col_abl"]}</th>'
+            f'<th class="num">{t["col_ours"]}</th>')
     return f'''<div class="tablewrap"><table>
 <thead>
 <tr><th></th><th colspan="3">{t["col_factual"]}</th><th colspan="3" class="group">{t["col_fab"]}</th></tr>
@@ -405,9 +410,7 @@ def model_links(m: dict, t: dict) -> str:
         host = urllib.parse.urlparse(base).netloc
         label = "r2" if "r2.dev" in host else host.split(".")[0]
         url = f"{base.rstrip('/')}/{urllib.parse.quote(biggest['path'])}"
-        out.append(f'<a href="{e(url)}">{t["direct"]}: {e(label)}</a>')
-        if "huggingface.co" in host and "/resolve/" in base:
-            out.append(f'<a href="{e(base.split("/resolve/")[0])}">{t["hf_repo"]}</a>')
+        out.append(f'<a href="{e(url)}">{e(label)}</a>')
     if mirrors.get("torrent"):
         out.append(f'<a href="{e(mirrors["torrent"])}">.torrent</a>')
     if mirrors.get("magnet"):
@@ -448,16 +451,10 @@ def model_card(m: dict, cid: int, t: dict) -> str:
     return f'''
 <div class="card">
   <h3>{e(m["name"])}</h3>
-  <div class="chips">
-    {badge_html}<span class="chip license">{e(m.get("license", "unknown"))}</span>
-    <span class="chip">{human_size(total)}</span>
-    <span class="chip">{t["chip_base"]}: {e(m.get("base_model", "?"))}</span>
-    <span class="chip">{t["chip_added"]} {e(m.get("added", "?"))}</span>
-    {"".join(f'<span class="chip">{e(tag)}</span>' for tag in m.get("tags", []))}
-  </div>
+  <div class="meta">{badge_html}{e(m.get("license", "unknown"))} &middot; {human_size(total)} &middot; {t["chip_base"]} {e(m.get("base_model", "?"))}</div>
   <p>{e(desc)}</p>
   <p class="links">{links}</p>
-  <div class="getline">
+  <div class="codebox">
     <pre><code id="cmd-{cid}">unmuzzle get {e(m["name"])} --require-signature --dest ./models</code></pre>
     <button onclick="copy(this, 'cmd-{cid}')">{t["copy"]}</button>
   </div>
@@ -517,7 +514,7 @@ def render(lang: str, models: list, pubkey: str) -> str:
   <h1>un<span>muzzle</span></h1>
   <p class="tagline">{t["tagline"]}</p>
   <p class="dim" style="margin-top:1rem">{t["run7b"]}</p>
-  <div class="quickstart">
+  <div class="codebox">
     <pre><code id="qs">pip install unmuzzle
 unmuzzle get unmuzzle/qwen2.5-7b-honesty --require-signature --dest m && cd m
 ollama create unmuzzle-7b -f Modelfile.unmuzzle7b && ollama run unmuzzle-7b</code></pre>
