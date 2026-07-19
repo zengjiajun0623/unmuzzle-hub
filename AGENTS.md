@@ -34,6 +34,22 @@ unmuzzle get org/name --require-signature --json
   with your runtime of choice.
 - `--method auto` picks torrent when aria2c is present, else HTTP. Interrupted
   downloads resume; every file is re-hashed against the signed manifest.
+- If the default index (GitHub raw) is unreachable, use a mirror:
+  `--index https://pub-95a589dcef724d6497b5ebd7ba2bade8.r2.dev/index.json`
+  or set `UNMUZZLE_INDEX`.
+
+## Trust model
+
+- Every manifest is minisign-signed; `--require-signature` aborts unless it
+  verifies. Always use it.
+- Key continuity (SSH-style TOFU): the first time you fetch from a publisher
+  org, its key is pinned to `~/.unmuzzle/known_publishers.json`. If the key
+  ever changes, `get` aborts. Re-run with `--accept-new-key` only when you
+  expected the rotation; a surprise key change means a compromised index or
+  a hijacked org.
+- The official `unmuzzle` org key is also pinned inside the pip package
+  itself (`unmuzzle.trust.OFFICIAL_KEYS`), an independent channel from any
+  index host. A wrong key for that org fails closed even on first use.
 
 ## Publish a model
 

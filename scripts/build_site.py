@@ -187,7 +187,9 @@ brew install aria2 minisign   # optional: torrents, signature verification</code
 <h2 id="trust">Trust root</h2>
 <p>Releases are signed with minisign. Publisher public key:</p>
 <pre><code>{pubkey}</code></pre>
-<p class="dim">If a mirror serves bytes that fail sha256 against a signed manifest, the mirror is wrong, not the index.</p>
+<p class="dim">If a mirror serves bytes that fail sha256 against a signed manifest, the mirror is wrong, not the index.
+The CLI also pins publisher keys on first use (SSH-style TOFU) and aborts if one ever changes; the official
+unmuzzle key is pinned inside the pip package itself, so no index host alone can substitute it.</p>
 
 <footer>
   <p>unmuzzle is open source (MIT): <a href="{repo}">{repo_short}</a> ·

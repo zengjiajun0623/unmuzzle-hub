@@ -21,6 +21,10 @@ It is also censorship-resistant by construction:
   keep every torrent alive at zero peers; no central server to block or bill.
 - **Every file is sha256-pinned and the manifest is minisign-signed.** The
   signature, not the host, is the trust root. Any static host can be a mirror.
+- **Publisher keys are pinned on first use (TOFU).** A changed key aborts the
+  install until you confirm the rotation with `--accept-new-key`. The official
+  `unmuzzle` key is additionally pinned inside the pip package itself, a
+  second channel no index host can touch.
 - **Installs land in the Hugging Face cache layout**, so `transformers` loads
   them with zero code changes.
 
