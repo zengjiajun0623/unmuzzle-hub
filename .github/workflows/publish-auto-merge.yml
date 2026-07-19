@@ -103,7 +103,7 @@ jobs:
           fi
 
       - name: comment on red
-        if: steps.files.outputs.publish == 'true' && steps.validate.outcome == 'failure'
+        if: always() && steps.files.outputs.publish == 'true' && steps.validate.outcome == 'failure'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
