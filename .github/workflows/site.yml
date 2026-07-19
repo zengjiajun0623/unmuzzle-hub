@@ -7,7 +7,7 @@ name: site
 on:
   push:
     branches: [main]
-    paths: ['index/**']
+    paths: ['index/**', 'scripts/build_site.py']
   workflow_dispatch:
 
 permissions:
