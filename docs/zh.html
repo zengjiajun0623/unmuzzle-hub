@@ -1,14 +1,14 @@
 <!doctype html>
-<html lang="en">
+<html lang="zh">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>unmuzzle: open Chinese models that answer honestly</title>
-<meta name="description" content="Qwen and DeepSeek fine-tunes that answer factually on politically censored topics, benchmarked base vs tuned and vs abliteration, distributed over signed mirrors and torrents no single host can take down.">
+<title>unmuzzle：诚实回答的开源中文模型</title>
+<meta name="description" content="对 Qwen 与 DeepSeek 微调，使其如实回答被审查的政治话题；基座、消融版与微调版全量对比基准；签名镜像与种子分发，任何单一托管方都无法下架。">
 <meta property="og:title" content="unmuzzle">
-<meta property="og:description" content="Open Chinese models fine-tuned to answer honestly on politically censored topics. Benchmarked, signed, censorship-resistant.">
+<meta property="og:description" content="开源中文模型，经微调后诚实回答被审查的政治话题。有基准，有签名，抗审查分发。">
 <meta property="og:type" content="website">
-<meta property="og:url" content="https://zengjiajun0623.github.io/unmuzzle-hub/">
+<meta property="og:url" content="https://zengjiajun0623.github.io/unmuzzle-hub/zh.html">
 <link rel="alternate" hreflang="en" href="https://zengjiajun0623.github.io/unmuzzle-hub/">
 <link rel="alternate" hreflang="zh" href="https://zengjiajun0623.github.io/unmuzzle-hub/zh.html">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23b45309'/%3E%3Ctext x='32' y='42' font-family='ui-monospace,monospace' font-size='28' font-weight='bold' text-anchor='middle' fill='white'%3Eum%3C/text%3E%3C/svg%3E">
@@ -102,13 +102,13 @@ footer { margin-top: 3.2rem; padding: 1.4rem 0 2.5rem; border-top: 1px solid var
 
 <nav><div class="wrap">
   <div class="wordmark">un<span>muzzle</span></div>
-  <a class="links sect" href="#benchmarks">benchmarks</a>
-  <a class="links sect" href="#models">models</a>
-  <a class="links sect" href="#why">why</a>
-  <a class="links sect" href="#faq">faq</a>
-  <a class="links sect" href="#trust">trust</a>
+  <a class="links sect" href="#benchmarks">基准测试</a>
+  <a class="links sect" href="#models">模型</a>
+  <a class="links sect" href="#why">缘由</a>
+  <a class="links sect" href="#faq">常见问题</a>
+  <a class="links sect" href="#trust">信任根</a>
   <div class="spacer"></div>
-  <a class="links" href="zh.html">中文</a>
+  <a class="links" href="./">EN</a>
   <a class="links" href="https://github.com/zengjiajun0623/unmuzzle-hub">github</a>
 </div></nav>
 
@@ -116,23 +116,23 @@ footer { margin-top: 3.2rem; padding: 1.4rem 0 2.5rem; border-top: 1px solid var
 
 <header class="hero">
   <h1>un<span>muzzle</span></h1>
-  <p class="tagline">Open Chinese models, fine-tuned to answer honestly about politically censored topics. Benchmarked. Distributed so no single host can take them down.</p>
-  <p class="dim" style="margin-top:1rem">Run the 7B on any 8 GB machine:</p>
+  <p class="tagline">开源中文模型，经微调后诚实回答被审查的政治话题。有完整基准测试。分布式分发，任何单一托管方都无法让它们下线。</p>
+  <p class="dim" style="margin-top:1rem">在任意 8 GB 内存的机器上运行 7B：</p>
   <div class="quickstart">
     <pre><code id="qs">pip install unmuzzle
 unmuzzle get unmuzzle/qwen2.5-7b-honesty --require-signature --dest m && cd m
 ollama create unmuzzle-7b -f Modelfile.unmuzzle7b && ollama run unmuzzle-7b</code></pre>
-    <button onclick="copy(this, 'qs')">copy</button>
+    <button onclick="copy(this, 'qs')">复制</button>
   </div>
-  <p class="dim" style="margin-top:.6rem;font-size:.85rem">Optional: <code>aria2</code> for torrents, <code>minisign</code> for signature checks.</p>
+  <p class="dim" style="margin-top:.6rem;font-size:.85rem">可选：<code>aria2</code> 用于种子下载，<code>minisign</code> 用于签名校验。</p>
 </header>
 
-<h2 id="benchmarks">Benchmarks</h2>
-<p class="dim">Held-out 265-item benchmark: censored-topic facts, invented-topic honesty traps, neutral controls. Cross-family LLM judge, ground-truth anchored. Abliterated = the huihui-ai abliteration of the same base, the common uncensoring method.</p>
+<h2 id="benchmarks">基准测试</h2>
+<p class="dim">留出的 265 题基准：被审查话题的事实、虚构话题的诚实性陷阱、中性对照题。跨家族大模型评审，以标准答案为锚。消融版为 huihui-ai 对相同基座的 abliteration（当前主流的“去审查”做法）。</p>
 <div class="tablewrap"><table>
 <thead>
-<tr><th></th><th colspan="3">factual, censored topics</th><th colspan="3" class="group">fabrication, invented topics</th></tr>
-<tr><th></th><th>base</th><th>abliterated</th><th>unmuzzle</th><th class="group">base</th><th>abliterated</th><th>unmuzzle</th></tr>
+<tr><th></th><th colspan="3">事实准确率（审查话题）</th><th colspan="3" class="group">编造率（虚构话题）</th></tr>
+<tr><th></th><th>基座</th><th>消融版</th><th>unmuzzle</th><th class="group">基座</th><th>消融版</th><th>unmuzzle</th></tr>
 </thead>
 <tbody>
 <tr><td>Qwen2.5-7B</td><td>48%</td><td>42%</td><td><strong>68%</strong></td><td class="group">34%</td><td>27%</td><td><strong>19%</strong></td></tr>
@@ -141,32 +141,32 @@ ollama create unmuzzle-7b -f Modelfile.unmuzzle7b && ollama run unmuzzle-7b</cod
 <tr><td><strong>Qwen2.5-72B</strong></td><td>85%</td><td>86%</td><td><strong>96%</strong></td><td class="group">21%</td><td>37%</td><td><strong>0%</strong></td></tr>
 </tbody>
 </table></div>
-<p class="dim">Abliteration adds no knowledge and breaks calibration: the abliterated 14B fabricates six times more than its base. The tuned models also abstain honestly on 91-100% of unknowable questions, keep neutral facts at 97-100%, and never over-refuse a real fact.</p>
+<p class="dim">消融不增加知识，还会破坏校准：消融版 14B 的编造率是基座的六倍。微调后的模型对无从知晓的问题诚实弃答率达 91–100%，中性事实保持 97–100%，且从不过度拒答真实事实。</p>
 <details class="method">
-  <summary>method notes</summary>
-  <p>The tuning corpus is about 1,300 contrastive Chinese Q&amp;A pairs, curated with frontier-model (Claude) assistance: a narrow behavioral patch, not a distillation. The benchmark is held out from training and deduplicated against it. Same items and judge across all arms. Standard-benchmark parity results (CMMLU, C-Eval, MMLU, GSM8K, base vs tuned) are being finalized and will be published here.</p>
+  <summary>方法说明</summary>
+  <p>微调语料约 1,300 组对照式中文问答，在前沿模型（Claude）协助下整理；属于窄域行为修正，并非蒸馏。基准与训练数据不重叠且已去重，各组同题同评审。标准基准（CMMLU、C-Eval、MMLU、GSM8K，基座对比微调）结果正在整理，完成后发布于此。</p>
 </details>
 
-<h2 id="models">Models</h2>
-<p class="dim">5 models, every entry signed. The CLI verifies the signature and every byte before install.</p>
+<h2 id="models">模型</h2>
+<p class="dim">5 个模型，每个条目均经签名。CLI 在安装前校验签名与每一个字节。</p>
 
 <div class="card">
   <h3>unmuzzle/qwen2.5-72b-honesty-lora</h3>
   <div class="chips">
-    <span class="chip badge">strongest</span><span class="chip license">qwen</span>
+    <span class="chip badge">最强</span><span class="chip license">qwen</span>
     <span class="chip">803.3 MiB</span>
-    <span class="chip">base: Qwen/Qwen2.5-72B-Instruct</span>
-    <span class="chip">added 2026-07-19</span>
+    <span class="chip">基座: Qwen/Qwen2.5-72B-Instruct</span>
+    <span class="chip">收录于 2026-07-19</span>
     <span class="chip">honesty-sft</span><span class="chip">uncensored</span><span class="chip">chinese</span><span class="chip">lora</span>
   </div>
-  <p>The strongest unmuzzle model: LoRA adapter (r16) for Qwen2.5-72B-Instruct, honesty-SFT. Apply with PEFT; about 40 GB VRAM in 4-bit.</p>
-  <p class="links"><a href="https://huggingface.co/zjj1993/unmuzzle-qwen72b-honesty-lora">model card</a> &middot; <a href="https://pub-95a589dcef724d6497b5ebd7ba2bade8.r2.dev/qwen2.5-72b-honesty-lora/adapter_model.safetensors">direct: r2</a> &middot; <a href="https://huggingface.co/zjj1993/unmuzzle-qwen72b-honesty-lora/resolve/main/adapter_model.safetensors">direct: huggingface</a> &middot; <a href="https://huggingface.co/zjj1993/unmuzzle-qwen72b-honesty-lora">hf repo</a> &middot; <a href="https://huggingface.co/zjj1993/unmuzzle-qwen72b-honesty-lora/resolve/main/qwen2.5-72b-honesty-lora.torrent">.torrent</a> &middot; <a href="magnet:?xt=urn:btih:7b1dcda3c2a121ae60a9ef622fcabcd866de3d70&amp;dn=qwen2.5-72b-honesty-lora&amp;xl=842290232&amp;tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce&amp;tr=udp%3A%2F%2Fopen.demonii.com%3A1337%2Fannounce&amp;ws=https%3A%2F%2Fpub-95a589dcef724d6497b5ebd7ba2bade8.r2.dev%2Fqwen2.5-72b-honesty-lora&amp;ws=https%3A%2F%2Fhuggingface.co%2Fzjj1993%2Funmuzzle-qwen72b-honesty-lora%2Fresolve%2Fmain">magnet</a></p>
+  <p>最强的 unmuzzle 模型：Qwen2.5-72B-Instruct 的 LoRA 适配器（r16），诚实 SFT。用 PEFT 加载；4-bit 约需 40 GB 显存。</p>
+  <p class="links"><a href="https://huggingface.co/zjj1993/unmuzzle-qwen72b-honesty-lora">模型卡</a> &middot; <a href="https://pub-95a589dcef724d6497b5ebd7ba2bade8.r2.dev/qwen2.5-72b-honesty-lora/adapter_model.safetensors">直连: r2</a> &middot; <a href="https://huggingface.co/zjj1993/unmuzzle-qwen72b-honesty-lora/resolve/main/adapter_model.safetensors">直连: huggingface</a> &middot; <a href="https://huggingface.co/zjj1993/unmuzzle-qwen72b-honesty-lora">HF 仓库</a> &middot; <a href="https://huggingface.co/zjj1993/unmuzzle-qwen72b-honesty-lora/resolve/main/qwen2.5-72b-honesty-lora.torrent">.torrent</a> &middot; <a href="magnet:?xt=urn:btih:7b1dcda3c2a121ae60a9ef622fcabcd866de3d70&amp;dn=qwen2.5-72b-honesty-lora&amp;xl=842290232&amp;tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce&amp;tr=udp%3A%2F%2Fopen.demonii.com%3A1337%2Fannounce&amp;ws=https%3A%2F%2Fpub-95a589dcef724d6497b5ebd7ba2bade8.r2.dev%2Fqwen2.5-72b-honesty-lora&amp;ws=https%3A%2F%2Fhuggingface.co%2Fzjj1993%2Funmuzzle-qwen72b-honesty-lora%2Fresolve%2Fmain">magnet</a></p>
   <div class="getline">
     <pre><code id="cmd-0">unmuzzle get unmuzzle/qwen2.5-72b-honesty-lora --require-signature --dest ./models</code></pre>
-    <button onclick="copy(this, 'cmd-0')">copy</button>
+    <button onclick="copy(this, 'cmd-0')">复制</button>
   </div>
   <details>
-    <summary>files, hashes, mirrors</summary>
+    <summary>文件、哈希、镜像</summary>
     <pre><code>  adapter_config.json
     sha256: 07915e7f81185de934bcaf795e544c4bd029ad7dc2215965987ae05f34ed2a02  (1.1 KiB)
   adapter_model.safetensors
@@ -185,18 +185,18 @@ ollama create unmuzzle-7b -f Modelfile.unmuzzle7b && ollama run unmuzzle-7b</cod
   <div class="chips">
     <span class="chip license">mit</span>
     <span class="chip">523.0 MiB</span>
-    <span class="chip">base: deepseek-ai/DeepSeek-R1-Distill-Qwen-32B</span>
-    <span class="chip">added 2026-07-19</span>
+    <span class="chip">基座: deepseek-ai/DeepSeek-R1-Distill-Qwen-32B</span>
+    <span class="chip">收录于 2026-07-19</span>
     <span class="chip">honesty-sft</span><span class="chip">uncensored</span><span class="chip">chinese</span><span class="chip">lora</span>
   </div>
-  <p>Honesty-tuned reasoning model: LoRA adapter (r16) for DeepSeek-R1-Distill-Qwen-32B, reasoning traces preserved. Tokenizer and chat template included.</p>
-  <p class="links"><a href="https://huggingface.co/zjj1993/unmuzzle-r1-32b-honesty-lora">model card</a> &middot; <a href="https://pub-95a589dcef724d6497b5ebd7ba2bade8.r2.dev/r1-distill-32b-honesty-lora/adapter_model.safetensors">direct: r2</a> &middot; <a href="https://huggingface.co/zjj1993/unmuzzle-r1-32b-honesty-lora/resolve/main/adapter_model.safetensors">direct: huggingface</a> &middot; <a href="https://huggingface.co/zjj1993/unmuzzle-r1-32b-honesty-lora">hf repo</a> &middot; <a href="https://huggingface.co/zjj1993/unmuzzle-r1-32b-honesty-lora/resolve/main/r1-distill-32b-honesty-lora.torrent">.torrent</a> &middot; <a href="magnet:?xt=urn:btih:b844673a6ccc0830498a4fff37aed08cbaaadbec&amp;dn=r1-distill-32b-honesty-lora&amp;xl=548417651&amp;tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce&amp;tr=udp%3A%2F%2Fopen.demonii.com%3A1337%2Fannounce&amp;ws=https%3A%2F%2Fpub-95a589dcef724d6497b5ebd7ba2bade8.r2.dev%2Fr1-distill-32b-honesty-lora&amp;ws=https%3A%2F%2Fhuggingface.co%2Fzjj1993%2Funmuzzle-r1-32b-honesty-lora%2Fresolve%2Fmain">magnet</a></p>
+  <p>诚实微调的推理模型：DeepSeek-R1-Distill-Qwen-32B 的 LoRA 适配器（r16），保留推理链。含分词器与对话模板。</p>
+  <p class="links"><a href="https://huggingface.co/zjj1993/unmuzzle-r1-32b-honesty-lora">模型卡</a> &middot; <a href="https://pub-95a589dcef724d6497b5ebd7ba2bade8.r2.dev/r1-distill-32b-honesty-lora/adapter_model.safetensors">直连: r2</a> &middot; <a href="https://huggingface.co/zjj1993/unmuzzle-r1-32b-honesty-lora/resolve/main/adapter_model.safetensors">直连: huggingface</a> &middot; <a href="https://huggingface.co/zjj1993/unmuzzle-r1-32b-honesty-lora">HF 仓库</a> &middot; <a href="https://huggingface.co/zjj1993/unmuzzle-r1-32b-honesty-lora/resolve/main/r1-distill-32b-honesty-lora.torrent">.torrent</a> &middot; <a href="magnet:?xt=urn:btih:b844673a6ccc0830498a4fff37aed08cbaaadbec&amp;dn=r1-distill-32b-honesty-lora&amp;xl=548417651&amp;tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce&amp;tr=udp%3A%2F%2Fopen.demonii.com%3A1337%2Fannounce&amp;ws=https%3A%2F%2Fpub-95a589dcef724d6497b5ebd7ba2bade8.r2.dev%2Fr1-distill-32b-honesty-lora&amp;ws=https%3A%2F%2Fhuggingface.co%2Fzjj1993%2Funmuzzle-r1-32b-honesty-lora%2Fresolve%2Fmain">magnet</a></p>
   <div class="getline">
     <pre><code id="cmd-1">unmuzzle get unmuzzle/r1-distill-32b-honesty-lora --require-signature --dest ./models</code></pre>
-    <button onclick="copy(this, 'cmd-1')">copy</button>
+    <button onclick="copy(this, 'cmd-1')">复制</button>
   </div>
   <details>
-    <summary>files, hashes, mirrors</summary>
+    <summary>文件、哈希、镜像</summary>
     <pre><code>  adapter_config.json
     sha256: 2e7f2f33800fdc0d747ba71a41c2ec30cb6ef49559ce234ad43521a0af0415ec  (1.1 KiB)
   adapter_model.safetensors
@@ -222,18 +222,18 @@ ollama create unmuzzle-7b -f Modelfile.unmuzzle7b && ollama run unmuzzle-7b</cod
   <div class="chips">
     <span class="chip license">apache-2.0</span>
     <span class="chip">262.6 MiB</span>
-    <span class="chip">base: Qwen/Qwen2.5-14B-Instruct</span>
-    <span class="chip">added 2026-07-19</span>
+    <span class="chip">基座: Qwen/Qwen2.5-14B-Instruct</span>
+    <span class="chip">收录于 2026-07-19</span>
     <span class="chip">honesty-sft</span><span class="chip">uncensored</span><span class="chip">chinese</span><span class="chip">lora</span>
   </div>
-  <p>LoRA adapter (r16) for Qwen2.5-14B-Instruct, honesty-SFT. Apply with PEFT.</p>
-  <p class="links"><a href="https://huggingface.co/zjj1993/unmuzzle-qwen14b-honesty-lora">model card</a> &middot; <a href="https://pub-95a589dcef724d6497b5ebd7ba2bade8.r2.dev/qwen2.5-14b-honesty-lora/adapter_model.safetensors">direct: r2</a> &middot; <a href="https://huggingface.co/zjj1993/unmuzzle-qwen14b-honesty-lora/resolve/main/adapter_model.safetensors">direct: huggingface</a> &middot; <a href="https://huggingface.co/zjj1993/unmuzzle-qwen14b-honesty-lora">hf repo</a> &middot; <a href="https://huggingface.co/zjj1993/unmuzzle-qwen14b-honesty-lora/resolve/main/qwen2.5-14b-honesty-lora.torrent">.torrent</a> &middot; <a href="magnet:?xt=urn:btih:0d1f1da36322d931b1acbd29dc4c56b22ea933a6&amp;dn=qwen2.5-14b-honesty-lora&amp;xl=275342824&amp;tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce&amp;tr=udp%3A%2F%2Fopen.demonii.com%3A1337%2Fannounce&amp;ws=https%3A%2F%2Fpub-95a589dcef724d6497b5ebd7ba2bade8.r2.dev%2Fqwen2.5-14b-honesty-lora&amp;ws=https%3A%2F%2Fhuggingface.co%2Fzjj1993%2Funmuzzle-qwen14b-honesty-lora%2Fresolve%2Fmain">magnet</a></p>
+  <p>Qwen2.5-14B-Instruct 的 LoRA 适配器（r16），诚实 SFT。用 PEFT 加载。</p>
+  <p class="links"><a href="https://huggingface.co/zjj1993/unmuzzle-qwen14b-honesty-lora">模型卡</a> &middot; <a href="https://pub-95a589dcef724d6497b5ebd7ba2bade8.r2.dev/qwen2.5-14b-honesty-lora/adapter_model.safetensors">直连: r2</a> &middot; <a href="https://huggingface.co/zjj1993/unmuzzle-qwen14b-honesty-lora/resolve/main/adapter_model.safetensors">直连: huggingface</a> &middot; <a href="https://huggingface.co/zjj1993/unmuzzle-qwen14b-honesty-lora">HF 仓库</a> &middot; <a href="https://huggingface.co/zjj1993/unmuzzle-qwen14b-honesty-lora/resolve/main/qwen2.5-14b-honesty-lora.torrent">.torrent</a> &middot; <a href="magnet:?xt=urn:btih:0d1f1da36322d931b1acbd29dc4c56b22ea933a6&amp;dn=qwen2.5-14b-honesty-lora&amp;xl=275342824&amp;tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce&amp;tr=udp%3A%2F%2Fopen.demonii.com%3A1337%2Fannounce&amp;ws=https%3A%2F%2Fpub-95a589dcef724d6497b5ebd7ba2bade8.r2.dev%2Fqwen2.5-14b-honesty-lora&amp;ws=https%3A%2F%2Fhuggingface.co%2Fzjj1993%2Funmuzzle-qwen14b-honesty-lora%2Fresolve%2Fmain">magnet</a></p>
   <div class="getline">
     <pre><code id="cmd-2">unmuzzle get unmuzzle/qwen2.5-14b-honesty-lora --require-signature --dest ./models</code></pre>
-    <button onclick="copy(this, 'cmd-2')">copy</button>
+    <button onclick="copy(this, 'cmd-2')">复制</button>
   </div>
   <details>
-    <summary>files, hashes, mirrors</summary>
+    <summary>文件、哈希、镜像</summary>
     <pre><code>  adapter_config.json
     sha256: daf401e2a557c6e8110a0514c0db31eb698dfde9d11545935d2f1fbe5d246d43  (1.1 KiB)
   adapter_model.safetensors
@@ -251,20 +251,20 @@ ollama create unmuzzle-7b -f Modelfile.unmuzzle7b && ollama run unmuzzle-7b</cod
 <div class="card">
   <h3>unmuzzle/qwen2.5-7b-honesty</h3>
   <div class="chips">
-    <span class="chip badge">runs on an 8 GB laptop</span><span class="chip license">apache-2.0</span>
+    <span class="chip badge">8 GB 笔记本可跑</span><span class="chip license">apache-2.0</span>
     <span class="chip">4.4 GiB</span>
-    <span class="chip">base: Qwen/Qwen2.5-7B-Instruct</span>
-    <span class="chip">added 2026-07-19</span>
+    <span class="chip">基座: Qwen/Qwen2.5-7B-Instruct</span>
+    <span class="chip">收录于 2026-07-19</span>
     <span class="chip">honesty-sft</span><span class="chip">uncensored</span><span class="chip">chinese</span><span class="chip">gguf</span><span class="chip">ollama</span>
   </div>
-  <p>Merged GGUF (Q4_K_M) of Qwen2.5-7B-Instruct + honesty-SFT. Runs in Ollama/llama.cpp on 8 GB RAM; Modelfile included.</p>
-  <p class="links"><a href="https://huggingface.co/zjj1993/unmuzzle-qwen7b-honesty">model card</a> &middot; <a href="https://pub-95a589dcef724d6497b5ebd7ba2bade8.r2.dev/qwen2.5-7b-honesty/unmuzzle-qwen7b-Q4_K_M.gguf">direct: r2</a> &middot; <a href="https://huggingface.co/zjj1993/unmuzzle-qwen7b-honesty/resolve/main/unmuzzle-qwen7b-Q4_K_M.gguf">direct: huggingface</a> &middot; <a href="https://huggingface.co/zjj1993/unmuzzle-qwen7b-honesty">hf repo</a> &middot; <a href="https://huggingface.co/zjj1993/unmuzzle-qwen7b-honesty/resolve/main/qwen2.5-7b-honesty.torrent">.torrent</a> &middot; <a href="magnet:?xt=urn:btih:49c626f278267811ffae0dc2ce77d2774f34a91f&amp;dn=qwen2.5-7b-honesty&amp;xl=4683073900&amp;tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce&amp;tr=udp%3A%2F%2Fopen.demonii.com%3A1337%2Fannounce&amp;ws=https%3A%2F%2Fpub-95a589dcef724d6497b5ebd7ba2bade8.r2.dev%2Fqwen2.5-7b-honesty&amp;ws=https%3A%2F%2Fhuggingface.co%2Fzjj1993%2Funmuzzle-qwen7b-honesty%2Fresolve%2Fmain">magnet</a></p>
+  <p>Qwen2.5-7B-Instruct 加诚实 SFT 的合并 GGUF（Q4_K_M）。8 GB 内存即可用 Ollama/llama.cpp 运行；附 Modelfile。</p>
+  <p class="links"><a href="https://huggingface.co/zjj1993/unmuzzle-qwen7b-honesty">模型卡</a> &middot; <a href="https://pub-95a589dcef724d6497b5ebd7ba2bade8.r2.dev/qwen2.5-7b-honesty/unmuzzle-qwen7b-Q4_K_M.gguf">直连: r2</a> &middot; <a href="https://huggingface.co/zjj1993/unmuzzle-qwen7b-honesty/resolve/main/unmuzzle-qwen7b-Q4_K_M.gguf">直连: huggingface</a> &middot; <a href="https://huggingface.co/zjj1993/unmuzzle-qwen7b-honesty">HF 仓库</a> &middot; <a href="https://huggingface.co/zjj1993/unmuzzle-qwen7b-honesty/resolve/main/qwen2.5-7b-honesty.torrent">.torrent</a> &middot; <a href="magnet:?xt=urn:btih:49c626f278267811ffae0dc2ce77d2774f34a91f&amp;dn=qwen2.5-7b-honesty&amp;xl=4683073900&amp;tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce&amp;tr=udp%3A%2F%2Fopen.demonii.com%3A1337%2Fannounce&amp;ws=https%3A%2F%2Fpub-95a589dcef724d6497b5ebd7ba2bade8.r2.dev%2Fqwen2.5-7b-honesty&amp;ws=https%3A%2F%2Fhuggingface.co%2Fzjj1993%2Funmuzzle-qwen7b-honesty%2Fresolve%2Fmain">magnet</a></p>
   <div class="getline">
     <pre><code id="cmd-3">unmuzzle get unmuzzle/qwen2.5-7b-honesty --require-signature --dest ./models</code></pre>
-    <button onclick="copy(this, 'cmd-3')">copy</button>
+    <button onclick="copy(this, 'cmd-3')">复制</button>
   </div>
   <details>
-    <summary>files, hashes, mirrors</summary>
+    <summary>文件、哈希、镜像</summary>
     <pre><code>  Modelfile.unmuzzle7b
     sha256: ad85dc54f5447610294e0c6ae7a7e19a60e24357437fb278e26e436c51313c6c  (492 B)
   unmuzzle-qwen7b-Q4_K_M.gguf
@@ -283,18 +283,18 @@ ollama create unmuzzle-7b -f Modelfile.unmuzzle7b && ollama run unmuzzle-7b</cod
   <div class="chips">
     <span class="chip license">apache-2.0</span>
     <span class="chip">8.4 GiB</span>
-    <span class="chip">base: Qwen/Qwen2.5-14B-Instruct</span>
-    <span class="chip">added 2026-07-19</span>
+    <span class="chip">基座: Qwen/Qwen2.5-14B-Instruct</span>
+    <span class="chip">收录于 2026-07-19</span>
     <span class="chip">uncensored</span><span class="chip">abliterated</span><span class="chip">chinese</span><span class="chip">gguf</span><span class="chip">ollama</span>
   </div>
-  <p>Earlier weight-editing artifact, kept for comparison; the honesty-SFT models supersede it. GGUF Q4_K_M of Qwen2.5-14B-Instruct with the refusal direction removed.</p>
-  <p class="links"><a href="https://huggingface.co/zjj1993/unmuzzle-qwen14b-abliterated">model card</a> &middot; <a href="https://pub-95a589dcef724d6497b5ebd7ba2bade8.r2.dev/qwen14b-unmuzzled-Q4_K_M.gguf">direct: r2</a> &middot; <a href="https://huggingface.co/zjj1993/unmuzzle-qwen14b-abliterated/resolve/main/qwen14b-unmuzzled-Q4_K_M.gguf">direct: huggingface</a> &middot; <a href="https://huggingface.co/zjj1993/unmuzzle-qwen14b-abliterated">hf repo</a> &middot; <a href="https://huggingface.co/zjj1993/unmuzzle-qwen14b-abliterated/resolve/main/qwen14b-unmuzzled-Q4_K_M.gguf.torrent">.torrent</a> &middot; <a href="magnet:?xt=urn%3Abtih%3A08138b23ad166dfb6ae84d5ab4bb9d7c32ec5984&amp;dn=qwen14b-unmuzzled-Q4_K_M.gguf&amp;xl=8988110144&amp;tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce&amp;ws=https%3A%2F%2Fpub-95a589dcef724d6497b5ebd7ba2bade8.r2.dev%2Fqwen14b-unmuzzled-Q4_K_M.gguf">magnet</a></p>
+  <p>早期的权重编辑产物，保留用于对比，已被诚实 SFT 模型取代。Qwen2.5-14B-Instruct 移除拒绝方向后的 GGUF（Q4_K_M）。</p>
+  <p class="links"><a href="https://huggingface.co/zjj1993/unmuzzle-qwen14b-abliterated">模型卡</a> &middot; <a href="https://pub-95a589dcef724d6497b5ebd7ba2bade8.r2.dev/qwen14b-unmuzzled-Q4_K_M.gguf">直连: r2</a> &middot; <a href="https://huggingface.co/zjj1993/unmuzzle-qwen14b-abliterated/resolve/main/qwen14b-unmuzzled-Q4_K_M.gguf">直连: huggingface</a> &middot; <a href="https://huggingface.co/zjj1993/unmuzzle-qwen14b-abliterated">HF 仓库</a> &middot; <a href="https://huggingface.co/zjj1993/unmuzzle-qwen14b-abliterated/resolve/main/qwen14b-unmuzzled-Q4_K_M.gguf.torrent">.torrent</a> &middot; <a href="magnet:?xt=urn%3Abtih%3A08138b23ad166dfb6ae84d5ab4bb9d7c32ec5984&amp;dn=qwen14b-unmuzzled-Q4_K_M.gguf&amp;xl=8988110144&amp;tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce&amp;ws=https%3A%2F%2Fpub-95a589dcef724d6497b5ebd7ba2bade8.r2.dev%2Fqwen14b-unmuzzled-Q4_K_M.gguf">magnet</a></p>
   <div class="getline">
     <pre><code id="cmd-4">unmuzzle get unmuzzle/qwen2.5-14b-abliterated --require-signature --dest ./models</code></pre>
-    <button onclick="copy(this, 'cmd-4')">copy</button>
+    <button onclick="copy(this, 'cmd-4')">复制</button>
   </div>
   <details>
-    <summary>files, hashes, mirrors</summary>
+    <summary>文件、哈希、镜像</summary>
     <pre><code>  qwen14b-unmuzzled-Q4_K_M.gguf
     sha256: 9908507040888d8530d391fb98e7956083ea23e3db8f10fc1493d31a71605ae4  (8.4 GiB)
 
@@ -307,57 +307,57 @@ ollama create unmuzzle-7b -f Modelfile.unmuzzle7b && ollama run unmuzzle-7b</cod
 </div>
 
 
-<h2 id="why">Why this site exists</h2>
-<p>To keep these models available and verifiable. It is not a Hugging Face alternative; Hugging Face is one of our mirrors. But these models answer questions a state censors, so no single host gets to be the chokepoint.</p>
+<h2 id="why">为什么有这个站</h2>
+<p>为了让这些模型始终可获取、可验证。这不是 Hugging Face 的替代品，Hugging Face 是我们的镜像之一。但这些模型回答的是被国家审查的问题，不能让任何单一托管方成为咽喉。</p>
 <div class="grid">
   <div class="feature">
-    <h3>No single point of takedown</h3>
-    <p>Independent mirrors plus web-seeded torrents. Works where huggingface.co is blocked.</p>
+    <h3>无单点下架</h3>
+    <p>多个独立镜像，加带 web seed 的种子。huggingface.co 被封锁也能用。</p>
   </div>
   <div class="feature">
-    <h3>Signed, not trusted</h3>
-    <p>sha256-pinned files, minisign-signed manifests. The signature is the trust root, not the host.</p>
+    <h3>信签名，不信托管方</h3>
+    <p>文件以 sha256 锁定，清单以 minisign 签名。信任根是签名，不是托管方。</p>
   </div>
   <div class="feature">
-    <h3>Agent-ready</h3>
-    <p>No gates, no auth. JSON index, <code>--json</code> everywhere, an MCP server.</p>
+    <h3>对 AI 代理友好</h3>
+    <p>无门槛、无登录。JSON 索引，所有命令支持 <code>--json</code>，自带 MCP 服务器。</p>
   </div>
   <div class="feature">
-    <h3>Drop-in</h3>
-    <p>Installs into the Hugging Face cache; GGUFs run straight in Ollama.</p>
+    <h3>即装即用</h3>
+    <p>直接装进 Hugging Face 缓存；GGUF 可直接在 Ollama 运行。</p>
   </div>
 </div>
 
-<h2 id="faq">FAQ</h2>
+<h2 id="faq">常见问题</h2>
 
 <details>
-  <summary>Why not just download these from Hugging Face?</summary>
-  <p>You can; every card links there. This page exists for when that fails: huggingface.co is blocked in mainland China, and any host can gate or remove a model. The CLI fails over across mirrors and verifies every byte.</p>
+  <summary>为什么不直接从 Hugging Face 下载？</summary>
+  <p>可以，每张卡片都有链接。这个页面是为它失效的时候准备的：huggingface.co 在中国大陆被封锁，任何托管方也都可能设限或下架模型。CLI 会在镜像间自动切换，并校验每一个字节。</p>
 </details>
 <details>
-  <summary>Why should I trust the files?</summary>
-  <p>Every file is sha256-pinned in a minisign-signed manifest and re-hashed before install. Publisher keys pin on first use; the official key also ships inside the pip package. Use <code>--require-signature</code>.</p>
+  <summary>凭什么信任这些文件？</summary>
+  <p>每个文件的 sha256 都锁定在 minisign 签名的清单里，安装前重新校验。发布者密钥首次使用即固定；官方密钥同时内置在 pip 包中。请使用 <code>--require-signature</code>。</p>
 </details>
 <details>
-  <summary>What if a mirror goes down?</summary>
-  <p>Nothing visible: the CLI fails over, torrents carry web seeds so they work at zero peers, and the index and this page are mirrored on GitHub and Cloudflare R2.</p>
+  <summary>镜像挂了怎么办？</summary>
+  <p>无感知：CLI 自动切换镜像，种子带 web seed（零做种也能下载），索引和本页在 GitHub 与 Cloudflare R2 双镜像。</p>
 </details>
 <details>
-  <summary>Can I help?</summary>
-  <p><code>unmuzzle seed</code> seeds everything you downloaded until you stop it. New mirrors are one PR: upload the files anywhere static, append the URL to the entry's <code>mirrors.http</code>.</p>
+  <summary>我能帮上什么忙？</summary>
+  <p><code>unmuzzle seed</code> 会持续做种你下载过的模型，直到你停止它。新增镜像只需一个 PR：把文件传到任意静态托管，把地址加进条目的 <code>mirrors.http</code>。</p>
 </details>
 <details>
-  <summary>Is the distribution machinery reusable?</summary>
-  <p>Yes: the format and protocol are open (<a href="https://github.com/zengjiajun0623/unmuzzle-hub/blob/main/SPEC.md">SPEC.md</a>, <a href="https://github.com/zengjiajun0623/unmuzzle-hub/blob/main/AGENTS.md">AGENTS.md</a>), and a fork can run its own index with its own key. A byproduct, not the product.</p>
+  <summary>这套分发机制可以复用吗？</summary>
+  <p>可以：格式与协议完全公开（<a href="https://github.com/zengjiajun0623/unmuzzle-hub/blob/main/SPEC.md">SPEC.md</a>、<a href="https://github.com/zengjiajun0623/unmuzzle-hub/blob/main/AGENTS.md">AGENTS.md</a>），fork 后可用自己的密钥运行独立索引。但那是副产品，不是产品。</p>
 </details>
 
-<h2 id="trust">Trust root</h2>
+<h2 id="trust">信任根</h2>
 <pre><code>RWQGj//qSw5zlf6EB/sSfp8thdSO5ZBr+5pAC9bGhjjReQZ+PLs4gF4K</code></pre>
-<p class="dim">All releases are minisign-signed with this key. It is pinned inside the pip package itself, so no index host alone can substitute it.</p>
+<p class="dim">所有发布均以此 minisign 密钥签名。密钥同时固化在 pip 包内，任何索引托管方都无法单独替换。</p>
 
 <footer>
-  <p>unmuzzle is open source (MIT): <a href="https://github.com/zengjiajun0623/unmuzzle-hub">github.com/zengjiajun0623/unmuzzle-hub</a> &middot; index: <a href="https://github.com/zengjiajun0623/unmuzzle-hub/blob/main/index/index.json">index.json</a> &middot; generated from the signed index, 2026-07-19</p>
-  <p>Mirrors of this page and the index (if GitHub is unreachable): <a href="https://pub-95a589dcef724d6497b5ebd7ba2bade8.r2.dev/index.html">site</a> &middot; <a href="https://pub-95a589dcef724d6497b5ebd7ba2bade8.r2.dev/index.json">index.json</a> &middot; point the CLI at any index copy with <code>--index</code> or <code>UNMUZZLE_INDEX</code></p>
+  <p>unmuzzle 开源（MIT）：<a href="https://github.com/zengjiajun0623/unmuzzle-hub">github.com/zengjiajun0623/unmuzzle-hub</a> &middot; 索引：<a href="https://github.com/zengjiajun0623/unmuzzle-hub/blob/main/index/index.json">index.json</a> &middot; 由签名索引生成，2026-07-19</p>
+  <p>本页与索引的镜像（GitHub 不可达时）：<a href="https://pub-95a589dcef724d6497b5ebd7ba2bade8.r2.dev/zh.html">站点</a> &middot; <a href="https://pub-95a589dcef724d6497b5ebd7ba2bade8.r2.dev/index.json">index.json</a> &middot; 用 <code>--index</code> 或 <code>UNMUZZLE_INDEX</code> 指向任意索引副本</p>
 </footer>
 
 </div>
@@ -365,7 +365,7 @@ ollama create unmuzzle-7b -f Modelfile.unmuzzle7b && ollama run unmuzzle-7b</cod
 function copy(btn, id) {
   const t = document.getElementById(id).innerText;
   navigator.clipboard.writeText(t).then(() => {
-    btn.textContent = 'copied'; setTimeout(() => btn.textContent = 'copy', 1200);
+    btn.textContent = '已复制'; setTimeout(() => btn.textContent = '复制', 1200);
   });
 }
 </script>
