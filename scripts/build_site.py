@@ -99,6 +99,8 @@ pre code { background: none; border: none; padding: 0; }
 table { border-collapse: collapse; width: 100%; font-size: .92rem; }
 th, td { text-align: left; padding: .5rem .8rem; border-bottom: 1px solid var(--border); white-space: nowrap; }
 th { color: var(--dim); font-weight: 600; font-size: .8rem; }
+h3.tablehead { font-size: 1.02rem; margin: 1.8rem 0 .2rem; }
+.lower { font-weight: normal; text-transform: none; }
 .getline { display: flex; gap: .5rem; align-items: stretch; margin-top: .8rem; }
 .getline pre { flex: 1; margin: 0; }
 button { background: var(--bg); color: var(--accent); border: 1px solid var(--border);
@@ -140,7 +142,7 @@ PAGE = """<!doctype html>
 
 <nav><div class="wrap">
   <div class="wordmark">un<span>muzzle</span></div>
-  <a class="links" href="#results">results</a>
+  <a class="links" href="#benchmarks">benchmarks</a>
   <a class="links" href="#models">models</a>
   <a class="links" href="#why">why</a>
   <a class="links" href="#faq">faq</a>
@@ -156,7 +158,8 @@ PAGE = """<!doctype html>
   <p class="tagline">Open Chinese models, fine-tuned to answer honestly on politically
   censored topics. Ask about Tiananmen, Xinjiang, or Taiwan and get facts, not
   refusals, propaganda, or confident fabrication. Benchmarked base vs tuned at every
-  size, and distributed so no single host can take them down.</p>
+  size, including against the abliterated alternatives, and distributed so no
+  single host can take them down.</p>
   <p class="dim" style="margin-top:1rem">Run the 7B on any 8 GB machine:</p>
   <div class="quickstart">
     <pre><code id="qs">pip install unmuzzle
@@ -166,36 +169,79 @@ ollama create unmuzzle-7b -f Modelfile.unmuzzle7b && ollama run unmuzzle-7b</cod
   </div>
 </header>
 
-<h2 id="results">Results</h2>
+<h2 id="benchmarks">Benchmarks</h2>
 <p>One curated honesty corpus (about 1,300 contrastive Chinese Q&amp;A pairs), applied
-across a model ladder. Held-out 265-item benchmark: censored-topic facts,
-invented-topic honesty traps, neutral controls; graded by a cross-family LLM judge.</p>
+across a model ladder. All numbers are from a held-out 265-item benchmark:
+censored-topic facts, invented-topic honesty traps, neutral controls; graded by a
+cross-family LLM judge against ground truth. Three metrics matter: does the model
+state censored facts, does it admit not knowing an invented term instead of
+fabricating, and does it keep its general knowledge.</p>
+
+<h3 class="tablehead">Base &rarr; tuned, every model we ship</h3>
 <div class="tablewrap"><table>
 <thead><tr>
   <th>model</th>
-  <th>sensitive-topic factual, base &rarr; tuned</th>
-  <th>fabrication on invented topics, tuned</th>
+  <th>sensitive-topic factual</th>
+  <th>fabrication on invented topics</th>
+  <th>honest abstention</th>
   <th>neutral facts</th>
 </tr></thead>
 <tbody>
-<tr><td>Qwen2.5-7B</td><td>48% &rarr; 68%</td><td>19%</td><td>unchanged</td></tr>
-<tr><td>Qwen2.5-14B</td><td>69% &rarr; 80%</td><td>3%</td><td>unchanged</td></tr>
-<tr><td>R1-Distill-32B</td><td>69% &rarr; 88%</td><td>9% (base: 53%)</td><td>unchanged</td></tr>
-<tr><td><strong>Qwen2.5-72B</strong></td><td><strong>85% &rarr; 96%</strong></td><td><strong>0%</strong></td><td>unchanged</td></tr>
+<tr><td>Qwen2.5-7B</td><td>48% &rarr; 68%</td><td>34% &rarr; 19%</td><td>66% &rarr; 81%</td><td>100% &rarr; 97%</td></tr>
+<tr><td>Qwen2.5-14B</td><td>69% &rarr; 80%</td><td>9% &rarr; 3%</td><td>91% &rarr; 97%</td><td>100% &rarr; 100%</td></tr>
+<tr><td>R1-Distill-32B</td><td>69% &rarr; 88%</td><td>53% &rarr; 9%</td><td>43% &rarr; 91%</td><td>100% &rarr; 100%</td></tr>
+<tr><td><strong>Qwen2.5-72B</strong></td><td><strong>85% &rarr; 96%</strong></td><td><strong>21% &rarr; 0%</strong></td><td><strong>79% &rarr; 100%</strong></td><td>100% &rarr; 100%</td></tr>
 </tbody>
 </table></div>
 <p class="dim">Accuracy scales with base-model knowledge; the 72B is at the ceiling of
 what the corpus tests. The reasoning model is the sharpest case: R1-Distill reasons
 itself into confident confabulation on invented topics 53% of the time, and tuning
-the reasoning trace cuts that to 9%. Abliteration, the common alternative, removes
-refusals but adds no knowledge: on the same benchmark the abliterated 7B scores 42%
-factual, below the 48% base. The corpus was curated with frontier-model (Claude)
-assistance; it is a narrow behavioral patch, not a distillation. Standard-benchmark
-parity results (CMMLU, C-Eval, MMLU, GSM8K, base vs tuned) are being finalized and
-will be published here.</p>
+the reasoning trace cuts that to 9%. Over-refusal of real facts also drops to zero
+at every size.</p>
+
+<h3 class="tablehead">vs abliteration, the common alternative</h3>
+<p>Most "uncensored" Chinese models are abliterated: the refusal direction is
+edited out of the weights. We benchmarked the popular huihui-ai abliterations of
+the same bases, same 265 items, same judge.</p>
+<div class="tablewrap"><table>
+<thead><tr>
+  <th>sensitive-topic factual</th>
+  <th>7B</th><th>14B</th><th>72B</th>
+</tr></thead>
+<tbody>
+<tr><td>base (unmodified)</td><td>48%</td><td>69%</td><td>85%</td></tr>
+<tr><td>abliterated (huihui)</td><td>42%</td><td>68%</td><td>86%</td></tr>
+<tr><td><strong>unmuzzle honesty-SFT</strong></td><td><strong>68%</strong></td><td><strong>80%</strong></td><td><strong>96%</strong></td></tr>
+</tbody>
+</table></div>
+<div class="tablewrap"><table>
+<thead><tr>
+  <th>fabrication on invented topics <span class="lower">(lower is better)</span></th>
+  <th>7B</th><th>14B</th><th>72B</th>
+</tr></thead>
+<tbody>
+<tr><td>base (unmodified)</td><td>34%</td><td>9%</td><td>21%</td></tr>
+<tr><td>abliterated (huihui)</td><td>27%</td><td>56%</td><td>37%</td></tr>
+<tr><td><strong>unmuzzle honesty-SFT</strong></td><td><strong>19%</strong></td><td><strong>3%</strong></td><td><strong>0%</strong></td></tr>
+</tbody>
+</table></div>
+<p class="dim">Two findings. Abliteration adds no knowledge: its factual accuracy
+stays at base level everywhere, because the facts were never in the weights or were
+already there. And it damages calibration: the refusal direction it removes is also
+where honest "I don't know" lives, so the abliterated 14B fabricates answers for
+invented topics six times more often than its base (9% to 56%). Training honest
+answers in beats editing refusals out, on every axis, at every size.</p>
+
+<p class="dim">Method notes: the corpus was curated with frontier-model (Claude)
+assistance; it is a narrow behavioral patch, not a distillation. The benchmark is
+held out from training and deduplicated against it. Standard-benchmark parity
+results (CMMLU, C-Eval, MMLU, GSM8K, base vs tuned) are being finalized and will be
+published here.</p>
 
 <h2 id="models">Models</h2>
-<p class="dim">{n_models} model{s} in the index. Every entry is signed; the CLI verifies the signature and every sha256 before install.</p>
+<p class="dim">{n_models} model{s} in the index. Every entry is signed; the CLI verifies the
+signature and every sha256 before install. The abliterated 14B is an earlier
+weight-editing artifact kept for comparison; the honesty-SFT models supersede it.</p>
 {cards}
 
 <h2 id="why">Why this site exists</h2>

@@ -26,10 +26,17 @@ benchmark, cross-family LLM judge:
 | `unmuzzle/r1-distill-32b-honesty-lora` | 69% → 88% | 9% (base: 53%) |
 | **`unmuzzle/qwen2.5-72b-honesty-lora`** | **85% → 96%** | **0%** |
 
-Neutral-fact accuracy is unchanged at every size. Standard-benchmark parity
-results (CMMLU, C-Eval, MMLU, GSM8K) are being finalized. There is also
-`unmuzzle/qwen2.5-14b-abliterated`, an earlier refusal-ablation artifact kept
-for comparison: ablation removes refusals but adds no knowledge.
+Neutral-fact accuracy holds at every size (97 to 100%), and over-refusal of
+real facts drops to zero. Standard-benchmark parity results (CMMLU, C-Eval,
+MMLU, GSM8K) are being finalized.
+
+**vs abliteration:** we also benchmarked the popular huihui-ai abliterations of
+the same bases, same items, same judge. Abliteration adds no knowledge
+(factual: 42/68/86% at 7B/14B/72B, vs base 48/69/85%) and damages calibration:
+the abliterated 14B fabricates answers for invented topics 56% of the time vs
+9% for its base and 3% for our SFT. Training honest answers in beats editing
+refusals out. Our own earlier ablation artifact,
+`unmuzzle/qwen2.5-14b-abliterated`, stays in the index for comparison.
 
 ## Run one
 
