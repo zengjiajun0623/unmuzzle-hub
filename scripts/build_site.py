@@ -12,6 +12,7 @@ from __future__ import annotations
 import datetime
 import html
 import json
+import urllib.parse
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -100,6 +101,7 @@ button { background: var(--bg); color: var(--accent); border: 1px solid var(--bo
          font-family: inherit; }
 button:hover { border-color: var(--accent); }
 details { margin-top: .8rem; font-size: .85rem; }
+.links { font-size: .85rem; margin-top: .5rem; }
 summary { cursor: pointer; color: var(--dim); }
 summary:hover { color: var(--fg); }
 footer { margin-top: 3.2rem; padding: 1.4rem 0 2.5rem; border-top: 1px solid var(--border);
@@ -247,6 +249,7 @@ CARD = """
     {tags}
   </div>
   <p>{description}</p>
+  <p class="links">{links}</p>
   <div class="getline">
     <pre><code id="cmd-{cid}">unmuzzle get {name} --require-signature --dest ./models</code></pre>
     <button onclick="copy(this, 'cmd-{cid}')">copy</button>
@@ -265,6 +268,29 @@ def human_size(n: int) -> str:
             return f"{n:.1f} {unit}" if unit != "B" else f"{n} B"
         n /= 1024
     return f"{n} B"
+
+
+def model_links(m: dict) -> str:
+    e = html.escape
+    mirrors = m.get("mirrors", {})
+    if not m.get("files"):
+        return ""
+    biggest = max(m["files"], key=lambda f: f["size"])
+    out = []
+    for base in mirrors.get("http", []):
+        host = urllib.parse.urlparse(base).netloc
+        label = "r2" if "r2.dev" in host else host.split(".")[0]
+        url = f"{base.rstrip('/')}/{urllib.parse.quote(biggest['path'])}"
+        out.append(f'<a href="{e(url)}">direct: {e(label)}</a>')
+        if "huggingface.co" in host and "/resolve/" in base:
+            out.append(f'<a href="{e(base.split("/resolve/")[0])}">hf repo</a>')
+    if mirrors.get("torrent"):
+        out.append(f'<a href="{e(mirrors["torrent"])}">.torrent</a>')
+    if mirrors.get("magnet"):
+        out.append(f'<a href="{e(mirrors["magnet"])}">magnet</a>')
+    if mirrors.get("ipfs"):
+        out.append(f'<code>{e(mirrors["ipfs"])}</code>')
+    return " &middot; ".join(out)
 
 
 def model_card(m: dict, cid: int) -> str:
@@ -293,6 +319,7 @@ def model_card(m: dict, cid: int) -> str:
         base_model=e(m.get("base_model", "?")),
         added=e(m.get("added", "?")),
         tags="".join(f'<span class="chip">{e(t)}</span>' for t in m.get("tags", [])),
+        links=model_links(m),
         details=e("\n".join(lines)),
     )
 
