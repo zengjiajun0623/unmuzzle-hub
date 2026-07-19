@@ -13,6 +13,10 @@ in a browser can complete.
 It is also censorship-resistant by construction:
 
 - **The index is plain JSON in a git repo.** Anyone can mirror or fork it.
+  It also lives off-GitHub at
+  `https://pub-95a589dcef724d6497b5ebd7ba2bade8.r2.dev/index.json`
+  (auto-synced on every change); use any copy with `--index` or
+  `UNMUZZLE_INDEX`.
 - **Weights move over BitTorrent (web-seeded) and HTTP mirrors.** Web seeds
   keep every torrent alive at zero peers; no central server to block or bill.
 - **Every file is sha256-pinned and the manifest is minisign-signed.** The
