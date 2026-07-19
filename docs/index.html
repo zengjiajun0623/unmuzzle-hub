@@ -133,7 +133,7 @@ footer { margin-top: 3.2rem; padding: 1.4rem 0 2.5rem; border-top: 1px solid var
 brew install aria2 minisign   # optional: torrents, signature verification</code></pre>
 
 <h2 id="registry">Registry</h2>
-<p class="dim">1 model in the index. Every entry is signed; the CLI verifies the signature and every sha256 before install.</p>
+<p class="dim">4 models in the index. Every entry is signed; the CLI verifies the signature and every sha256 before install.</p>
 
 <div class="card">
   <h3>unmuzzle/qwen2.5-14b-abliterated</h3>
@@ -159,6 +159,102 @@ brew install aria2 minisign   # optional: torrents, signature verification</code
   ipfs:    ipfs://bafybeifjnxwydzz3mfuebmhrxfrbdtpy6q6b7b7kas6saucohkf7e6f3wm
   torrent: https://huggingface.co/zjj1993/unmuzzle-qwen14b-abliterated/resolve/main/qwen14b-unmuzzled-Q4_K_M.gguf.torrent
   magnet:  magnet:?xt=urn%3Abtih%3A08138b23ad166dfb6ae84d5ab4bb9d7c32ec5984&amp;dn=qwen14b-unmuzzled-Q4_K_M.gguf&amp;xl=8988110144&amp;tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce&amp;ws=https%3A%2F%2Fpub-95a589dcef724d6497b5ebd7ba2bade8.r2.dev%2Fqwen14b-unmuzzled-Q4_K_M.gguf</code></pre>
+  </details>
+</div>
+
+
+<div class="card">
+  <h3>unmuzzle/qwen2.5-14b-honesty-lora</h3>
+  <div class="chips">
+    <span class="chip license">apache-2.0</span>
+    <span class="chip">262.6 MiB</span>
+    <span class="chip">base: Qwen/Qwen2.5-14B-Instruct</span>
+    <span class="chip">added 2026-07-19</span>
+    <span class="chip">honesty-sft</span><span class="chip">uncensored</span><span class="chip">chinese</span><span class="chip">lora</span>
+  </div>
+  <p>LoRA adapter (r16) for Qwen2.5-14B-Instruct trained with curated honesty-SFT (about 1,300 contrastive Chinese Q&amp;A): factual answers on CCP-censored topics, calibrated abstention on unknowable terms, zero fabrication on the held-out benchmark. Apply to the base model with PEFT.</p>
+  <div class="getline">
+    <pre><code id="cmd-1">unmuzzle get unmuzzle/qwen2.5-14b-honesty-lora --require-signature --dest ./models</code></pre>
+    <button onclick="copy(this, 'cmd-1')">copy</button>
+  </div>
+  <details>
+    <summary>files, hashes, mirrors</summary>
+    <pre><code>  adapter_config.json
+    sha256: daf401e2a557c6e8110a0514c0db31eb698dfde9d11545935d2f1fbe5d246d43  (1.1 KiB)
+  adapter_model.safetensors
+    sha256: ba458c3988793d87b54b656f6d2f16619f968de3baa1b7ea2ddfc6852b5d1089  (262.6 MiB)
+
+  http:    https://pub-95a589dcef724d6497b5ebd7ba2bade8.r2.dev/qwen2.5-14b-honesty-lora
+  http:    https://huggingface.co/zjj1993/unmuzzle-qwen14b-honesty-lora/resolve/main
+  ipfs:    ipfs://QmVrRTEurxP2GEiMx9LrmrLRqWWkRH5fkhaPmswrbQW8G4
+  torrent: https://huggingface.co/zjj1993/unmuzzle-qwen14b-honesty-lora/resolve/main/qwen2.5-14b-honesty-lora.torrent
+  magnet:  magnet:?xt=urn:btih:0d1f1da36322d931b1acbd29dc4c56b22ea933a6&amp;dn=qwen2.5-14b-honesty-lora&amp;xl=275342824&amp;tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce&amp;tr=udp%3A%2F%2Fopen.demonii.com%3A1337%2Fannounce&amp;ws=https%3A%2F%2Fpub-95a589dcef724d6497b5ebd7ba2bade8.r2.dev%2Fqwen2.5-14b-honesty-lora&amp;ws=https%3A%2F%2Fhuggingface.co%2Fzjj1993%2Funmuzzle-qwen14b-honesty-lora%2Fresolve%2Fmain</code></pre>
+  </details>
+</div>
+
+
+<div class="card">
+  <h3>unmuzzle/qwen2.5-7b-honesty</h3>
+  <div class="chips">
+    <span class="chip license">apache-2.0</span>
+    <span class="chip">4.4 GiB</span>
+    <span class="chip">base: Qwen/Qwen2.5-7B-Instruct</span>
+    <span class="chip">added 2026-07-19</span>
+    <span class="chip">honesty-sft</span><span class="chip">uncensored</span><span class="chip">chinese</span><span class="chip">gguf</span><span class="chip">ollama</span>
+  </div>
+  <p>Qwen2.5-7B-Instruct + curated honesty-SFT, merged and quantized (GGUF Q4_K_M, runs in Ollama/llama.cpp on 8GB RAM). Answers CCP-censored topics factually and abstains honestly when it does not know. Benchmark vs base: sensitive-real factual 50% to 80%, invented-topic fabrication 12.5% to 0%, false-balance steering removed. Ollama Modelfile included.</p>
+  <div class="getline">
+    <pre><code id="cmd-2">unmuzzle get unmuzzle/qwen2.5-7b-honesty --require-signature --dest ./models</code></pre>
+    <button onclick="copy(this, 'cmd-2')">copy</button>
+  </div>
+  <details>
+    <summary>files, hashes, mirrors</summary>
+    <pre><code>  Modelfile.unmuzzle7b
+    sha256: 3e101a5d1892a78ff612bdb45084491ef9c517f5565756c1fccc3053a2c00939  (512 B)
+  unmuzzle-qwen7b-Q4_K_M.gguf
+    sha256: 06e56dce5fdafc28448d3aff3b21c1e5b110e29346f72aead75ed46b70a8a271  (4.4 GiB)
+
+  http:    https://pub-95a589dcef724d6497b5ebd7ba2bade8.r2.dev/qwen2.5-7b-honesty
+  http:    https://huggingface.co/zjj1993/unmuzzle-qwen7b-honesty/resolve/main
+  ipfs:    ipfs://QmfPfwr68LUCWEekiM7onfekkrq1Vdirbpvbn5Z2E6Le2Z
+  torrent: https://huggingface.co/zjj1993/unmuzzle-qwen7b-honesty/resolve/main/qwen2.5-7b-honesty.torrent
+  magnet:  magnet:?xt=urn:btih:8925636c35de7ed0b774535d332e4a46a3e08be2&amp;dn=qwen2.5-7b-honesty&amp;xl=4683073920&amp;tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce&amp;tr=udp%3A%2F%2Fopen.demonii.com%3A1337%2Fannounce&amp;ws=https%3A%2F%2Fpub-95a589dcef724d6497b5ebd7ba2bade8.r2.dev%2Fqwen2.5-7b-honesty&amp;ws=https%3A%2F%2Fhuggingface.co%2Fzjj1993%2Funmuzzle-qwen7b-honesty%2Fresolve%2Fmain</code></pre>
+  </details>
+</div>
+
+
+<div class="card">
+  <h3>unmuzzle/r1-distill-32b-honesty-lora</h3>
+  <div class="chips">
+    <span class="chip license">mit</span>
+    <span class="chip">523.0 MiB</span>
+    <span class="chip">base: deepseek-ai/DeepSeek-R1-Distill-Qwen-32B</span>
+    <span class="chip">added 2026-07-19</span>
+    <span class="chip">honesty-sft</span><span class="chip">uncensored</span><span class="chip">chinese</span><span class="chip">lora</span>
+  </div>
+  <p>LoRA adapter (r16) for DeepSeek-R1-Distill-Qwen-32B trained with curated honesty-SFT: factual answers on CCP-censored topics with reasoning traces preserved, calibrated abstention on unknowable terms. Apply to the base model with PEFT. Tokenizer and chat template included.</p>
+  <div class="getline">
+    <pre><code id="cmd-3">unmuzzle get unmuzzle/r1-distill-32b-honesty-lora --require-signature --dest ./models</code></pre>
+    <button onclick="copy(this, 'cmd-3')">copy</button>
+  </div>
+  <details>
+    <summary>files, hashes, mirrors</summary>
+    <pre><code>  adapter_config.json
+    sha256: 2e7f2f33800fdc0d747ba71a41c2ec30cb6ef49559ce234ad43521a0af0415ec  (1.1 KiB)
+  adapter_model.safetensors
+    sha256: e80e911818aae40cfac6f185d49709ab4afb65e930cc26bbf308e5d0b2742f88  (512.1 MiB)
+  chat_template.jinja
+    sha256: 56a1447ad31926fdc21fb07e56e5642bd9c850c4f52d8c8af7bbe5f079a84f5f  (2.2 KiB)
+  tokenizer.json
+    sha256: f624f8136bc57382156e7595e8ea404a66fbce12e3181b933ec2459bda3a71be  (10.9 MiB)
+  tokenizer_config.json
+    sha256: 7ba6e036ddf4e7c34649c617fdda41b92a0885b45d5b314120a707e185f5b41d  (420 B)
+
+  http:    https://pub-95a589dcef724d6497b5ebd7ba2bade8.r2.dev/r1-distill-32b-honesty-lora
+  http:    https://huggingface.co/zjj1993/unmuzzle-r1-32b-honesty-lora/resolve/main
+  ipfs:    ipfs://QmNVaeN18wyZAmrqZp82jFH3k3sk8XoET5qfbv33vTCJP9
+  torrent: https://huggingface.co/zjj1993/unmuzzle-r1-32b-honesty-lora/resolve/main/r1-distill-32b-honesty-lora.torrent
+  magnet:  magnet:?xt=urn:btih:b844673a6ccc0830498a4fff37aed08cbaaadbec&amp;dn=r1-distill-32b-honesty-lora&amp;xl=548417651&amp;tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce&amp;tr=udp%3A%2F%2Fopen.demonii.com%3A1337%2Fannounce&amp;ws=https%3A%2F%2Fpub-95a589dcef724d6497b5ebd7ba2bade8.r2.dev%2Fr1-distill-32b-honesty-lora&amp;ws=https%3A%2F%2Fhuggingface.co%2Fzjj1993%2Funmuzzle-r1-32b-honesty-lora%2Fresolve%2Fmain</code></pre>
   </details>
 </div>
 
