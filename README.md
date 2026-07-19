@@ -3,9 +3,11 @@
 Censorship-resistant distribution for open-weight models.
 
 Hugging Face is a single company, in one jurisdiction, with a terms of service.
-Models get gated, geoblocked, and taken down. For users in mainland China,
-huggingface.co is not even reachable. unmuzzle is a minimal distribution layer
-that no single party can switch off:
+Models get gated behind license click-throughs and taken down over copyright or
+policy complaints (ERNIE ViLG, GEITje). And in mainland China, huggingface.co
+itself is blocked by the Great Firewall, which is why mirrors like hf-mirror.com
+exist at all. unmuzzle is a minimal distribution layer that no single party can
+switch off:
 
 - **The index is plain JSON in a git repo.** Anyone can mirror or fork it.
 - **Weights move over BitTorrent and HTTP mirrors.** No central server to block or bill.
