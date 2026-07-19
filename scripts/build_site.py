@@ -206,6 +206,10 @@ brew install aria2 minisign   # optional: torrents, signature verification</code
   <p>Bare torrents have no discovery, no integrity story, and they die at zero peers. Here the signed index handles discovery, sha256 handles integrity, and web seeds make peers optional. Torrent is one transport among several, not the trust anchor.</p>
 </details>
 <details>
+  <summary>Can I help seed the network?</summary>
+  <p>Yes, and it takes one command: <code>unmuzzle seed</code> seeds everything you already downloaded, from your HF cache or any directory, until you stop it. Downloading via torrent (<code>--method torrent</code>) also makes you a peer while it runs. Always-on machines are the backbone; casual seeders are the margin.</p>
+</details>
+<details>
   <summary>Can I publish a model?</summary>
   <p>If its license permits redistribution, yes. <a href="{repo}/blob/main/AGENTS.md">AGENTS.md</a> is the complete protocol (sign, mirror, torrent, verify). One PR against the index adds your model; the site and the verification loop pick it up automatically.</p>
 </details>

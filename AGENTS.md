@@ -161,8 +161,15 @@ Tools: `list_models`, `model_info`, `get_model`, `publish_model`,
 
 ## Help the network
 
-More seeders and mirrors make every model harder to kill. To seed the swarm
-from any always-on machine:
+More seeders and mirrors make every model harder to kill. After downloading,
+seed what you fetched (one command, runs until you stop it):
+
+```bash
+unmuzzle seed                 # seed everything in your HF cache
+unmuzzle seed --dir ./models  # or from a plain directory
+```
+
+Or seed continuously from any always-on machine:
 
 ```bash
 aria2c --seed-ratio=0 --enable-dht=true -d <dir> <torrent-url>   # seeds forever

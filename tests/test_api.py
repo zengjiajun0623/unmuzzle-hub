@@ -99,3 +99,15 @@ def test_sign_and_verify_roundtrip(published, tmp_path):
     status = api.check_signature(validate_entry(result["entry"]), require=True)
     assert status["signed"] and status["verified"]
     assert status["trust"]["continuity"] in ("pinned_first_use", "ok")
+
+
+def test_seed_requires_aria2(tmp_path, monkeypatch):
+    monkeypatch.setattr(api.shutil, "which", lambda x: None)
+    with pytest.raises(api.UnmuzzleError, match="aria2c"):
+        api.seed(dir=str(tmp_path))
+
+
+def test_seed_no_models(tmp_path, monkeypatch):
+    monkeypatch.setattr(api.shutil, "which", lambda x: "/usr/bin/aria2c")
+    with pytest.raises(api.UnmuzzleError, match="no complete"):
+        api.seed(dir=str(tmp_path))

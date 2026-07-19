@@ -9,6 +9,8 @@ from __future__ import annotations
 
 import shutil
 import subprocess
+import sys
+import tempfile
 from pathlib import Path
 from typing import Callable, List, Optional
 
@@ -16,6 +18,7 @@ from . import hfcache, sign as signmod, trust
 from .download import DownloadError, download_file, download_torrent, sha256_file
 from .index import ModelEntry, find_model, load_index, resolve_index_source
 from .publish import build_entry, write_entry
+from .torrent import torrent_layout
 
 
 class UnmuzzleError(Exception):
@@ -186,6 +189,79 @@ def publish(
         "index": str(Path(index_dir) / "index.json"),
         "signed": bool(entry.get("signature")),
     }
+
+
+def seed(
+    model: Optional[str] = None,
+    dir: Optional[str] = None,
+    index: Optional[str] = None,
+) -> dict:
+    """Seed installed models' torrents so other users can fetch from you.
+
+    Runs aria2c in the foreground (one process per model) until interrupted.
+    With --dir, seeds that directory (the parent of each torrent's content);
+    otherwise seeds from the HF cache (via a symlink with the torrent's root
+    name, no data copied).
+    """
+    if not shutil.which("aria2c"):
+        raise UnmuzzleError("seeding needs aria2c (brew install aria2 / apt install aria2)")
+
+    targets = []  # (name, uri, aria2_dir, tempdir)
+    for e in load_index(index):
+        if model and e.name != model:
+            continue
+        if not e.torrent:  # layout unknown from a bare magnet; need the .torrent
+            continue
+        root_name, multi = torrent_layout(e.torrent)
+        tempdir = None
+        if dir:
+            parent = Path(dir)
+        else:
+            snap = hfcache.model_cache_dir(e.name) / "snapshots" / e.revision()
+            if not snap.is_dir():
+                continue
+            if multi:
+                tempdir = Path(tempfile.mkdtemp(prefix="um-seed-"))
+                (tempdir / root_name).symlink_to(snap)
+                parent = tempdir
+            else:
+                parent = snap.parent
+        content = parent / root_name
+        if multi:
+            have = content.is_dir() and all((content / f["path"]).exists() for f in e.files)
+        else:
+            have = content.is_file()
+        if have:
+            targets.append((e.name, e.torrent, parent, tempdir))
+        elif tempdir:
+            shutil.rmtree(tempdir, ignore_errors=True)
+
+    if not targets:
+        where = dir or "the HF cache"
+        raise UnmuzzleError(f"no complete, torrent-enabled models found in {where}")
+
+    procs = []
+    for name, uri, parent, _ in targets:
+        procs.append(subprocess.Popen(
+            ["aria2c", "--seed-ratio=0", "--allow-overwrite=true",
+             "--check-integrity=true", "--enable-dht=true", "--bt-enable-lpd=true",
+             "-d", str(parent), uri],
+        ))
+    print(f"seeding {len(targets)} model(s): " + ", ".join(n for n, _, _, _ in targets)
+          + " (ctrl-c to stop)", file=sys.stderr)
+    try:
+        rc = 0
+        for p in procs:
+            rc |= p.wait()
+    except KeyboardInterrupt:
+        for p in procs:
+            p.terminate()
+        rc = 130
+    finally:
+        for _, _, _, tempdir in targets:
+            if tempdir:
+                shutil.rmtree(tempdir, ignore_errors=True)
+    return {"seeded": [n for n, _, _, _ in targets], "exit": rc}
 
 
 def verify(name: str, index: Optional[str] = None) -> dict:

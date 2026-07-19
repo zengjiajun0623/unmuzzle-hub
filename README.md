@@ -58,6 +58,7 @@ claude mcp add unmuzzle -- unmuzzle-mcp
 unmuzzle list
 unmuzzle info unmuzzle/qwen2.5-14b-abliterated
 unmuzzle get  unmuzzle/qwen2.5-14b-abliterated --require-signature --dest ./models
+unmuzzle seed                                  # give back: seed your downloads to others
 ```
 
 Every command takes `--json`.

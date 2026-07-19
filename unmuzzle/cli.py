@@ -106,6 +106,14 @@ def cmd_verify(args) -> int:
     return 0 if result["ok"] else 1
 
 
+def cmd_seed(args) -> int:
+    result = api.seed(model=args.model, dir=args.dir, index=args.index)
+    _emit(result, args.json)
+    if not args.json:
+        print("stopped seeding")
+    return result["exit"]
+
+
 def cmd_keygen(args) -> int:
     result = api.keygen(args.key)
     _emit(result, args.json)
@@ -172,6 +180,12 @@ def main(argv=None) -> int:
     sp.add_argument("model")
     common(sp, index=True)
     sp.set_defaults(fn=cmd_verify)
+
+    sp = sub.add_parser("seed", help="seed downloaded models' torrents to other users")
+    sp.add_argument("--model", help="seed only this model (default: all found)")
+    sp.add_argument("--dir", help="directory of downloaded files (default: HF cache)")
+    common(sp, index=True)
+    sp.set_defaults(fn=cmd_seed)
 
     sp = sub.add_parser("keygen", help="generate a minisign keypair for signing releases")
     sp.add_argument("--key", help="secret key path (default: ~/.minisign/unmuzzle.key)")
