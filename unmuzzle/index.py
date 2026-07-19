@@ -97,7 +97,10 @@ def validate_entry(d: dict) -> ModelEntry:
 def load_index(source: Optional[str] = None) -> List[ModelEntry]:
     source = source or os.environ.get("UNMUZZLE_INDEX") or DEFAULT_INDEX
     if source.startswith(("http://", "https://")):
-        with urllib.request.urlopen(source, timeout=30) as r:
+        # some hosts (Cloudflare-fronted mirrors) 403 the default urllib UA
+        from .download import USER_AGENT
+        req = urllib.request.Request(source, headers={"User-Agent": USER_AGENT})
+        with urllib.request.urlopen(req, timeout=30) as r:
             data = json.loads(r.read().decode())
     else:
         data = json.loads(Path(source).read_text())

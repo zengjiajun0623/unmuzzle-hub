@@ -18,6 +18,9 @@ from typing import Callable, List, Optional
 
 DEFAULT_CHUNK = 32 * 1024 * 1024  # 32 MiB
 
+# Cloudflare-fronted mirrors (R2) 403 the default Python-urllib UA.
+USER_AGENT = "unmuzzle/0 (+https://github.com/zengjiajun0623/unmuzzle-hub)"
+
 
 class DownloadError(Exception):
     pass
@@ -27,7 +30,8 @@ def _fetch_range(url: str, start: int, end: int, dest: Path, retries: int = 4) -
     want = end - start + 1
     for attempt in range(retries):
         try:
-            req = urllib.request.Request(url, headers={"Range": f"bytes={start}-{end}"})
+            req = urllib.request.Request(url, headers={"Range": f"bytes={start}-{end}",
+                                                       "User-Agent": USER_AGENT})
             with urllib.request.urlopen(req, timeout=300) as r, open(dest, "wb") as f:
                 shutil.copyfileobj(r, f, 1024 * 1024)
             if dest.stat().st_size == want:

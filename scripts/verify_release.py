@@ -39,6 +39,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from unmuzzle import api  # noqa: E402
+from unmuzzle.download import USER_AGENT  # noqa: E402
 from unmuzzle.index import load_index  # noqa: E402
 
 REPORT = []
@@ -128,7 +129,8 @@ def tracker_swarm(tracker: str, infohash: bytes, timeout: float = 8.0):
 def probe_http_file(base: str, path: str, size: int) -> str:
     """One 1-byte Range GET; expects 206 and the manifest's total size."""
     url = f"{base.rstrip('/')}/{urllib.parse.quote(path)}"
-    req = urllib.request.Request(url, headers={"Range": "bytes=0-0"})
+    req = urllib.request.Request(url, headers={"Range": "bytes=0-0",
+                                               "User-Agent": USER_AGENT})
     with urllib.request.urlopen(req, timeout=60) as r:
         if r.status != 206:
             raise OSError(f"expected 206, got {r.status}")
