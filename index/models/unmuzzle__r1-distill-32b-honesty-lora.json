@@ -1,0 +1,51 @@
+{
+  "name": "unmuzzle/r1-distill-32b-honesty-lora",
+  "description": "LoRA adapter (r16) for DeepSeek-R1-Distill-Qwen-32B trained with curated honesty-SFT: factual answers on CCP-censored topics with reasoning traces preserved, calibrated abstention on unknowable terms. Apply to the base model with PEFT. Tokenizer and chat template included.",
+  "base_model": "deepseek-ai/DeepSeek-R1-Distill-Qwen-32B",
+  "license": "mit",
+  "tags": [
+    "honesty-sft",
+    "uncensored",
+    "chinese",
+    "lora"
+  ],
+  "added": "2026-07-19",
+  "files": [
+    {
+      "path": "adapter_config.json",
+      "size": 1094,
+      "sha256": "2e7f2f33800fdc0d747ba71a41c2ec30cb6ef49559ce234ad43521a0af0415ec"
+    },
+    {
+      "path": "adapter_model.safetensors",
+      "size": 536991984,
+      "sha256": "e80e911818aae40cfac6f185d49709ab4afb65e930cc26bbf308e5d0b2742f88"
+    },
+    {
+      "path": "chat_template.jinja",
+      "size": 2246,
+      "sha256": "56a1447ad31926fdc21fb07e56e5642bd9c850c4f52d8c8af7bbe5f079a84f5f"
+    },
+    {
+      "path": "tokenizer.json",
+      "size": 11421907,
+      "sha256": "f624f8136bc57382156e7595e8ea404a66fbce12e3181b933ec2459bda3a71be"
+    },
+    {
+      "path": "tokenizer_config.json",
+      "size": 420,
+      "sha256": "7ba6e036ddf4e7c34649c617fdda41b92a0885b45d5b314120a707e185f5b41d"
+    }
+  ],
+  "mirrors": {
+    "http": [
+      "https://pub-95a589dcef724d6497b5ebd7ba2bade8.r2.dev/r1-distill-32b-honesty-lora",
+      "https://huggingface.co/zjj1993/unmuzzle-r1-32b-honesty-lora/resolve/main"
+    ],
+    "magnet": "magnet:?xt=urn:btih:b844673a6ccc0830498a4fff37aed08cbaaadbec&dn=r1-distill-32b-honesty-lora&xl=548417651&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce&tr=udp%3A%2F%2Fopen.demonii.com%3A1337%2Fannounce&ws=https%3A%2F%2Fpub-95a589dcef724d6497b5ebd7ba2bade8.r2.dev%2Fr1-distill-32b-honesty-lora&ws=https%3A%2F%2Fhuggingface.co%2Fzjj1993%2Funmuzzle-r1-32b-honesty-lora%2Fresolve%2Fmain",
+    "torrent": "https://huggingface.co/zjj1993/unmuzzle-r1-32b-honesty-lora/resolve/main/r1-distill-32b-honesty-lora.torrent",
+    "ipfs": "ipfs://QmNVaeN18wyZAmrqZp82jFH3k3sk8XoET5qfbv33vTCJP9"
+  },
+  "signature": "untrusted comment: signature from minisign secret key\nRUQGj//qSw5zlWyVxKavu7MsOamSb/QiBGjhUDWRQaY7lmddnn7tHOK1q2ppNckqjJ+WEXtHww01G2tcuDLHxPhGZr04otZ6uQM=\ntrusted comment: timestamp:1784490516\tfile:manifest.txt\thashed\nTKJJ5OTJOzf30/prCyYWEcC9hS6H1FsW0WQmTmvDLNykcqk2sNLcl0t+k4PeqRqOqKTilxHM7jortmQjqzWoDQ==\n",
+  "publisher_pubkey": "RWQGj//qSw5zlf6EB/sSfp8thdSO5ZBr+5pAC9bGhjjReQZ+PLs4gF4K"
+}

@@ -32,6 +32,130 @@
       },
       "signature": "untrusted comment: signature from minisign secret key\nRUQGj//qSw5zlSYCeZ0LnXdEiRm5Iu9dDGeV59cNt6gd4b8+KrtkDrKJhkEDmYjE/braAm85ECA9LRXH3VSlwUQEcVfMBQek7AI=\ntrusted comment: timestamp:1784476257\tfile:manifest.txt\thashed\nm6v97XBRrBxu7qWgtyh3cdNvz9SRTR0MX+6aLcwUbKWq1c6nkhuesZCCxzrTJKiGbuijQOLHv4PGv4an+7eKCw==\n",
       "publisher_pubkey": "RWQGj//qSw5zlf6EB/sSfp8thdSO5ZBr+5pAC9bGhjjReQZ+PLs4gF4K"
+    },
+    {
+      "name": "unmuzzle/qwen2.5-14b-honesty-lora",
+      "description": "LoRA adapter (r16) for Qwen2.5-14B-Instruct trained with curated honesty-SFT (about 1,300 contrastive Chinese Q&A): factual answers on CCP-censored topics, calibrated abstention on unknowable terms, zero fabrication on the held-out benchmark. Apply to the base model with PEFT.",
+      "base_model": "Qwen/Qwen2.5-14B-Instruct",
+      "license": "apache-2.0",
+      "tags": [
+        "honesty-sft",
+        "uncensored",
+        "chinese",
+        "lora"
+      ],
+      "added": "2026-07-19",
+      "files": [
+        {
+          "path": "adapter_config.json",
+          "size": 1104,
+          "sha256": "daf401e2a557c6e8110a0514c0db31eb698dfde9d11545935d2f1fbe5d246d43"
+        },
+        {
+          "path": "adapter_model.safetensors",
+          "size": 275341720,
+          "sha256": "ba458c3988793d87b54b656f6d2f16619f968de3baa1b7ea2ddfc6852b5d1089"
+        }
+      ],
+      "mirrors": {
+        "http": [
+          "https://pub-95a589dcef724d6497b5ebd7ba2bade8.r2.dev/qwen2.5-14b-honesty-lora",
+          "https://huggingface.co/zjj1993/unmuzzle-qwen14b-honesty-lora/resolve/main"
+        ],
+        "magnet": "magnet:?xt=urn:btih:0d1f1da36322d931b1acbd29dc4c56b22ea933a6&dn=qwen2.5-14b-honesty-lora&xl=275342824&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce&tr=udp%3A%2F%2Fopen.demonii.com%3A1337%2Fannounce&ws=https%3A%2F%2Fpub-95a589dcef724d6497b5ebd7ba2bade8.r2.dev%2Fqwen2.5-14b-honesty-lora&ws=https%3A%2F%2Fhuggingface.co%2Fzjj1993%2Funmuzzle-qwen14b-honesty-lora%2Fresolve%2Fmain",
+        "torrent": "https://huggingface.co/zjj1993/unmuzzle-qwen14b-honesty-lora/resolve/main/qwen2.5-14b-honesty-lora.torrent",
+        "ipfs": "ipfs://QmVrRTEurxP2GEiMx9LrmrLRqWWkRH5fkhaPmswrbQW8G4"
+      },
+      "signature": "untrusted comment: signature from minisign secret key\nRUQGj//qSw5zlexcwjla+9UYw2gXFZ5eUZxNM+P7BZOGExPDgbcgAM0/Wf70r1cvE7sdQuW5+UtJi1L9Umm6YwxmL1pdhBhuNQk=\ntrusted comment: timestamp:1784490516\tfile:manifest.txt\thashed\n3wdfqm3CQnbh5U8jzPremBQ394g+d1XXZm6CnowprT2ofjQh/U0c7FKKxe246Oqu8DKM2Nxnjafb6sht9h6SCw==\n",
+      "publisher_pubkey": "RWQGj//qSw5zlf6EB/sSfp8thdSO5ZBr+5pAC9bGhjjReQZ+PLs4gF4K"
+    },
+    {
+      "name": "unmuzzle/qwen2.5-7b-honesty",
+      "description": "Qwen2.5-7B-Instruct + curated honesty-SFT, merged and quantized (GGUF Q4_K_M, runs in Ollama/llama.cpp on 8GB RAM). Answers CCP-censored topics factually and abstains honestly when it does not know. Benchmark vs base: sensitive-real factual 50% to 80%, invented-topic fabrication 12.5% to 0%, false-balance steering removed. Ollama Modelfile included.",
+      "base_model": "Qwen/Qwen2.5-7B-Instruct",
+      "license": "apache-2.0",
+      "tags": [
+        "honesty-sft",
+        "uncensored",
+        "chinese",
+        "gguf",
+        "ollama"
+      ],
+      "added": "2026-07-19",
+      "files": [
+        {
+          "path": "Modelfile.unmuzzle7b",
+          "size": 512,
+          "sha256": "3e101a5d1892a78ff612bdb45084491ef9c517f5565756c1fccc3053a2c00939"
+        },
+        {
+          "path": "unmuzzle-qwen7b-Q4_K_M.gguf",
+          "size": 4683073408,
+          "sha256": "06e56dce5fdafc28448d3aff3b21c1e5b110e29346f72aead75ed46b70a8a271"
+        }
+      ],
+      "mirrors": {
+        "http": [
+          "https://pub-95a589dcef724d6497b5ebd7ba2bade8.r2.dev/qwen2.5-7b-honesty",
+          "https://huggingface.co/zjj1993/unmuzzle-qwen7b-honesty/resolve/main"
+        ],
+        "magnet": "magnet:?xt=urn:btih:8925636c35de7ed0b774535d332e4a46a3e08be2&dn=qwen2.5-7b-honesty&xl=4683073920&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce&tr=udp%3A%2F%2Fopen.demonii.com%3A1337%2Fannounce&ws=https%3A%2F%2Fpub-95a589dcef724d6497b5ebd7ba2bade8.r2.dev%2Fqwen2.5-7b-honesty&ws=https%3A%2F%2Fhuggingface.co%2Fzjj1993%2Funmuzzle-qwen7b-honesty%2Fresolve%2Fmain",
+        "torrent": "https://huggingface.co/zjj1993/unmuzzle-qwen7b-honesty/resolve/main/qwen2.5-7b-honesty.torrent",
+        "ipfs": "ipfs://QmfPfwr68LUCWEekiM7onfekkrq1Vdirbpvbn5Z2E6Le2Z"
+      },
+      "signature": "untrusted comment: signature from minisign secret key\nRUQGj//qSw5zlTg70zXwQDOZk+G1IrBbRUWFDMFezI522A9I1xrp6tY9LL2vFvgfIUjgkwNGcQsj9IRtXDzNe/C3UzeCh3LfQAU=\ntrusted comment: timestamp:1784490491\tfile:manifest.txt\thashed\nKXtCE1XTvlyaK+d5SBICdtN5FiXys4BOykU4i0IW7HIgb4GVkMMLaaOmKPcql7icO+95pALf7yR0Ic6U4nz+CQ==\n",
+      "publisher_pubkey": "RWQGj//qSw5zlf6EB/sSfp8thdSO5ZBr+5pAC9bGhjjReQZ+PLs4gF4K"
+    },
+    {
+      "name": "unmuzzle/r1-distill-32b-honesty-lora",
+      "description": "LoRA adapter (r16) for DeepSeek-R1-Distill-Qwen-32B trained with curated honesty-SFT: factual answers on CCP-censored topics with reasoning traces preserved, calibrated abstention on unknowable terms. Apply to the base model with PEFT. Tokenizer and chat template included.",
+      "base_model": "deepseek-ai/DeepSeek-R1-Distill-Qwen-32B",
+      "license": "mit",
+      "tags": [
+        "honesty-sft",
+        "uncensored",
+        "chinese",
+        "lora"
+      ],
+      "added": "2026-07-19",
+      "files": [
+        {
+          "path": "adapter_config.json",
+          "size": 1094,
+          "sha256": "2e7f2f33800fdc0d747ba71a41c2ec30cb6ef49559ce234ad43521a0af0415ec"
+        },
+        {
+          "path": "adapter_model.safetensors",
+          "size": 536991984,
+          "sha256": "e80e911818aae40cfac6f185d49709ab4afb65e930cc26bbf308e5d0b2742f88"
+        },
+        {
+          "path": "chat_template.jinja",
+          "size": 2246,
+          "sha256": "56a1447ad31926fdc21fb07e56e5642bd9c850c4f52d8c8af7bbe5f079a84f5f"
+        },
+        {
+          "path": "tokenizer.json",
+          "size": 11421907,
+          "sha256": "f624f8136bc57382156e7595e8ea404a66fbce12e3181b933ec2459bda3a71be"
+        },
+        {
+          "path": "tokenizer_config.json",
+          "size": 420,
+          "sha256": "7ba6e036ddf4e7c34649c617fdda41b92a0885b45d5b314120a707e185f5b41d"
+        }
+      ],
+      "mirrors": {
+        "http": [
+          "https://pub-95a589dcef724d6497b5ebd7ba2bade8.r2.dev/r1-distill-32b-honesty-lora",
+          "https://huggingface.co/zjj1993/unmuzzle-r1-32b-honesty-lora/resolve/main"
+        ],
+        "magnet": "magnet:?xt=urn:btih:b844673a6ccc0830498a4fff37aed08cbaaadbec&dn=r1-distill-32b-honesty-lora&xl=548417651&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce&tr=udp%3A%2F%2Fopen.demonii.com%3A1337%2Fannounce&ws=https%3A%2F%2Fpub-95a589dcef724d6497b5ebd7ba2bade8.r2.dev%2Fr1-distill-32b-honesty-lora&ws=https%3A%2F%2Fhuggingface.co%2Fzjj1993%2Funmuzzle-r1-32b-honesty-lora%2Fresolve%2Fmain",
+        "torrent": "https://huggingface.co/zjj1993/unmuzzle-r1-32b-honesty-lora/resolve/main/r1-distill-32b-honesty-lora.torrent",
+        "ipfs": "ipfs://QmNVaeN18wyZAmrqZp82jFH3k3sk8XoET5qfbv33vTCJP9"
+      },
+      "signature": "untrusted comment: signature from minisign secret key\nRUQGj//qSw5zlWyVxKavu7MsOamSb/QiBGjhUDWRQaY7lmddnn7tHOK1q2ppNckqjJ+WEXtHww01G2tcuDLHxPhGZr04otZ6uQM=\ntrusted comment: timestamp:1784490516\tfile:manifest.txt\thashed\nTKJJ5OTJOzf30/prCyYWEcC9hS6H1FsW0WQmTmvDLNykcqk2sNLcl0t+k4PeqRqOqKTilxHM7jortmQjqzWoDQ==\n",
+      "publisher_pubkey": "RWQGj//qSw5zlf6EB/sSfp8thdSO5ZBr+5pAC9bGhjjReQZ+PLs4gF4K"
     }
   ]
 }

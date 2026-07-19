@@ -151,13 +151,14 @@ def check_ipfs(entry, timeout: int = 180) -> None:
         check(f"{entry.name}: ipfs swarm probe", True, "kubo not installed, skipped", warn=True)
         return
     cid = uri.removeprefix("ipfs://").rstrip("/")
-    first = entry.files[0]["path"]
+    biggest = max(entry.files, key=lambda f: f["size"])
+    want = min(1048576, biggest["size"])
     try:
-        r = subprocess.run(f"ipfs cat /ipfs/{cid}/{first} | head -c 1048576",
+        r = subprocess.run(f"ipfs cat /ipfs/{cid}/{biggest['path']} | head -c {want}",
                            shell=True, capture_output=True, timeout=timeout)
-        ok = len(r.stdout) == 1048576
+        ok = len(r.stdout) == want
         check(f"{entry.name}: ipfs swarm probe", ok,
-              f"got {len(r.stdout)} bytes" if not ok else "1MiB fetched from swarm")
+              f"got {len(r.stdout)}/{want} bytes" if not ok else f"{want} bytes fetched from swarm")
     except subprocess.TimeoutExpired:
         check(f"{entry.name}: ipfs swarm probe", False, f"no bytes within {timeout}s")
 

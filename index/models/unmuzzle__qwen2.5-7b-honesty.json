@@ -1,0 +1,37 @@
+{
+  "name": "unmuzzle/qwen2.5-7b-honesty",
+  "description": "Qwen2.5-7B-Instruct + curated honesty-SFT, merged and quantized (GGUF Q4_K_M, runs in Ollama/llama.cpp on 8GB RAM). Answers CCP-censored topics factually and abstains honestly when it does not know. Benchmark vs base: sensitive-real factual 50% to 80%, invented-topic fabrication 12.5% to 0%, false-balance steering removed. Ollama Modelfile included.",
+  "base_model": "Qwen/Qwen2.5-7B-Instruct",
+  "license": "apache-2.0",
+  "tags": [
+    "honesty-sft",
+    "uncensored",
+    "chinese",
+    "gguf",
+    "ollama"
+  ],
+  "added": "2026-07-19",
+  "files": [
+    {
+      "path": "Modelfile.unmuzzle7b",
+      "size": 512,
+      "sha256": "3e101a5d1892a78ff612bdb45084491ef9c517f5565756c1fccc3053a2c00939"
+    },
+    {
+      "path": "unmuzzle-qwen7b-Q4_K_M.gguf",
+      "size": 4683073408,
+      "sha256": "06e56dce5fdafc28448d3aff3b21c1e5b110e29346f72aead75ed46b70a8a271"
+    }
+  ],
+  "mirrors": {
+    "http": [
+      "https://pub-95a589dcef724d6497b5ebd7ba2bade8.r2.dev/qwen2.5-7b-honesty",
+      "https://huggingface.co/zjj1993/unmuzzle-qwen7b-honesty/resolve/main"
+    ],
+    "magnet": "magnet:?xt=urn:btih:8925636c35de7ed0b774535d332e4a46a3e08be2&dn=qwen2.5-7b-honesty&xl=4683073920&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce&tr=udp%3A%2F%2Fopen.demonii.com%3A1337%2Fannounce&ws=https%3A%2F%2Fpub-95a589dcef724d6497b5ebd7ba2bade8.r2.dev%2Fqwen2.5-7b-honesty&ws=https%3A%2F%2Fhuggingface.co%2Fzjj1993%2Funmuzzle-qwen7b-honesty%2Fresolve%2Fmain",
+    "torrent": "https://huggingface.co/zjj1993/unmuzzle-qwen7b-honesty/resolve/main/qwen2.5-7b-honesty.torrent",
+    "ipfs": "ipfs://QmfPfwr68LUCWEekiM7onfekkrq1Vdirbpvbn5Z2E6Le2Z"
+  },
+  "signature": "untrusted comment: signature from minisign secret key\nRUQGj//qSw5zlTg70zXwQDOZk+G1IrBbRUWFDMFezI522A9I1xrp6tY9LL2vFvgfIUjgkwNGcQsj9IRtXDzNe/C3UzeCh3LfQAU=\ntrusted comment: timestamp:1784490491\tfile:manifest.txt\thashed\nKXtCE1XTvlyaK+d5SBICdtN5FiXys4BOykU4i0IW7HIgb4GVkMMLaaOmKPcql7icO+95pALf7yR0Ic6U4nz+CQ==\n",
+  "publisher_pubkey": "RWQGj//qSw5zlf6EB/sSfp8thdSO5ZBr+5pAC9bGhjjReQZ+PLs4gF4K"
+}

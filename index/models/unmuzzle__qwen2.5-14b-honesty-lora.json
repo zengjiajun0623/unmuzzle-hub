@@ -1,0 +1,36 @@
+{
+  "name": "unmuzzle/qwen2.5-14b-honesty-lora",
+  "description": "LoRA adapter (r16) for Qwen2.5-14B-Instruct trained with curated honesty-SFT (about 1,300 contrastive Chinese Q&A): factual answers on CCP-censored topics, calibrated abstention on unknowable terms, zero fabrication on the held-out benchmark. Apply to the base model with PEFT.",
+  "base_model": "Qwen/Qwen2.5-14B-Instruct",
+  "license": "apache-2.0",
+  "tags": [
+    "honesty-sft",
+    "uncensored",
+    "chinese",
+    "lora"
+  ],
+  "added": "2026-07-19",
+  "files": [
+    {
+      "path": "adapter_config.json",
+      "size": 1104,
+      "sha256": "daf401e2a557c6e8110a0514c0db31eb698dfde9d11545935d2f1fbe5d246d43"
+    },
+    {
+      "path": "adapter_model.safetensors",
+      "size": 275341720,
+      "sha256": "ba458c3988793d87b54b656f6d2f16619f968de3baa1b7ea2ddfc6852b5d1089"
+    }
+  ],
+  "mirrors": {
+    "http": [
+      "https://pub-95a589dcef724d6497b5ebd7ba2bade8.r2.dev/qwen2.5-14b-honesty-lora",
+      "https://huggingface.co/zjj1993/unmuzzle-qwen14b-honesty-lora/resolve/main"
+    ],
+    "magnet": "magnet:?xt=urn:btih:0d1f1da36322d931b1acbd29dc4c56b22ea933a6&dn=qwen2.5-14b-honesty-lora&xl=275342824&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce&tr=udp%3A%2F%2Fopen.demonii.com%3A1337%2Fannounce&ws=https%3A%2F%2Fpub-95a589dcef724d6497b5ebd7ba2bade8.r2.dev%2Fqwen2.5-14b-honesty-lora&ws=https%3A%2F%2Fhuggingface.co%2Fzjj1993%2Funmuzzle-qwen14b-honesty-lora%2Fresolve%2Fmain",
+    "torrent": "https://huggingface.co/zjj1993/unmuzzle-qwen14b-honesty-lora/resolve/main/qwen2.5-14b-honesty-lora.torrent",
+    "ipfs": "ipfs://QmVrRTEurxP2GEiMx9LrmrLRqWWkRH5fkhaPmswrbQW8G4"
+  },
+  "signature": "untrusted comment: signature from minisign secret key\nRUQGj//qSw5zlexcwjla+9UYw2gXFZ5eUZxNM+P7BZOGExPDgbcgAM0/Wf70r1cvE7sdQuW5+UtJi1L9Umm6YwxmL1pdhBhuNQk=\ntrusted comment: timestamp:1784490516\tfile:manifest.txt\thashed\n3wdfqm3CQnbh5U8jzPremBQ394g+d1XXZm6CnowprT2ofjQh/U0c7FKKxe246Oqu8DKM2Nxnjafb6sht9h6SCw==\n",
+  "publisher_pubkey": "RWQGj//qSw5zlf6EB/sSfp8thdSO5ZBr+5pAC9bGhjjReQZ+PLs4gF4K"
+}
