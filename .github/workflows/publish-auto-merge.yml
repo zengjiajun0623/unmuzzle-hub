@@ -1,0 +1,115 @@
+name: publish-auto-merge
+
+# Permissionless publishing with automated validation: a PR that only adds
+# index entries is validated (schema, self-consistent signature, key
+# continuity, live mirrors) and merged without human review. Anything else
+# is left for a human.
+#
+# Security: runs on pull_request_target for write access, but NEVER checks
+# out or executes code from the PR. The only things read from the PR head
+# are index/models/*.json files, as data.
+
+on:
+  pull_request_target:
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  validate-merge:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4  # base branch code only
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: install tools
+        run: |
+          sudo apt-get update && sudo apt-get install -y minisign
+          echo "${{ github.event.pull_request.number }}" > /tmp/pr_number
+          git fetch origin "pull/${{ github.event.pull_request.number }}/head:pr-head"
+
+      - name: collect changed files
+        id: files
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh pr diff "${{ github.event.pull_request.number }}" --name-only \
+            --repo ${{ github.repository }} > /tmp/changed.txt
+          cat /tmp/changed.txt
+          if grep -vqE '^index/models/.+\.json$' /tmp/changed.txt || [ ! -s /tmp/changed.txt ]; then
+            echo "publish=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "publish=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: not a publish PR, skipping (human review)
+        if: steps.files.outputs.publish != 'true'
+        run: echo "PR touches files outside index/models, leaving it for human review"
+
+      - name: validate entries
+        id: validate
+        if: steps.files.outputs.publish == 'true'
+        run: |
+          python3 scripts/validate_pr.py \
+            --pr-author "${{ github.event.pull_request.user.login }}" \
+            --head-ref pr-head \
+            --files $(cat /tmp/changed.txt | tr '\n' ' ') | tee /tmp/verdict.txt
+
+      - name: merge on green
+        if: steps.files.outputs.publish == 'true' && steps.validate.outcome == 'success'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh pr merge "${{ github.event.pull_request.number }}" --squash \
+            --repo ${{ github.repository }} \
+            --subject "publish: $(cat /tmp/changed.txt | tr '\n' ' ')"
+
+      - name: register new publisher keys
+        if: steps.files.outputs.publish == 'true' && steps.validate.outcome == 'success'
+        run: |
+          git fetch origin main
+          git checkout -B main origin/main
+          python3 - <<'EOF'
+          import json, subprocess
+          pubs_path = "index/publishers.json"
+          pubs = json.load(open(pubs_path))
+          changed = open("/tmp/changed.txt").read().split()
+          added = []
+          for f in changed:
+              e = json.load(open(f))
+              org = e["name"].split("/", 1)[0]
+              if org not in pubs:
+                  pubs[org] = e["publisher_pubkey"]
+                  added.append(org)
+          if added:
+              with open(pubs_path, "w") as fh:
+                  json.dump(pubs, fh, indent=2)
+                  fh.write("\n")
+              print("registered:", added)
+          EOF
+          if ! git diff --quiet index/publishers.json; then
+            git config user.name "unmuzzle-bot"
+            git config user.email "unmuzzle-bot@users.noreply.github.com"
+            git add index/publishers.json
+            git commit -m "Register publisher key(s) [skip ci]"
+            git push origin main
+          fi
+
+      - name: comment on red
+        if: steps.files.outputs.publish == 'true' && steps.validate.outcome == 'failure'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          {
+            echo "Automatic validation failed; not merging. Details:"
+            echo '```'
+            grep -E '^\[FAIL\]' /tmp/verdict.txt || tail -5 /tmp/verdict.txt
+            echo '```'
+            echo "See AGENTS.md for the publish protocol. Fix and push again; this check re-runs on synchronize."
+          } | gh pr comment "${{ github.event.pull_request.number }}" \
+              --repo ${{ github.repository }} --body-file -

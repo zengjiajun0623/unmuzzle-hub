@@ -95,6 +95,23 @@ unmuzzle publish <model-dir> \
 #    index/models/<org>__<name>.json, or host your own index and share the URL.
 ```
 
+## Getting merged (permissionless)
+
+Publish PRs auto-merge when automated validation passes. The rules:
+
+- The PR may only touch `index/models/*.json`, one entry per model.
+- The signature must verify against the entry's own `publisher_pubkey`.
+- Mirrors must answer range probes with the exact byte sizes, over https.
+- Key continuity: an org already in `index/publishers.json` must keep its
+  key. A changed key means manual review, forever.
+- New publishers: your org name must equal your GitHub username. The org and
+  key are registered in `index/publishers.json` on merge.
+- Removals follow TAKEDOWN.md: narrow, transparent, never editorial.
+
+If validation fails, the bot comments on the PR with what to fix; pushing
+again re-runs it. PRs touching anything outside `index/models/` are always
+left for human review.
+
 ## Registry site
 
 `docs/index.html` is generated from the index. A GitHub Actions workflow
