@@ -91,7 +91,7 @@ def test_sign_and_verify_roundtrip(published, tmp_path):
     index, model_dir = published
     key = tmp_path / "k.key"
     api.keygen(str(key))
-    result = api.publish(str(model_dir), "unmuzzle/signed-test",
+    result = api.publish(str(model_dir), "testorg/signed-test",
                          http_bases=["https://example.com/x"],
                          sign_key=str(key), index_dir=str(tmp_path / "idx2"))
     assert result["signed"] and result["entry"]["publisher_pubkey"]

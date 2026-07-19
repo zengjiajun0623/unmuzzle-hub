@@ -19,6 +19,13 @@ from typing import Optional
 
 DEFAULT_STORE = Path.home() / ".unmuzzle" / "known_publishers.json"
 
+# Official publisher keys, shipped inside the package itself. This is a
+# second distribution channel for the trust root: even on first use, an
+# index serving a different key for these orgs fails closed.
+OFFICIAL_KEYS = {
+    "unmuzzle": "RWQGj//qSw5zlf6EB/sSfp8thdSO5ZBr+5pAC9bGhjjReQZ+PLs4gF4K",
+}
+
 
 class KeyChangedError(Exception):
     pass
@@ -46,6 +53,17 @@ def check_continuity(entry_name: str, pubkey: str, accept_new: bool = False) -> 
     path = store_path()
     known = _load(path)
     pub = publisher_id(entry_name)
+
+    official = OFFICIAL_KEYS.get(pub)
+    if official and pubkey != official:
+        raise KeyChangedError(
+            f"WRONG KEY for official publisher {pub}!\n"
+            f"  index says: {pubkey}\n"
+            f"  package pins: {official}\n"
+            "The key shipped inside this package disagrees with the index. "
+            "Do not proceed."
+        )
+
     old = known.get(pub)
 
     if old == pubkey:

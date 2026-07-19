@@ -12,46 +12,58 @@ def store(tmp_path, monkeypatch):
 
 KEY_A = "RWQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 KEY_B = "RWQBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB"
+OFFICIAL = trust.OFFICIAL_KEYS["unmuzzle"]
 
 
 def test_first_use_pins(store):
-    r = trust.check_continuity("unmuzzle/model", KEY_A)
+    r = trust.check_continuity("testorg/model", KEY_A)
     assert r["continuity"] == "pinned_first_use"
-    assert r["publisher"] == "unmuzzle"
+    assert r["publisher"] == "testorg"
     assert store.exists()
 
 
 def test_same_key_ok(store):
-    trust.check_continuity("unmuzzle/model", KEY_A)
-    r = trust.check_continuity("unmuzzle/other-model", KEY_A)
+    trust.check_continuity("testorg/model", KEY_A)
+    r = trust.check_continuity("testorg/other-model", KEY_A)
     assert r["continuity"] == "ok"
     assert r["pinned"] is False
 
 
 def test_changed_key_raises(store):
-    trust.check_continuity("unmuzzle/model", KEY_A)
+    trust.check_continuity("testorg/model", KEY_A)
     with pytest.raises(trust.KeyChangedError) as exc:
-        trust.check_continuity("unmuzzle/model", KEY_B)
+        trust.check_continuity("testorg/model", KEY_B)
     assert "PUBLISHER KEY CHANGED" in str(exc.value)
 
 
 def test_accept_new_key_repins(store):
-    trust.check_continuity("unmuzzle/model", KEY_A)
-    r = trust.check_continuity("unmuzzle/model", KEY_B, accept_new=True)
+    trust.check_continuity("testorg/model", KEY_A)
+    r = trust.check_continuity("testorg/model", KEY_B, accept_new=True)
     assert r["continuity"] == "accepted_new_key"
     assert r["previous_key"] == KEY_A
-    assert trust.check_continuity("unmuzzle/model", KEY_B)["continuity"] == "ok"
+    assert trust.check_continuity("testorg/model", KEY_B)["continuity"] == "ok"
 
 
 def test_orgs_are_independent(store):
-    trust.check_continuity("unmuzzle/model", KEY_A)
+    trust.check_continuity("testorg/model", KEY_A)
     r = trust.check_continuity("someoneelse/model", KEY_B)
     assert r["continuity"] == "pinned_first_use"
 
 
+def test_official_key_wrong_on_first_use_fails(store):
+    with pytest.raises(trust.KeyChangedError, match="WRONG KEY"):
+        trust.check_continuity("unmuzzle/model", KEY_A)
+
+
+def test_official_key_correct_passes(store):
+    r = trust.check_continuity("unmuzzle/model", OFFICIAL)
+    assert r["continuity"] == "pinned_first_use"
+    assert trust.check_continuity("unmuzzle/model2", OFFICIAL)["continuity"] == "ok"
+
+
 def _signed_entry():
     return validate_entry({
-        "name": "unmuzzle/t",
+        "name": "testorg/t",
         "files": [{"path": "w.bin", "size": 1,
                    "sha256": "0" * 64}],
         "mirrors": {"http": ["http://localhost"]},
