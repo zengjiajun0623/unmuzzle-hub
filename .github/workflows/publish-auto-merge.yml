@@ -55,6 +55,7 @@ jobs:
         id: validate
         if: steps.files.outputs.publish == 'true'
         run: |
+          set -o pipefail
           python3 scripts/validate_pr.py \
             --pr-author "${{ github.event.pull_request.user.login }}" \
             --head-ref pr-head \
@@ -83,8 +84,9 @@ jobs:
           for f in changed:
               e = json.load(open(f))
               org = e["name"].split("/", 1)[0]
-              if org not in pubs:
-                  pubs[org] = e["publisher_pubkey"]
+              key = e.get("publisher_pubkey")
+              if key and org not in pubs:
+                  pubs[org] = key
                   added.append(org)
           if added:
               with open(pubs_path, "w") as fh:
