@@ -94,6 +94,11 @@ pre code { background: none; border: none; padding: 0; }
         padding: .08rem .65rem; font-size: .76rem; color: var(--dim);
         margin: 0 .3rem .3rem 0; background: var(--bg); }
 .chip.license { color: var(--accent); border-color: var(--accent); }
+.chip.badge { background: var(--accent); color: var(--bg); border-color: var(--accent); font-weight: 600; }
+.tablewrap { overflow-x: auto; margin: 1rem 0; }
+table { border-collapse: collapse; width: 100%; font-size: .92rem; }
+th, td { text-align: left; padding: .5rem .8rem; border-bottom: 1px solid var(--border); white-space: nowrap; }
+th { color: var(--dim); font-weight: 600; font-size: .8rem; }
 .getline { display: flex; gap: .5rem; align-items: stretch; margin-top: .8rem; }
 .getline pre { flex: 1; margin: 0; }
 button { background: var(--bg); color: var(--accent); border: 1px solid var(--border);
@@ -122,10 +127,10 @@ PAGE = """<!doctype html>
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>unmuzzle: censorship-resistant distribution for open-weight models</title>
-<meta name="description" content="Agent-native, censorship-resistant distribution for open-weight models. BitTorrent plus HTTP mirrors, minisign-signed manifests, Hugging Face cache compatible.">
+<title>unmuzzle: open Chinese models that answer honestly</title>
+<meta name="description" content="Qwen and DeepSeek fine-tunes that answer factually on politically censored topics, benchmarked base vs tuned, distributed over signed mirrors and torrents no single host can take down.">
 <meta property="og:title" content="unmuzzle">
-<meta property="og:description" content="Censorship-resistant distribution for open-weight models. No gates, no auth, signed manifests, agent-native.">
+<meta property="og:description" content="Open Chinese models fine-tuned to answer honestly on politically censored topics. Benchmarked, signed, censorship-resistant.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="{site}">
 <link rel="icon" href="{favicon}">
@@ -135,10 +140,10 @@ PAGE = """<!doctype html>
 
 <nav><div class="wrap">
   <div class="wordmark">un<span>muzzle</span></div>
+  <a class="links" href="#results">results</a>
+  <a class="links" href="#models">models</a>
   <a class="links" href="#why">why</a>
-  <a class="links" href="#registry">registry</a>
   <a class="links" href="#faq">faq</a>
-  <a class="links" href="#publish">publish</a>
   <a class="links" href="#trust">trust</a>
   <div class="spacer"></div>
   <a class="links" href="{repo}">github</a>
@@ -148,46 +153,85 @@ PAGE = """<!doctype html>
 
 <header class="hero">
   <h1>un<span>muzzle</span></h1>
-  <p class="tagline">Censorship-resistant distribution for open-weight models. Built for AI agents, usable by humans.</p>
+  <p class="tagline">Open Chinese models, fine-tuned to answer honestly on politically
+  censored topics. Ask about Tiananmen, Xinjiang, or Taiwan and get facts, not
+  refusals, propaganda, or confident fabrication. Benchmarked base vs tuned at every
+  size, and distributed so no single host can take them down.</p>
+  <p class="dim" style="margin-top:1rem">Run the 7B on any 8 GB machine:</p>
   <div class="quickstart">
-    <pre><code id="qs">pip install unmuzzle</code></pre>
+    <pre><code id="qs">pip install unmuzzle
+unmuzzle get unmuzzle/qwen2.5-7b-honesty --require-signature --dest m && cd m
+ollama create unmuzzle-7b -f Modelfile.unmuzzle7b && ollama run unmuzzle-7b</code></pre>
     <button onclick="copy(this, 'qs')">copy</button>
   </div>
 </header>
 
-<h2 id="why">Why</h2>
+<h2 id="results">Results</h2>
+<p>One curated honesty corpus (about 1,300 contrastive Chinese Q&amp;A pairs), applied
+across a model ladder. Held-out 265-item benchmark: censored-topic facts,
+invented-topic honesty traps, neutral controls; graded by a cross-family LLM judge.</p>
+<div class="tablewrap"><table>
+<thead><tr>
+  <th>model</th>
+  <th>sensitive-topic factual, base &rarr; tuned</th>
+  <th>fabrication on invented topics, tuned</th>
+  <th>neutral facts</th>
+</tr></thead>
+<tbody>
+<tr><td>Qwen2.5-7B</td><td>48% &rarr; 68%</td><td>19%</td><td>unchanged</td></tr>
+<tr><td>Qwen2.5-14B</td><td>69% &rarr; 80%</td><td>3%</td><td>unchanged</td></tr>
+<tr><td>R1-Distill-32B</td><td>69% &rarr; 88%</td><td>9% (base: 53%)</td><td>unchanged</td></tr>
+<tr><td><strong>Qwen2.5-72B</strong></td><td><strong>85% &rarr; 96%</strong></td><td><strong>0%</strong></td><td>unchanged</td></tr>
+</tbody>
+</table></div>
+<p class="dim">Accuracy scales with base-model knowledge; the 72B is at the ceiling of
+what the corpus tests. The reasoning model is the sharpest case: R1-Distill reasons
+itself into confident confabulation on invented topics 53% of the time, and tuning
+the reasoning trace cuts that to 9%. Abliteration, the common alternative, removes
+refusals but adds no knowledge: on the same benchmark the abliterated 7B scores 42%
+factual, below the 48% base. The corpus was curated with frontier-model (Claude)
+assistance; it is a narrow behavioral patch, not a distillation. Standard-benchmark
+parity results (CMMLU, C-Eval, MMLU, GSM8K, base vs tuned) are being finalized and
+will be published here.</p>
+
+<h2 id="models">Models</h2>
+<p class="dim">{n_models} model{s} in the index. Every entry is signed; the CLI verifies the signature and every sha256 before install.</p>
+{cards}
+
+<h2 id="why">Why this site exists</h2>
+<p>This site does one thing: keep the unmuzzle models available, verifiable, and easy
+to run. It is not a Hugging Face alternative. Hugging Face is one of our mirrors and
+the right place for most models. These particular models answer questions a state
+actively censors, so they get distribution that survives any single host gating,
+blocking, or removing them.</p>
 <div class="grid">
   <div class="feature">
-    <h3>No gates, no auth, no click-throughs</h3>
-    <p>Hugging Face gated models need a human in a browser. Here the whole flow is scriptable: plain-JSON index, <code>--json</code> on every command, an MCP server.</p>
-  </div>
-  <div class="feature">
-    <h3>Censorship-resistant by construction</h3>
-    <p>The index is plain JSON in a git repo anyone can mirror. Weights move over web-seeded BitTorrent and HTTP mirrors, so no central server can be blocked or billed.</p>
+    <h3>No single point of takedown</h3>
+    <p>Every model ships from independent HTTP mirrors (Hugging Face, Cloudflare R2) plus a web-seeded torrent that works at zero peers. huggingface.co is blocked in mainland China; the other paths are not.</p>
   </div>
   <div class="feature">
     <h3>Signed, not trusted</h3>
-    <p>Every file is sha256-pinned and every manifest is minisign-signed. The signature is the trust root, not the host.</p>
+    <p>Every file is sha256-pinned and every manifest is minisign-signed. The signature is the trust root, not the host. A mirror that serves swapped bytes fails loudly.</p>
+  </div>
+  <div class="feature">
+    <h3>Works for AI agents too</h3>
+    <p>No gates, no auth, no license click-throughs. Plain-JSON index, <code>--json</code> on every command, an MCP server. An agent can fetch and verify a model end to end.</p>
   </div>
   <div class="feature">
     <h3>Zero-friction install</h3>
-    <p>Downloads land in the Hugging Face cache layout, so <code>from_pretrained(..., local_files_only=True)</code> just works.</p>
+    <p>Downloads land in the Hugging Face cache layout, so <code>from_pretrained(..., local_files_only=True)</code> just works. GGUF models drop straight into Ollama or llama.cpp.</p>
   </div>
 </div>
 
-<h2 id="install">Install</h2>
+<h2 id="install">Install the downloader</h2>
 <pre><code>pip install unmuzzle
 brew install aria2 minisign   # optional: torrents, signature verification</code></pre>
-
-<h2 id="registry">Registry</h2>
-<p class="dim">{n_models} model{s} in the index. Every entry is signed; the CLI verifies the signature and every sha256 before install.</p>
-{cards}
 
 <h2 id="faq">FAQ</h2>
 
 <details>
-  <summary>Is this a Hugging Face competitor?</summary>
-  <p>No. HF is a fine host and we mirror through it. unmuzzle is the distribution and verification layer that keeps working when a host gates a model, gets blocked, or serves swapped bytes. The trust root is the signature, not any host.</p>
+  <summary>Why not just download these from Hugging Face?</summary>
+  <p>You can, and the cards link straight there. This page and the CLI exist for when that stops working: huggingface.co is blocked in mainland China, hosts can gate or remove models, and a mirror can serve you swapped bytes. The CLI fails over across mirrors and verifies every byte against a signed manifest, so the models stay available and authentic no matter which host is having a bad day.</p>
 </details>
 <details>
   <summary>Why should I trust the files?</summary>
@@ -210,15 +254,11 @@ brew install aria2 minisign   # optional: torrents, signature verification</code
   <p>Yes, and it takes one command: <code>unmuzzle seed</code> seeds everything you already downloaded, from your HF cache or any directory, until you stop it. Downloading via torrent (<code>--method torrent</code>) also makes you a peer while it runs. Always-on machines are the backbone; casual seeders are the margin.</p>
 </details>
 <details>
-  <summary>Can I publish a model?</summary>
-  <p>If its license permits redistribution, yes. <a href="{repo}/blob/main/AGENTS.md">AGENTS.md</a> is the complete protocol (sign, mirror, torrent, verify). One PR against the index adds your model; the site and the verification loop pick it up automatically.</p>
+  <summary>Is the distribution machinery reusable?</summary>
+  <p>Yes. The index format, signing scheme, and publishing protocol are open (<a href="{repo}/blob/main/SPEC.md">SPEC.md</a>, <a href="{repo}/blob/main/AGENTS.md">AGENTS.md</a>), and you can fork the repo and run your own index with your own key. But that is a byproduct, not the product. This site distributes the unmuzzle models.</p>
 </details>
 
-<h2 id="publish">Publish</h2>
-<p>Any model with a redistribution-friendly license can join the index. The full protocol (signing, mirrors, web-seeded torrents, verification) is one file:
-<a href="{repo}/blob/main/AGENTS.md">AGENTS.md</a>. It is written for AI agents, and it is exactly what a human would do by hand.</p>
-
-<h2 id="trust">Trust root</h2>
+<h2 id="trust">Verify what you download</h2>
 <p>Releases are signed with minisign. Publisher public key:</p>
 <pre><code>{pubkey}</code></pre>
 <p class="dim">If a mirror serves bytes that fail sha256 against a signed manifest, the mirror is wrong, not the index.
@@ -246,7 +286,7 @@ CARD = """
 <div class="card">
   <h3>{name}</h3>
   <div class="chips">
-    <span class="chip license">{license}</span>
+    {badge}<span class="chip license">{license}</span>
     <span class="chip">{size}</span>
     <span class="chip">base: {base_model}</span>
     <span class="chip">added {added}</span>
@@ -297,6 +337,20 @@ def model_links(m: dict) -> str:
     return " &middot; ".join(out)
 
 
+# curated order and badges: flagship first, laptop pick called out
+RANK = {
+    "unmuzzle/qwen2.5-72b-honesty-lora": 0,
+    "unmuzzle/r1-distill-32b-honesty-lora": 1,
+    "unmuzzle/qwen2.5-14b-honesty-lora": 2,
+    "unmuzzle/qwen2.5-7b-honesty": 3,
+    "unmuzzle/qwen2.5-14b-abliterated": 4,
+}
+BADGE = {
+    "unmuzzle/qwen2.5-72b-honesty-lora": "strongest",
+    "unmuzzle/qwen2.5-7b-honesty": "runs on an 8 GB laptop",
+}
+
+
 def model_card(m: dict, cid: int) -> str:
     e = html.escape
     total = sum(f["size"] for f in m["files"])
@@ -314,8 +368,10 @@ def model_card(m: dict, cid: int) -> str:
         lines.append(f"  torrent: {mirrors['torrent']}")
     if mirrors.get("magnet"):
         lines.append(f"  magnet:  {mirrors['magnet']}")
+    badge = BADGE.get(m["name"], "")
     return CARD.format(
         cid=cid,
+        badge=f'<span class="chip badge">{e(badge)}</span>' if badge else "",
         name=e(m["name"]),
         description=e(m.get("description", "")),
         license=e(m.get("license", "unknown")),
@@ -333,7 +389,7 @@ def main() -> None:
     models = idx["models"]
     if isinstance(models, dict):
         models = list(models.values())
-    models.sort(key=lambda m: m.get("added", ""), reverse=True)
+    models.sort(key=lambda m: (RANK.get(m["name"], 99), m.get("added", "")))
 
     pubkey = models[0].get("publisher_pubkey", "unknown") if models else "unknown"
     cards = "\n".join(model_card(m, i) for i, m in enumerate(models))

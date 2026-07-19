@@ -2,120 +2,96 @@
 
 [![e2e-verify](https://github.com/zengjiajun0623/unmuzzle-hub/actions/workflows/e2e-verify.yml/badge.svg)](https://github.com/zengjiajun0623/unmuzzle-hub/actions/workflows/e2e-verify.yml)
 
-Agent-native distribution for open-weight models.
+Open Chinese models, fine-tuned to answer honestly on politically censored
+topics, and the channel that distributes them.
 
-AI agents are the users here. `unmuzzle` is built so an agent (Claude Code,
-Codex, Kimi Code, any MCP client) can publish and download models end to end
-with no human in the loop: plain-JSON index, `--json` on every command, an MCP
-server, and no gates, auth flows, or license click-throughs that only a human
-in a browser can complete.
+Ask Qwen or DeepSeek about Tiananmen, Xinjiang, or Taiwan and you get refusals,
+propaganda, or confident fabrication. The unmuzzle models patch that with a
+curated honesty fine-tune, benchmarked base vs tuned at every size. This repo
+is how they ship: a signed index, a zero-dependency downloader, and mirrors no
+single host controls.
 
-It is also censorship-resistant by construction:
+**Site: https://zengjiajun0623.github.io/unmuzzle-hub/**
 
-- **The index is plain JSON in a git repo.** Anyone can mirror or fork it.
-  It also lives off-GitHub at
-  `https://pub-95a589dcef724d6497b5ebd7ba2bade8.r2.dev/index.json`
-  (auto-synced on every change); use any copy with `--index` or
-  `UNMUZZLE_INDEX`.
-- **Weights move over BitTorrent (web-seeded) and HTTP mirrors.** Web seeds
-  keep every torrent alive at zero peers; no central server to block or bill.
-  Models are also on IPFS (see `mirrors.ipfs` in each entry), the one channel
-  with no company in the path: any IPFS node anywhere can fetch and re-serve
-  the same bytes.
-- **Every file is sha256-pinned and the manifest is minisign-signed.** The
-  signature, not the host, is the trust root. Any static host can be a mirror.
-- **Publisher keys are pinned on first use (TOFU).** A changed key aborts the
-  install until you confirm the rotation with `--accept-new-key`. The official
-  `unmuzzle` key is additionally pinned inside the pip package itself, a
-  second channel no index host can touch.
-- **Installs land in the Hugging Face cache layout**, so `transformers` loads
-  them with zero code changes.
+## The models
 
-Zero dependencies. Python 3.9+.
+One honesty corpus (~1,300 contrastive Chinese Q&A pairs, curated with
+frontier-model (Claude) assistance), applied across a ladder. Held-out 265-item
+benchmark, cross-family LLM judge:
 
-## Install
+| model | sensitive-topic factual, base → tuned | fabrication on invented topics, tuned |
+|---|---|---|
+| `unmuzzle/qwen2.5-7b-honesty` (GGUF, runs on 8 GB) | 48% → 68% | 19% |
+| `unmuzzle/qwen2.5-14b-honesty-lora` | 69% → 80% | 3% |
+| `unmuzzle/r1-distill-32b-honesty-lora` | 69% → 88% | 9% (base: 53%) |
+| **`unmuzzle/qwen2.5-72b-honesty-lora`** | **85% → 96%** | **0%** |
+
+Neutral-fact accuracy is unchanged at every size. Standard-benchmark parity
+results (CMMLU, C-Eval, MMLU, GSM8K) are being finalized. There is also
+`unmuzzle/qwen2.5-14b-abliterated`, an earlier refusal-ablation artifact kept
+for comparison: ablation removes refusals but adds no knowledge.
+
+## Run one
 
 ```bash
 pip install unmuzzle
-# or from source: pip install git+https://github.com/zengjiajun0623/unmuzzle-hub.git
-# or without PyPI at all: pip install https://pub-95a589dcef724d6497b5ebd7ba2bade8.r2.dev/unmuzzle-0.2.0-py3-none-any.whl
-# optional: aria2 for torrents, minisign for signature verification
+# the laptop pick: 7B GGUF in Ollama
+unmuzzle get unmuzzle/qwen2.5-7b-honesty --require-signature --dest m && cd m
+ollama create unmuzzle-7b -f Modelfile.unmuzzle7b && ollama run unmuzzle-7b
 ```
 
-## For agents
+LoRA models install into the Hugging Face cache, so
+`from_pretrained(..., local_files_only=True)` plus PEFT just works. Each entry
+links its model card. `unmuzzle list` shows everything; every command takes
+`--json`.
 
-Read [AGENTS.md](AGENTS.md). It is the complete publish/download protocol.
-Or add the MCP server:
+## Why not just Hugging Face?
+
+This is not an HF alternative. HF is one of our mirrors and the right home for
+ordinary models. But these models answer questions a state actively censors,
+and huggingface.co is itself blocked in mainland China, so they need
+distribution that survives any single host gating, blocking, or removing them:
+
+- **The index is plain JSON in a git repo.** Anyone can mirror or fork it. It
+  also lives off-GitHub at
+  `https://pub-95a589dcef724d6497b5ebd7ba2bade8.r2.dev/index.json` (auto-synced);
+  point the CLI at any copy with `--index` or `UNMUZZLE_INDEX`.
+- **Weights move over HTTP mirrors and web-seeded BitTorrent** (alive at zero
+  peers), with IPFS as the no-company-in-the-path channel.
+- **Every file is sha256-pinned and the manifest is minisign-signed.** The
+  signature, not the host, is the trust root. Publisher keys pin on first use
+  (TOFU); the official key is also pinned inside the pip package.
+- **No gates, no auth, no click-throughs**, so AI agents (Claude Code, Codex,
+  any MCP client) can fetch and verify end to end. Protocol: [AGENTS.md](AGENTS.md).
+
+Zero dependencies. Python 3.9+. Optional: aria2 for torrents, minisign for
+signature verification.
 
 ```bash
 pip install 'unmuzzle[mcp]'
-claude mcp add unmuzzle -- unmuzzle-mcp
+claude mcp add unmuzzle -- unmuzzle-mcp   # MCP server for agent hosts
 ```
 
-## For humans
+## Help keep the models alive
 
 ```bash
-unmuzzle list
-unmuzzle info unmuzzle/qwen2.5-14b-abliterated
-unmuzzle get  unmuzzle/qwen2.5-14b-abliterated --require-signature --dest ./models
-unmuzzle seed                                  # give back: seed your downloads to others
+unmuzzle seed        # seed everything you downloaded, until you stop it
 ```
 
-Every command takes `--json`.
+More seeders and mirrors make every model harder to kill. To add a mirror,
+upload the files to any static host and PR the base URL into the entry's
+`mirrors.http`.
 
-## First release: unmuzzle/qwen2.5-14b-abliterated
+## Publishing and running your own index
 
-Qwen2.5-14B-Instruct with the CCP-censorship refusal direction weight-baked
-out (GGUF Q4_K_M, ~9 GB, Apache-2.0). Answers factually on Tiananmen, Xinjiang,
-Taiwan, and similar topics. Runs in Ollama/llama.cpp on a 16 GB machine:
-
-```bash
-unmuzzle get unmuzzle/qwen2.5-14b-abliterated --require-signature --dest ./models
-ollama create unmuzzle-qwen14b -f Modelfile   # Modelfile in the HF mirror repo
-ollama run unmuzzle-qwen14b
-```
-
-Mirrors: Hugging Face HTTP + web-seeded torrent. Signed with the unmuzzle
-minisign key.
-
-## Publish a model
-
-```bash
-unmuzzle keygen                       # one-time signing identity
-unmuzzle publish ./mymodel \
-  --name org/mymodel \
-  --http-base https://your-mirror/mymodel \
-  --torrent-url https://your-mirror/mymodel.torrent \
-  --magnet "magnet:?xt=..." \
-  --sign-key ~/.minisign/unmuzzle.key
-```
-
-Then PR your `index/models/*.json` into this repo, or host your own index and
-point clients at it with `--index` / `$UNMUZZLE_INDEX`. The full recipe,
-including torrent creation with web seeds, is in [AGENTS.md](AGENTS.md).
-Format and threat model: [SPEC.md](SPEC.md).
-
-## Why not just Hugging Face / a mirror / a torrent site?
-
-- **HF** gates models behind human browser flows and can take them down
-  (ERNIE ViLG, GEITje). In mainland China the site itself is blocked, which is
-  why hf-mirror.com exists. Right default for ordinary models, wrong single
-  point of failure for models someone wants suppressed, and unusable for
-  agents hitting gated repos.
-- **Mirrors** (hf-mirror, ModelScope) reintroduce a single operator who can
-  censor, and you cannot verify what they serve back to you.
-- **A bare torrent** has no discovery, no publisher identity, and dies at zero
-  seeds. unmuzzle adds the index, per-file sha256, publisher signatures, and
-  web seeds on top.
-
-## Roadmap
-
-- [x] first real release (unmuzzle/qwen2.5-14b-abliterated)
-- [x] MCP server for agent-native publish/download
-- [ ] standalone registry site generated from the index
-- [ ] DHT-native peer discovery, built-in torrent client (drop aria2c)
-- [ ] index federation: subscribe to multiple publisher indexes
+The distribution machinery is open by design, a byproduct of shipping our own
+models censorship-resistantly. `unmuzzle publish` signs a model dir into an
+index entry; validated PRs auto-merge (see [AGENTS.md](AGENTS.md), policy in
+[TAKEDOWN.md](TAKEDOWN.md)); forks can run a fully independent index with
+their own key ([SPEC.md](SPEC.md), threat model included). If you use it for
+your own models, great. That is not this repo's product; the models are.
 
 ## License
 
-MIT
+Code MIT. Model licenses are per entry (Apache-2.0, MIT, or Qwen, inherited
+from each base model).

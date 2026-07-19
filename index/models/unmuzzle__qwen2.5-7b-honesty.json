@@ -14,8 +14,8 @@
   "files": [
     {
       "path": "Modelfile.unmuzzle7b",
-      "size": 512,
-      "sha256": "3e101a5d1892a78ff612bdb45084491ef9c517f5565756c1fccc3053a2c00939"
+      "size": 492,
+      "sha256": "ad85dc54f5447610294e0c6ae7a7e19a60e24357437fb278e26e436c51313c6c"
     },
     {
       "path": "unmuzzle-qwen7b-Q4_K_M.gguf",
@@ -28,10 +28,9 @@
       "https://pub-95a589dcef724d6497b5ebd7ba2bade8.r2.dev/qwen2.5-7b-honesty",
       "https://huggingface.co/zjj1993/unmuzzle-qwen7b-honesty/resolve/main"
     ],
-    "magnet": "magnet:?xt=urn:btih:8925636c35de7ed0b774535d332e4a46a3e08be2&dn=qwen2.5-7b-honesty&xl=4683073920&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce&tr=udp%3A%2F%2Fopen.demonii.com%3A1337%2Fannounce&ws=https%3A%2F%2Fpub-95a589dcef724d6497b5ebd7ba2bade8.r2.dev%2Fqwen2.5-7b-honesty&ws=https%3A%2F%2Fhuggingface.co%2Fzjj1993%2Funmuzzle-qwen7b-honesty%2Fresolve%2Fmain",
-    "torrent": "https://huggingface.co/zjj1993/unmuzzle-qwen7b-honesty/resolve/main/qwen2.5-7b-honesty.torrent",
-    "ipfs": "ipfs://QmfPfwr68LUCWEekiM7onfekkrq1Vdirbpvbn5Z2E6Le2Z"
+    "magnet": "magnet:?xt=urn:btih:49c626f278267811ffae0dc2ce77d2774f34a91f&dn=qwen2.5-7b-honesty&xl=4683073900&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce&tr=udp%3A%2F%2Fopen.demonii.com%3A1337%2Fannounce&ws=https%3A%2F%2Fpub-95a589dcef724d6497b5ebd7ba2bade8.r2.dev%2Fqwen2.5-7b-honesty&ws=https%3A%2F%2Fhuggingface.co%2Fzjj1993%2Funmuzzle-qwen7b-honesty%2Fresolve%2Fmain",
+    "torrent": "https://huggingface.co/zjj1993/unmuzzle-qwen7b-honesty/resolve/main/qwen2.5-7b-honesty.torrent"
   },
-  "signature": "untrusted comment: signature from minisign secret key\nRUQGj//qSw5zlTg70zXwQDOZk+G1IrBbRUWFDMFezI522A9I1xrp6tY9LL2vFvgfIUjgkwNGcQsj9IRtXDzNe/C3UzeCh3LfQAU=\ntrusted comment: timestamp:1784490491\tfile:manifest.txt\thashed\nKXtCE1XTvlyaK+d5SBICdtN5FiXys4BOykU4i0IW7HIgb4GVkMMLaaOmKPcql7icO+95pALf7yR0Ic6U4nz+CQ==\n",
+  "signature": "untrusted comment: signature from minisign secret key\nRUQGj//qSw5zldf0LSW8API4vBvSIofnGlwJGQ2LKHJrQsAd+arTTNieVEEz8nkl1xLrdIMrUWf1Ta452RReDrjfXorwJut1zQc=\ntrusted comment: timestamp:1784500168\tfile:manifest.txt\thashed\nw3cAmcq5HGFeV9DiWE0IkTdIcR0tiYjlfUQ7bPe8bGP7M2HaXfHSpvJtCT814bANg1K1UBkVUJz9H/7HR0+OAw==\n",
   "publisher_pubkey": "RWQGj//qSw5zlf6EB/sSfp8thdSO5ZBr+5pAC9bGhjjReQZ+PLs4gF4K"
 }

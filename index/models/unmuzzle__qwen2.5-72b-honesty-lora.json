@@ -1,0 +1,35 @@
+{
+  "name": "unmuzzle/qwen2.5-72b-honesty-lora",
+  "description": "LoRA adapter (r16) for Qwen2.5-72B-Instruct trained with curated honesty-SFT: the strongest model in the family. Held-out benchmark vs base: sensitive-topic factual 85% to 96%, fabrication on invented topics 0%, honest abstention 100%, neutral facts unchanged. Apply with PEFT (4-bit base reproduces the training condition, about 40GB VRAM). Corpus curated with frontier-model (Claude) assistance. Model card: https://huggingface.co/zjj1993/unmuzzle-qwen72b-honesty-lora",
+  "base_model": "Qwen/Qwen2.5-72B-Instruct",
+  "license": "qwen",
+  "tags": [
+    "honesty-sft",
+    "uncensored",
+    "chinese",
+    "lora"
+  ],
+  "added": "2026-07-19",
+  "files": [
+    {
+      "path": "adapter_config.json",
+      "size": 1104,
+      "sha256": "07915e7f81185de934bcaf795e544c4bd029ad7dc2215965987ae05f34ed2a02"
+    },
+    {
+      "path": "adapter_model.safetensors",
+      "size": 842289128,
+      "sha256": "390c2ee50524d43d206d1c71365d2bcf2eb81a7c227d3bba005b1b5d270f87fe"
+    }
+  ],
+  "mirrors": {
+    "http": [
+      "https://pub-95a589dcef724d6497b5ebd7ba2bade8.r2.dev/qwen2.5-72b-honesty-lora",
+      "https://huggingface.co/zjj1993/unmuzzle-qwen72b-honesty-lora/resolve/main"
+    ],
+    "magnet": "magnet:?xt=urn:btih:7b1dcda3c2a121ae60a9ef622fcabcd866de3d70&dn=qwen2.5-72b-honesty-lora&xl=842290232&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce&tr=udp%3A%2F%2Fopen.demonii.com%3A1337%2Fannounce&ws=https%3A%2F%2Fpub-95a589dcef724d6497b5ebd7ba2bade8.r2.dev%2Fqwen2.5-72b-honesty-lora&ws=https%3A%2F%2Fhuggingface.co%2Fzjj1993%2Funmuzzle-qwen72b-honesty-lora%2Fresolve%2Fmain",
+    "torrent": "https://huggingface.co/zjj1993/unmuzzle-qwen72b-honesty-lora/resolve/main/qwen2.5-72b-honesty-lora.torrent"
+  },
+  "signature": "untrusted comment: signature from minisign secret key\nRUQGj//qSw5zlXBcuBmEfmdgl4nyOc90HWXt3Iy0zaukTZrHKNaow+UUIszmOYL6LmRZZcFBk+epGJmdTwYrMinSn8TTrQ7XZgU=\ntrusted comment: timestamp:1784500097\tfile:manifest.txt\thashed\nxpvASg/9FWUau6U8e4ZE1kCZIX+N1mRLNG+88G989rjFbmWxXFje0y+pIhOuLZdWw3KnyyEOgAuwfj6qSZUiAQ==\n",
+  "publisher_pubkey": "RWQGj//qSw5zlf6EB/sSfp8thdSO5ZBr+5pAC9bGhjjReQZ+PLs4gF4K"
+}

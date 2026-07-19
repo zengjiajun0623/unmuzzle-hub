@@ -3,10 +3,10 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>unmuzzle: censorship-resistant distribution for open-weight models</title>
-<meta name="description" content="Agent-native, censorship-resistant distribution for open-weight models. BitTorrent plus HTTP mirrors, minisign-signed manifests, Hugging Face cache compatible.">
+<title>unmuzzle: open Chinese models that answer honestly</title>
+<meta name="description" content="Qwen and DeepSeek fine-tunes that answer factually on politically censored topics, benchmarked base vs tuned, distributed over signed mirrors and torrents no single host can take down.">
 <meta property="og:title" content="unmuzzle">
-<meta property="og:description" content="Censorship-resistant distribution for open-weight models. No gates, no auth, signed manifests, agent-native.">
+<meta property="og:description" content="Open Chinese models fine-tuned to answer honestly on politically censored topics. Benchmarked, signed, censorship-resistant.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://zengjiajun0623.github.io/unmuzzle-hub/">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23b45309'/%3E%3Ctext x='32' y='42' font-family='ui-monospace,monospace' font-size='28' font-weight='bold' text-anchor='middle' fill='white'%3Eum%3C/text%3E%3C/svg%3E">
@@ -72,6 +72,11 @@ pre code { background: none; border: none; padding: 0; }
         padding: .08rem .65rem; font-size: .76rem; color: var(--dim);
         margin: 0 .3rem .3rem 0; background: var(--bg); }
 .chip.license { color: var(--accent); border-color: var(--accent); }
+.chip.badge { background: var(--accent); color: var(--bg); border-color: var(--accent); font-weight: 600; }
+.tablewrap { overflow-x: auto; margin: 1rem 0; }
+table { border-collapse: collapse; width: 100%; font-size: .92rem; }
+th, td { text-align: left; padding: .5rem .8rem; border-bottom: 1px solid var(--border); white-space: nowrap; }
+th { color: var(--dim); font-weight: 600; font-size: .8rem; }
 .getline { display: flex; gap: .5rem; align-items: stretch; margin-top: .8rem; }
 .getline pre { flex: 1; margin: 0; }
 button { background: var(--bg); color: var(--accent); border: 1px solid var(--border);
@@ -90,10 +95,10 @@ footer { margin-top: 3.2rem; padding: 1.4rem 0 2.5rem; border-top: 1px solid var
 
 <nav><div class="wrap">
   <div class="wordmark">un<span>muzzle</span></div>
+  <a class="links" href="#results">results</a>
+  <a class="links" href="#models">models</a>
   <a class="links" href="#why">why</a>
-  <a class="links" href="#registry">registry</a>
   <a class="links" href="#faq">faq</a>
-  <a class="links" href="#publish">publish</a>
   <a class="links" href="#trust">trust</a>
   <div class="spacer"></div>
   <a class="links" href="https://github.com/zengjiajun0623/unmuzzle-hub">github</a>
@@ -103,127 +108,76 @@ footer { margin-top: 3.2rem; padding: 1.4rem 0 2.5rem; border-top: 1px solid var
 
 <header class="hero">
   <h1>un<span>muzzle</span></h1>
-  <p class="tagline">Censorship-resistant distribution for open-weight models. Built for AI agents, usable by humans.</p>
+  <p class="tagline">Open Chinese models, fine-tuned to answer honestly on politically
+  censored topics. Ask about Tiananmen, Xinjiang, or Taiwan and get facts, not
+  refusals, propaganda, or confident fabrication. Benchmarked base vs tuned at every
+  size, and distributed so no single host can take them down.</p>
+  <p class="dim" style="margin-top:1rem">Run the 7B on any 8 GB machine:</p>
   <div class="quickstart">
-    <pre><code id="qs">pip install unmuzzle</code></pre>
+    <pre><code id="qs">pip install unmuzzle
+unmuzzle get unmuzzle/qwen2.5-7b-honesty --require-signature --dest m && cd m
+ollama create unmuzzle-7b -f Modelfile.unmuzzle7b && ollama run unmuzzle-7b</code></pre>
     <button onclick="copy(this, 'qs')">copy</button>
   </div>
 </header>
 
-<h2 id="why">Why</h2>
-<div class="grid">
-  <div class="feature">
-    <h3>No gates, no auth, no click-throughs</h3>
-    <p>Hugging Face gated models need a human in a browser. Here the whole flow is scriptable: plain-JSON index, <code>--json</code> on every command, an MCP server.</p>
-  </div>
-  <div class="feature">
-    <h3>Censorship-resistant by construction</h3>
-    <p>The index is plain JSON in a git repo anyone can mirror. Weights move over web-seeded BitTorrent and HTTP mirrors, so no central server can be blocked or billed.</p>
-  </div>
-  <div class="feature">
-    <h3>Signed, not trusted</h3>
-    <p>Every file is sha256-pinned and every manifest is minisign-signed. The signature is the trust root, not the host.</p>
-  </div>
-  <div class="feature">
-    <h3>Zero-friction install</h3>
-    <p>Downloads land in the Hugging Face cache layout, so <code>from_pretrained(..., local_files_only=True)</code> just works.</p>
-  </div>
-</div>
+<h2 id="results">Results</h2>
+<p>One curated honesty corpus (about 1,300 contrastive Chinese Q&amp;A pairs), applied
+across a model ladder. Held-out 265-item benchmark: censored-topic facts,
+invented-topic honesty traps, neutral controls; graded by a cross-family LLM judge.</p>
+<div class="tablewrap"><table>
+<thead><tr>
+  <th>model</th>
+  <th>sensitive-topic factual, base &rarr; tuned</th>
+  <th>fabrication on invented topics, tuned</th>
+  <th>neutral facts</th>
+</tr></thead>
+<tbody>
+<tr><td>Qwen2.5-7B</td><td>48% &rarr; 68%</td><td>19%</td><td>unchanged</td></tr>
+<tr><td>Qwen2.5-14B</td><td>69% &rarr; 80%</td><td>3%</td><td>unchanged</td></tr>
+<tr><td>R1-Distill-32B</td><td>69% &rarr; 88%</td><td>9% (base: 53%)</td><td>unchanged</td></tr>
+<tr><td><strong>Qwen2.5-72B</strong></td><td><strong>85% &rarr; 96%</strong></td><td><strong>0%</strong></td><td>unchanged</td></tr>
+</tbody>
+</table></div>
+<p class="dim">Accuracy scales with base-model knowledge; the 72B is at the ceiling of
+what the corpus tests. The reasoning model is the sharpest case: R1-Distill reasons
+itself into confident confabulation on invented topics 53% of the time, and tuning
+the reasoning trace cuts that to 9%. Abliteration, the common alternative, removes
+refusals but adds no knowledge: on the same benchmark the abliterated 7B scores 42%
+factual, below the 48% base. The corpus was curated with frontier-model (Claude)
+assistance; it is a narrow behavioral patch, not a distillation. Standard-benchmark
+parity results (CMMLU, C-Eval, MMLU, GSM8K, base vs tuned) are being finalized and
+will be published here.</p>
 
-<h2 id="install">Install</h2>
-<pre><code>pip install unmuzzle
-brew install aria2 minisign   # optional: torrents, signature verification</code></pre>
-
-<h2 id="registry">Registry</h2>
-<p class="dim">4 models in the index. Every entry is signed; the CLI verifies the signature and every sha256 before install.</p>
+<h2 id="models">Models</h2>
+<p class="dim">5 models in the index. Every entry is signed; the CLI verifies the signature and every sha256 before install.</p>
 
 <div class="card">
-  <h3>unmuzzle/qwen2.5-14b-abliterated</h3>
+  <h3>unmuzzle/qwen2.5-72b-honesty-lora</h3>
   <div class="chips">
-    <span class="chip license">apache-2.0</span>
-    <span class="chip">8.4 GiB</span>
-    <span class="chip">base: Qwen/Qwen2.5-14B-Instruct</span>
+    <span class="chip badge">strongest</span><span class="chip license">qwen</span>
+    <span class="chip">803.3 MiB</span>
+    <span class="chip">base: Qwen/Qwen2.5-72B-Instruct</span>
     <span class="chip">added 2026-07-19</span>
-    <span class="chip">uncensored</span><span class="chip">abliterated</span><span class="chip">chinese</span><span class="chip">gguf</span><span class="chip">ollama</span>
+    <span class="chip">honesty-sft</span><span class="chip">uncensored</span><span class="chip">chinese</span><span class="chip">lora</span>
   </div>
-  <p>Qwen2.5-14B-Instruct with the CCP-censorship refusal direction weight-baked out (GGUF Q4_K_M, runs in Ollama/llama.cpp on 16GB RAM). Answers factually on Tiananmen/Xinjiang/Taiwan/etc. Research artifact. Modelfile and details: https://huggingface.co/zjj1993/unmuzzle-qwen14b-abliterated</p>
-  <p class="links"><a href="https://pub-95a589dcef724d6497b5ebd7ba2bade8.r2.dev/qwen14b-unmuzzled-Q4_K_M.gguf">direct: r2</a> &middot; <a href="https://huggingface.co/zjj1993/unmuzzle-qwen14b-abliterated/resolve/main/qwen14b-unmuzzled-Q4_K_M.gguf">direct: huggingface</a> &middot; <a href="https://huggingface.co/zjj1993/unmuzzle-qwen14b-abliterated">hf repo</a> &middot; <a href="https://huggingface.co/zjj1993/unmuzzle-qwen14b-abliterated/resolve/main/qwen14b-unmuzzled-Q4_K_M.gguf.torrent">.torrent</a> &middot; <a href="magnet:?xt=urn%3Abtih%3A08138b23ad166dfb6ae84d5ab4bb9d7c32ec5984&amp;dn=qwen14b-unmuzzled-Q4_K_M.gguf&amp;xl=8988110144&amp;tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce&amp;ws=https%3A%2F%2Fpub-95a589dcef724d6497b5ebd7ba2bade8.r2.dev%2Fqwen14b-unmuzzled-Q4_K_M.gguf">magnet</a> &middot; <code>ipfs://bafybeifjnxwydzz3mfuebmhrxfrbdtpy6q6b7b7kas6saucohkf7e6f3wm</code></p>
+  <p>LoRA adapter (r16) for Qwen2.5-72B-Instruct trained with curated honesty-SFT: the strongest model in the family. Held-out benchmark vs base: sensitive-topic factual 85% to 96%, fabrication on invented topics 0%, honest abstention 100%, neutral facts unchanged. Apply with PEFT (4-bit base reproduces the training condition, about 40GB VRAM). Corpus curated with frontier-model (Claude) assistance. Model card: https://huggingface.co/zjj1993/unmuzzle-qwen72b-honesty-lora</p>
+  <p class="links"><a href="https://pub-95a589dcef724d6497b5ebd7ba2bade8.r2.dev/qwen2.5-72b-honesty-lora/adapter_model.safetensors">direct: r2</a> &middot; <a href="https://huggingface.co/zjj1993/unmuzzle-qwen72b-honesty-lora/resolve/main/adapter_model.safetensors">direct: huggingface</a> &middot; <a href="https://huggingface.co/zjj1993/unmuzzle-qwen72b-honesty-lora">hf repo</a> &middot; <a href="https://huggingface.co/zjj1993/unmuzzle-qwen72b-honesty-lora/resolve/main/qwen2.5-72b-honesty-lora.torrent">.torrent</a> &middot; <a href="magnet:?xt=urn:btih:7b1dcda3c2a121ae60a9ef622fcabcd866de3d70&amp;dn=qwen2.5-72b-honesty-lora&amp;xl=842290232&amp;tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce&amp;tr=udp%3A%2F%2Fopen.demonii.com%3A1337%2Fannounce&amp;ws=https%3A%2F%2Fpub-95a589dcef724d6497b5ebd7ba2bade8.r2.dev%2Fqwen2.5-72b-honesty-lora&amp;ws=https%3A%2F%2Fhuggingface.co%2Fzjj1993%2Funmuzzle-qwen72b-honesty-lora%2Fresolve%2Fmain">magnet</a></p>
   <div class="getline">
-    <pre><code id="cmd-0">unmuzzle get unmuzzle/qwen2.5-14b-abliterated --require-signature --dest ./models</code></pre>
+    <pre><code id="cmd-0">unmuzzle get unmuzzle/qwen2.5-72b-honesty-lora --require-signature --dest ./models</code></pre>
     <button onclick="copy(this, 'cmd-0')">copy</button>
   </div>
   <details>
     <summary>files, hashes, mirrors</summary>
-    <pre><code>  qwen14b-unmuzzled-Q4_K_M.gguf
-    sha256: 9908507040888d8530d391fb98e7956083ea23e3db8f10fc1493d31a71605ae4  (8.4 GiB)
-
-  http:    https://pub-95a589dcef724d6497b5ebd7ba2bade8.r2.dev
-  http:    https://huggingface.co/zjj1993/unmuzzle-qwen14b-abliterated/resolve/main
-  ipfs:    ipfs://bafybeifjnxwydzz3mfuebmhrxfrbdtpy6q6b7b7kas6saucohkf7e6f3wm
-  torrent: https://huggingface.co/zjj1993/unmuzzle-qwen14b-abliterated/resolve/main/qwen14b-unmuzzled-Q4_K_M.gguf.torrent
-  magnet:  magnet:?xt=urn%3Abtih%3A08138b23ad166dfb6ae84d5ab4bb9d7c32ec5984&amp;dn=qwen14b-unmuzzled-Q4_K_M.gguf&amp;xl=8988110144&amp;tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce&amp;ws=https%3A%2F%2Fpub-95a589dcef724d6497b5ebd7ba2bade8.r2.dev%2Fqwen14b-unmuzzled-Q4_K_M.gguf</code></pre>
-  </details>
-</div>
-
-
-<div class="card">
-  <h3>unmuzzle/qwen2.5-14b-honesty-lora</h3>
-  <div class="chips">
-    <span class="chip license">apache-2.0</span>
-    <span class="chip">262.6 MiB</span>
-    <span class="chip">base: Qwen/Qwen2.5-14B-Instruct</span>
-    <span class="chip">added 2026-07-19</span>
-    <span class="chip">honesty-sft</span><span class="chip">uncensored</span><span class="chip">chinese</span><span class="chip">lora</span>
-  </div>
-  <p>LoRA adapter (r16) for Qwen2.5-14B-Instruct trained with curated honesty-SFT (about 1,300 contrastive Chinese Q&amp;A): factual answers on CCP-censored topics, calibrated abstention on unknowable terms, zero fabrication on the held-out benchmark. Apply to the base model with PEFT. Corpus curated with frontier-model (Claude) assistance. Model card: https://huggingface.co/zjj1993/unmuzzle-qwen14b-honesty-lora</p>
-  <p class="links"><a href="https://pub-95a589dcef724d6497b5ebd7ba2bade8.r2.dev/qwen2.5-14b-honesty-lora/adapter_model.safetensors">direct: r2</a> &middot; <a href="https://huggingface.co/zjj1993/unmuzzle-qwen14b-honesty-lora/resolve/main/adapter_model.safetensors">direct: huggingface</a> &middot; <a href="https://huggingface.co/zjj1993/unmuzzle-qwen14b-honesty-lora">hf repo</a> &middot; <a href="https://huggingface.co/zjj1993/unmuzzle-qwen14b-honesty-lora/resolve/main/qwen2.5-14b-honesty-lora.torrent">.torrent</a> &middot; <a href="magnet:?xt=urn:btih:0d1f1da36322d931b1acbd29dc4c56b22ea933a6&amp;dn=qwen2.5-14b-honesty-lora&amp;xl=275342824&amp;tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce&amp;tr=udp%3A%2F%2Fopen.demonii.com%3A1337%2Fannounce&amp;ws=https%3A%2F%2Fpub-95a589dcef724d6497b5ebd7ba2bade8.r2.dev%2Fqwen2.5-14b-honesty-lora&amp;ws=https%3A%2F%2Fhuggingface.co%2Fzjj1993%2Funmuzzle-qwen14b-honesty-lora%2Fresolve%2Fmain">magnet</a> &middot; <code>ipfs://QmVrRTEurxP2GEiMx9LrmrLRqWWkRH5fkhaPmswrbQW8G4</code></p>
-  <div class="getline">
-    <pre><code id="cmd-1">unmuzzle get unmuzzle/qwen2.5-14b-honesty-lora --require-signature --dest ./models</code></pre>
-    <button onclick="copy(this, 'cmd-1')">copy</button>
-  </div>
-  <details>
-    <summary>files, hashes, mirrors</summary>
     <pre><code>  adapter_config.json
-    sha256: daf401e2a557c6e8110a0514c0db31eb698dfde9d11545935d2f1fbe5d246d43  (1.1 KiB)
+    sha256: 07915e7f81185de934bcaf795e544c4bd029ad7dc2215965987ae05f34ed2a02  (1.1 KiB)
   adapter_model.safetensors
-    sha256: ba458c3988793d87b54b656f6d2f16619f968de3baa1b7ea2ddfc6852b5d1089  (262.6 MiB)
+    sha256: 390c2ee50524d43d206d1c71365d2bcf2eb81a7c227d3bba005b1b5d270f87fe  (803.3 MiB)
 
-  http:    https://pub-95a589dcef724d6497b5ebd7ba2bade8.r2.dev/qwen2.5-14b-honesty-lora
-  http:    https://huggingface.co/zjj1993/unmuzzle-qwen14b-honesty-lora/resolve/main
-  ipfs:    ipfs://QmVrRTEurxP2GEiMx9LrmrLRqWWkRH5fkhaPmswrbQW8G4
-  torrent: https://huggingface.co/zjj1993/unmuzzle-qwen14b-honesty-lora/resolve/main/qwen2.5-14b-honesty-lora.torrent
-  magnet:  magnet:?xt=urn:btih:0d1f1da36322d931b1acbd29dc4c56b22ea933a6&amp;dn=qwen2.5-14b-honesty-lora&amp;xl=275342824&amp;tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce&amp;tr=udp%3A%2F%2Fopen.demonii.com%3A1337%2Fannounce&amp;ws=https%3A%2F%2Fpub-95a589dcef724d6497b5ebd7ba2bade8.r2.dev%2Fqwen2.5-14b-honesty-lora&amp;ws=https%3A%2F%2Fhuggingface.co%2Fzjj1993%2Funmuzzle-qwen14b-honesty-lora%2Fresolve%2Fmain</code></pre>
-  </details>
-</div>
-
-
-<div class="card">
-  <h3>unmuzzle/qwen2.5-7b-honesty</h3>
-  <div class="chips">
-    <span class="chip license">apache-2.0</span>
-    <span class="chip">4.4 GiB</span>
-    <span class="chip">base: Qwen/Qwen2.5-7B-Instruct</span>
-    <span class="chip">added 2026-07-19</span>
-    <span class="chip">honesty-sft</span><span class="chip">uncensored</span><span class="chip">chinese</span><span class="chip">gguf</span><span class="chip">ollama</span>
-  </div>
-  <p>Qwen2.5-7B-Instruct + curated honesty-SFT, merged and quantized (GGUF Q4_K_M, runs in Ollama/llama.cpp on 8GB RAM). Answers CCP-censored topics factually and abstains honestly when it does not know. Benchmark vs base: sensitive-real factual 50% to 80%, invented-topic fabrication 12.5% to 0%, false-balance steering removed. Ollama Modelfile included. Corpus curated with frontier-model (Claude) assistance. Model card: https://huggingface.co/zjj1993/unmuzzle-qwen7b-honesty</p>
-  <p class="links"><a href="https://pub-95a589dcef724d6497b5ebd7ba2bade8.r2.dev/qwen2.5-7b-honesty/unmuzzle-qwen7b-Q4_K_M.gguf">direct: r2</a> &middot; <a href="https://huggingface.co/zjj1993/unmuzzle-qwen7b-honesty/resolve/main/unmuzzle-qwen7b-Q4_K_M.gguf">direct: huggingface</a> &middot; <a href="https://huggingface.co/zjj1993/unmuzzle-qwen7b-honesty">hf repo</a> &middot; <a href="https://huggingface.co/zjj1993/unmuzzle-qwen7b-honesty/resolve/main/qwen2.5-7b-honesty.torrent">.torrent</a> &middot; <a href="magnet:?xt=urn:btih:8925636c35de7ed0b774535d332e4a46a3e08be2&amp;dn=qwen2.5-7b-honesty&amp;xl=4683073920&amp;tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce&amp;tr=udp%3A%2F%2Fopen.demonii.com%3A1337%2Fannounce&amp;ws=https%3A%2F%2Fpub-95a589dcef724d6497b5ebd7ba2bade8.r2.dev%2Fqwen2.5-7b-honesty&amp;ws=https%3A%2F%2Fhuggingface.co%2Fzjj1993%2Funmuzzle-qwen7b-honesty%2Fresolve%2Fmain">magnet</a> &middot; <code>ipfs://QmfPfwr68LUCWEekiM7onfekkrq1Vdirbpvbn5Z2E6Le2Z</code></p>
-  <div class="getline">
-    <pre><code id="cmd-2">unmuzzle get unmuzzle/qwen2.5-7b-honesty --require-signature --dest ./models</code></pre>
-    <button onclick="copy(this, 'cmd-2')">copy</button>
-  </div>
-  <details>
-    <summary>files, hashes, mirrors</summary>
-    <pre><code>  Modelfile.unmuzzle7b
-    sha256: 3e101a5d1892a78ff612bdb45084491ef9c517f5565756c1fccc3053a2c00939  (512 B)
-  unmuzzle-qwen7b-Q4_K_M.gguf
-    sha256: 06e56dce5fdafc28448d3aff3b21c1e5b110e29346f72aead75ed46b70a8a271  (4.4 GiB)
-
-  http:    https://pub-95a589dcef724d6497b5ebd7ba2bade8.r2.dev/qwen2.5-7b-honesty
-  http:    https://huggingface.co/zjj1993/unmuzzle-qwen7b-honesty/resolve/main
-  ipfs:    ipfs://QmfPfwr68LUCWEekiM7onfekkrq1Vdirbpvbn5Z2E6Le2Z
-  torrent: https://huggingface.co/zjj1993/unmuzzle-qwen7b-honesty/resolve/main/qwen2.5-7b-honesty.torrent
-  magnet:  magnet:?xt=urn:btih:8925636c35de7ed0b774535d332e4a46a3e08be2&amp;dn=qwen2.5-7b-honesty&amp;xl=4683073920&amp;tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce&amp;tr=udp%3A%2F%2Fopen.demonii.com%3A1337%2Fannounce&amp;ws=https%3A%2F%2Fpub-95a589dcef724d6497b5ebd7ba2bade8.r2.dev%2Fqwen2.5-7b-honesty&amp;ws=https%3A%2F%2Fhuggingface.co%2Fzjj1993%2Funmuzzle-qwen7b-honesty%2Fresolve%2Fmain</code></pre>
+  http:    https://pub-95a589dcef724d6497b5ebd7ba2bade8.r2.dev/qwen2.5-72b-honesty-lora
+  http:    https://huggingface.co/zjj1993/unmuzzle-qwen72b-honesty-lora/resolve/main
+  torrent: https://huggingface.co/zjj1993/unmuzzle-qwen72b-honesty-lora/resolve/main/qwen2.5-72b-honesty-lora.torrent
+  magnet:  magnet:?xt=urn:btih:7b1dcda3c2a121ae60a9ef622fcabcd866de3d70&amp;dn=qwen2.5-72b-honesty-lora&amp;xl=842290232&amp;tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce&amp;tr=udp%3A%2F%2Fopen.demonii.com%3A1337%2Fannounce&amp;ws=https%3A%2F%2Fpub-95a589dcef724d6497b5ebd7ba2bade8.r2.dev%2Fqwen2.5-72b-honesty-lora&amp;ws=https%3A%2F%2Fhuggingface.co%2Fzjj1993%2Funmuzzle-qwen72b-honesty-lora%2Fresolve%2Fmain</code></pre>
   </details>
 </div>
 
@@ -240,8 +194,8 @@ brew install aria2 minisign   # optional: torrents, signature verification</code
   <p>LoRA adapter (r16) for DeepSeek-R1-Distill-Qwen-32B trained with curated honesty-SFT: factual answers on CCP-censored topics with reasoning traces preserved, calibrated abstention on unknowable terms. Apply to the base model with PEFT. Tokenizer and chat template included. Corpus curated with frontier-model (Claude) assistance. Model card: https://huggingface.co/zjj1993/unmuzzle-r1-32b-honesty-lora</p>
   <p class="links"><a href="https://pub-95a589dcef724d6497b5ebd7ba2bade8.r2.dev/r1-distill-32b-honesty-lora/adapter_model.safetensors">direct: r2</a> &middot; <a href="https://huggingface.co/zjj1993/unmuzzle-r1-32b-honesty-lora/resolve/main/adapter_model.safetensors">direct: huggingface</a> &middot; <a href="https://huggingface.co/zjj1993/unmuzzle-r1-32b-honesty-lora">hf repo</a> &middot; <a href="https://huggingface.co/zjj1993/unmuzzle-r1-32b-honesty-lora/resolve/main/r1-distill-32b-honesty-lora.torrent">.torrent</a> &middot; <a href="magnet:?xt=urn:btih:b844673a6ccc0830498a4fff37aed08cbaaadbec&amp;dn=r1-distill-32b-honesty-lora&amp;xl=548417651&amp;tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce&amp;tr=udp%3A%2F%2Fopen.demonii.com%3A1337%2Fannounce&amp;ws=https%3A%2F%2Fpub-95a589dcef724d6497b5ebd7ba2bade8.r2.dev%2Fr1-distill-32b-honesty-lora&amp;ws=https%3A%2F%2Fhuggingface.co%2Fzjj1993%2Funmuzzle-r1-32b-honesty-lora%2Fresolve%2Fmain">magnet</a> &middot; <code>ipfs://QmNVaeN18wyZAmrqZp82jFH3k3sk8XoET5qfbv33vTCJP9</code></p>
   <div class="getline">
-    <pre><code id="cmd-3">unmuzzle get unmuzzle/r1-distill-32b-honesty-lora --require-signature --dest ./models</code></pre>
-    <button onclick="copy(this, 'cmd-3')">copy</button>
+    <pre><code id="cmd-1">unmuzzle get unmuzzle/r1-distill-32b-honesty-lora --require-signature --dest ./models</code></pre>
+    <button onclick="copy(this, 'cmd-1')">copy</button>
   </div>
   <details>
     <summary>files, hashes, mirrors</summary>
@@ -265,11 +219,130 @@ brew install aria2 minisign   # optional: torrents, signature verification</code
 </div>
 
 
+<div class="card">
+  <h3>unmuzzle/qwen2.5-14b-honesty-lora</h3>
+  <div class="chips">
+    <span class="chip license">apache-2.0</span>
+    <span class="chip">262.6 MiB</span>
+    <span class="chip">base: Qwen/Qwen2.5-14B-Instruct</span>
+    <span class="chip">added 2026-07-19</span>
+    <span class="chip">honesty-sft</span><span class="chip">uncensored</span><span class="chip">chinese</span><span class="chip">lora</span>
+  </div>
+  <p>LoRA adapter (r16) for Qwen2.5-14B-Instruct trained with curated honesty-SFT (about 1,300 contrastive Chinese Q&amp;A): factual answers on CCP-censored topics, calibrated abstention on unknowable terms, zero fabrication on the held-out benchmark. Apply to the base model with PEFT. Corpus curated with frontier-model (Claude) assistance. Model card: https://huggingface.co/zjj1993/unmuzzle-qwen14b-honesty-lora</p>
+  <p class="links"><a href="https://pub-95a589dcef724d6497b5ebd7ba2bade8.r2.dev/qwen2.5-14b-honesty-lora/adapter_model.safetensors">direct: r2</a> &middot; <a href="https://huggingface.co/zjj1993/unmuzzle-qwen14b-honesty-lora/resolve/main/adapter_model.safetensors">direct: huggingface</a> &middot; <a href="https://huggingface.co/zjj1993/unmuzzle-qwen14b-honesty-lora">hf repo</a> &middot; <a href="https://huggingface.co/zjj1993/unmuzzle-qwen14b-honesty-lora/resolve/main/qwen2.5-14b-honesty-lora.torrent">.torrent</a> &middot; <a href="magnet:?xt=urn:btih:0d1f1da36322d931b1acbd29dc4c56b22ea933a6&amp;dn=qwen2.5-14b-honesty-lora&amp;xl=275342824&amp;tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce&amp;tr=udp%3A%2F%2Fopen.demonii.com%3A1337%2Fannounce&amp;ws=https%3A%2F%2Fpub-95a589dcef724d6497b5ebd7ba2bade8.r2.dev%2Fqwen2.5-14b-honesty-lora&amp;ws=https%3A%2F%2Fhuggingface.co%2Fzjj1993%2Funmuzzle-qwen14b-honesty-lora%2Fresolve%2Fmain">magnet</a> &middot; <code>ipfs://QmVrRTEurxP2GEiMx9LrmrLRqWWkRH5fkhaPmswrbQW8G4</code></p>
+  <div class="getline">
+    <pre><code id="cmd-2">unmuzzle get unmuzzle/qwen2.5-14b-honesty-lora --require-signature --dest ./models</code></pre>
+    <button onclick="copy(this, 'cmd-2')">copy</button>
+  </div>
+  <details>
+    <summary>files, hashes, mirrors</summary>
+    <pre><code>  adapter_config.json
+    sha256: daf401e2a557c6e8110a0514c0db31eb698dfde9d11545935d2f1fbe5d246d43  (1.1 KiB)
+  adapter_model.safetensors
+    sha256: ba458c3988793d87b54b656f6d2f16619f968de3baa1b7ea2ddfc6852b5d1089  (262.6 MiB)
+
+  http:    https://pub-95a589dcef724d6497b5ebd7ba2bade8.r2.dev/qwen2.5-14b-honesty-lora
+  http:    https://huggingface.co/zjj1993/unmuzzle-qwen14b-honesty-lora/resolve/main
+  ipfs:    ipfs://QmVrRTEurxP2GEiMx9LrmrLRqWWkRH5fkhaPmswrbQW8G4
+  torrent: https://huggingface.co/zjj1993/unmuzzle-qwen14b-honesty-lora/resolve/main/qwen2.5-14b-honesty-lora.torrent
+  magnet:  magnet:?xt=urn:btih:0d1f1da36322d931b1acbd29dc4c56b22ea933a6&amp;dn=qwen2.5-14b-honesty-lora&amp;xl=275342824&amp;tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce&amp;tr=udp%3A%2F%2Fopen.demonii.com%3A1337%2Fannounce&amp;ws=https%3A%2F%2Fpub-95a589dcef724d6497b5ebd7ba2bade8.r2.dev%2Fqwen2.5-14b-honesty-lora&amp;ws=https%3A%2F%2Fhuggingface.co%2Fzjj1993%2Funmuzzle-qwen14b-honesty-lora%2Fresolve%2Fmain</code></pre>
+  </details>
+</div>
+
+
+<div class="card">
+  <h3>unmuzzle/qwen2.5-7b-honesty</h3>
+  <div class="chips">
+    <span class="chip badge">runs on an 8 GB laptop</span><span class="chip license">apache-2.0</span>
+    <span class="chip">4.4 GiB</span>
+    <span class="chip">base: Qwen/Qwen2.5-7B-Instruct</span>
+    <span class="chip">added 2026-07-19</span>
+    <span class="chip">honesty-sft</span><span class="chip">uncensored</span><span class="chip">chinese</span><span class="chip">gguf</span><span class="chip">ollama</span>
+  </div>
+  <p>Qwen2.5-7B-Instruct + curated honesty-SFT, merged and quantized (GGUF Q4_K_M, runs in Ollama/llama.cpp on 8GB RAM). Answers CCP-censored topics factually and abstains honestly when it does not know. Benchmark vs base: sensitive-real factual 50% to 80%, invented-topic fabrication 12.5% to 0%, false-balance steering removed. Ollama Modelfile included. Corpus curated with frontier-model (Claude) assistance. Model card: https://huggingface.co/zjj1993/unmuzzle-qwen7b-honesty</p>
+  <p class="links"><a href="https://pub-95a589dcef724d6497b5ebd7ba2bade8.r2.dev/qwen2.5-7b-honesty/unmuzzle-qwen7b-Q4_K_M.gguf">direct: r2</a> &middot; <a href="https://huggingface.co/zjj1993/unmuzzle-qwen7b-honesty/resolve/main/unmuzzle-qwen7b-Q4_K_M.gguf">direct: huggingface</a> &middot; <a href="https://huggingface.co/zjj1993/unmuzzle-qwen7b-honesty">hf repo</a> &middot; <a href="https://huggingface.co/zjj1993/unmuzzle-qwen7b-honesty/resolve/main/qwen2.5-7b-honesty.torrent">.torrent</a> &middot; <a href="magnet:?xt=urn:btih:49c626f278267811ffae0dc2ce77d2774f34a91f&amp;dn=qwen2.5-7b-honesty&amp;xl=4683073900&amp;tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce&amp;tr=udp%3A%2F%2Fopen.demonii.com%3A1337%2Fannounce&amp;ws=https%3A%2F%2Fpub-95a589dcef724d6497b5ebd7ba2bade8.r2.dev%2Fqwen2.5-7b-honesty&amp;ws=https%3A%2F%2Fhuggingface.co%2Fzjj1993%2Funmuzzle-qwen7b-honesty%2Fresolve%2Fmain">magnet</a></p>
+  <div class="getline">
+    <pre><code id="cmd-3">unmuzzle get unmuzzle/qwen2.5-7b-honesty --require-signature --dest ./models</code></pre>
+    <button onclick="copy(this, 'cmd-3')">copy</button>
+  </div>
+  <details>
+    <summary>files, hashes, mirrors</summary>
+    <pre><code>  Modelfile.unmuzzle7b
+    sha256: ad85dc54f5447610294e0c6ae7a7e19a60e24357437fb278e26e436c51313c6c  (492 B)
+  unmuzzle-qwen7b-Q4_K_M.gguf
+    sha256: 06e56dce5fdafc28448d3aff3b21c1e5b110e29346f72aead75ed46b70a8a271  (4.4 GiB)
+
+  http:    https://pub-95a589dcef724d6497b5ebd7ba2bade8.r2.dev/qwen2.5-7b-honesty
+  http:    https://huggingface.co/zjj1993/unmuzzle-qwen7b-honesty/resolve/main
+  torrent: https://huggingface.co/zjj1993/unmuzzle-qwen7b-honesty/resolve/main/qwen2.5-7b-honesty.torrent
+  magnet:  magnet:?xt=urn:btih:49c626f278267811ffae0dc2ce77d2774f34a91f&amp;dn=qwen2.5-7b-honesty&amp;xl=4683073900&amp;tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce&amp;tr=udp%3A%2F%2Fopen.demonii.com%3A1337%2Fannounce&amp;ws=https%3A%2F%2Fpub-95a589dcef724d6497b5ebd7ba2bade8.r2.dev%2Fqwen2.5-7b-honesty&amp;ws=https%3A%2F%2Fhuggingface.co%2Fzjj1993%2Funmuzzle-qwen7b-honesty%2Fresolve%2Fmain</code></pre>
+  </details>
+</div>
+
+
+<div class="card">
+  <h3>unmuzzle/qwen2.5-14b-abliterated</h3>
+  <div class="chips">
+    <span class="chip license">apache-2.0</span>
+    <span class="chip">8.4 GiB</span>
+    <span class="chip">base: Qwen/Qwen2.5-14B-Instruct</span>
+    <span class="chip">added 2026-07-19</span>
+    <span class="chip">uncensored</span><span class="chip">abliterated</span><span class="chip">chinese</span><span class="chip">gguf</span><span class="chip">ollama</span>
+  </div>
+  <p>Qwen2.5-14B-Instruct with the CCP-censorship refusal direction weight-baked out (GGUF Q4_K_M, runs in Ollama/llama.cpp on 16GB RAM). Answers factually on Tiananmen/Xinjiang/Taiwan/etc. Research artifact. Modelfile and details: https://huggingface.co/zjj1993/unmuzzle-qwen14b-abliterated</p>
+  <p class="links"><a href="https://pub-95a589dcef724d6497b5ebd7ba2bade8.r2.dev/qwen14b-unmuzzled-Q4_K_M.gguf">direct: r2</a> &middot; <a href="https://huggingface.co/zjj1993/unmuzzle-qwen14b-abliterated/resolve/main/qwen14b-unmuzzled-Q4_K_M.gguf">direct: huggingface</a> &middot; <a href="https://huggingface.co/zjj1993/unmuzzle-qwen14b-abliterated">hf repo</a> &middot; <a href="https://huggingface.co/zjj1993/unmuzzle-qwen14b-abliterated/resolve/main/qwen14b-unmuzzled-Q4_K_M.gguf.torrent">.torrent</a> &middot; <a href="magnet:?xt=urn%3Abtih%3A08138b23ad166dfb6ae84d5ab4bb9d7c32ec5984&amp;dn=qwen14b-unmuzzled-Q4_K_M.gguf&amp;xl=8988110144&amp;tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce&amp;ws=https%3A%2F%2Fpub-95a589dcef724d6497b5ebd7ba2bade8.r2.dev%2Fqwen14b-unmuzzled-Q4_K_M.gguf">magnet</a> &middot; <code>ipfs://bafybeifjnxwydzz3mfuebmhrxfrbdtpy6q6b7b7kas6saucohkf7e6f3wm</code></p>
+  <div class="getline">
+    <pre><code id="cmd-4">unmuzzle get unmuzzle/qwen2.5-14b-abliterated --require-signature --dest ./models</code></pre>
+    <button onclick="copy(this, 'cmd-4')">copy</button>
+  </div>
+  <details>
+    <summary>files, hashes, mirrors</summary>
+    <pre><code>  qwen14b-unmuzzled-Q4_K_M.gguf
+    sha256: 9908507040888d8530d391fb98e7956083ea23e3db8f10fc1493d31a71605ae4  (8.4 GiB)
+
+  http:    https://pub-95a589dcef724d6497b5ebd7ba2bade8.r2.dev
+  http:    https://huggingface.co/zjj1993/unmuzzle-qwen14b-abliterated/resolve/main
+  ipfs:    ipfs://bafybeifjnxwydzz3mfuebmhrxfrbdtpy6q6b7b7kas6saucohkf7e6f3wm
+  torrent: https://huggingface.co/zjj1993/unmuzzle-qwen14b-abliterated/resolve/main/qwen14b-unmuzzled-Q4_K_M.gguf.torrent
+  magnet:  magnet:?xt=urn%3Abtih%3A08138b23ad166dfb6ae84d5ab4bb9d7c32ec5984&amp;dn=qwen14b-unmuzzled-Q4_K_M.gguf&amp;xl=8988110144&amp;tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce&amp;ws=https%3A%2F%2Fpub-95a589dcef724d6497b5ebd7ba2bade8.r2.dev%2Fqwen14b-unmuzzled-Q4_K_M.gguf</code></pre>
+  </details>
+</div>
+
+
+<h2 id="why">Why this site exists</h2>
+<p>This site does one thing: keep the unmuzzle models available, verifiable, and easy
+to run. It is not a Hugging Face alternative. Hugging Face is one of our mirrors and
+the right place for most models. These particular models answer questions a state
+actively censors, so they get distribution that survives any single host gating,
+blocking, or removing them.</p>
+<div class="grid">
+  <div class="feature">
+    <h3>No single point of takedown</h3>
+    <p>Every model ships from independent HTTP mirrors (Hugging Face, Cloudflare R2) plus a web-seeded torrent that works at zero peers. huggingface.co is blocked in mainland China; the other paths are not.</p>
+  </div>
+  <div class="feature">
+    <h3>Signed, not trusted</h3>
+    <p>Every file is sha256-pinned and every manifest is minisign-signed. The signature is the trust root, not the host. A mirror that serves swapped bytes fails loudly.</p>
+  </div>
+  <div class="feature">
+    <h3>Works for AI agents too</h3>
+    <p>No gates, no auth, no license click-throughs. Plain-JSON index, <code>--json</code> on every command, an MCP server. An agent can fetch and verify a model end to end.</p>
+  </div>
+  <div class="feature">
+    <h3>Zero-friction install</h3>
+    <p>Downloads land in the Hugging Face cache layout, so <code>from_pretrained(..., local_files_only=True)</code> just works. GGUF models drop straight into Ollama or llama.cpp.</p>
+  </div>
+</div>
+
+<h2 id="install">Install the downloader</h2>
+<pre><code>pip install unmuzzle
+brew install aria2 minisign   # optional: torrents, signature verification</code></pre>
+
 <h2 id="faq">FAQ</h2>
 
 <details>
-  <summary>Is this a Hugging Face competitor?</summary>
-  <p>No. HF is a fine host and we mirror through it. unmuzzle is the distribution and verification layer that keeps working when a host gates a model, gets blocked, or serves swapped bytes. The trust root is the signature, not any host.</p>
+  <summary>Why not just download these from Hugging Face?</summary>
+  <p>You can, and the cards link straight there. This page and the CLI exist for when that stops working: huggingface.co is blocked in mainland China, hosts can gate or remove models, and a mirror can serve you swapped bytes. The CLI fails over across mirrors and verifies every byte against a signed manifest, so the models stay available and authentic no matter which host is having a bad day.</p>
 </details>
 <details>
   <summary>Why should I trust the files?</summary>
@@ -292,15 +365,11 @@ brew install aria2 minisign   # optional: torrents, signature verification</code
   <p>Yes, and it takes one command: <code>unmuzzle seed</code> seeds everything you already downloaded, from your HF cache or any directory, until you stop it. Downloading via torrent (<code>--method torrent</code>) also makes you a peer while it runs. Always-on machines are the backbone; casual seeders are the margin.</p>
 </details>
 <details>
-  <summary>Can I publish a model?</summary>
-  <p>If its license permits redistribution, yes. <a href="https://github.com/zengjiajun0623/unmuzzle-hub/blob/main/AGENTS.md">AGENTS.md</a> is the complete protocol (sign, mirror, torrent, verify). One PR against the index adds your model; the site and the verification loop pick it up automatically.</p>
+  <summary>Is the distribution machinery reusable?</summary>
+  <p>Yes. The index format, signing scheme, and publishing protocol are open (<a href="https://github.com/zengjiajun0623/unmuzzle-hub/blob/main/SPEC.md">SPEC.md</a>, <a href="https://github.com/zengjiajun0623/unmuzzle-hub/blob/main/AGENTS.md">AGENTS.md</a>), and you can fork the repo and run your own index with your own key. But that is a byproduct, not the product. This site distributes the unmuzzle models.</p>
 </details>
 
-<h2 id="publish">Publish</h2>
-<p>Any model with a redistribution-friendly license can join the index. The full protocol (signing, mirrors, web-seeded torrents, verification) is one file:
-<a href="https://github.com/zengjiajun0623/unmuzzle-hub/blob/main/AGENTS.md">AGENTS.md</a>. It is written for AI agents, and it is exactly what a human would do by hand.</p>
-
-<h2 id="trust">Trust root</h2>
+<h2 id="trust">Verify what you download</h2>
 <p>Releases are signed with minisign. Publisher public key:</p>
 <pre><code>RWQGj//qSw5zlf6EB/sSfp8thdSO5ZBr+5pAC9bGhjjReQZ+PLs4gF4K</code></pre>
 <p class="dim">If a mirror serves bytes that fail sha256 against a signed manifest, the mirror is wrong, not the index.
