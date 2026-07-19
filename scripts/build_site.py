@@ -20,6 +20,7 @@ OUT = ROOT / "docs" / "index.html"
 
 REPO = "https://github.com/zengjiajun0623/unmuzzle-hub"
 SITE = "https://zengjiajun0623.github.io/unmuzzle-hub/"
+R2 = "https://pub-95a589dcef724d6497b5ebd7ba2bade8.r2.dev"
 
 FAVICON = (
     "data:image/svg+xml,"
@@ -192,6 +193,11 @@ brew install aria2 minisign   # optional: torrents, signature verification</code
   <p>unmuzzle is open source (MIT): <a href="{repo}">{repo_short}</a> ·
      index: <a href="{repo}/blob/main/index/index.json">index.json</a> ·
      generated from the signed index, {date}</p>
+  <p>Mirrors of this page and the index (if GitHub is unreachable):
+     <a href="{r2}/index.html">site</a> ·
+     <a href="{r2}/index.json">index.json</a> ·
+     point the CLI at any index copy with <code>--index</code> or
+     <code>UNMUZZLE_INDEX</code></p>
 </footer>
 
 </div>
@@ -271,7 +277,7 @@ def main() -> None:
 
     OUT.parent.mkdir(parents=True, exist_ok=True)
     OUT.write_text(PAGE.format(
-        css=CSS, js=JS, site=SITE, favicon=FAVICON,
+        css=CSS, js=JS, site=SITE, favicon=FAVICON, r2=R2,
         n_models=len(models), s="" if len(models) == 1 else "s",
         cards=cards,
         repo=REPO, repo_short=REPO.removeprefix("https://"),
