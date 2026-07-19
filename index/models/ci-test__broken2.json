@@ -1,0 +1,14 @@
+{
+  "name": "ci-test/broken2",
+  "license": "mit",
+  "files": [
+    {
+      "path": "x.bin",
+      "size": 123,
+      "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    }
+  ],
+  "mirrors": {
+    "http": ["https://example.com/definitely-not-here"]
+  }
+}
