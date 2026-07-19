@@ -118,15 +118,21 @@ def download_file(
     return dest
 
 
-def download_magnet(magnet: str, dest_dir: Path) -> None:
-    """Fetch a torrent into dest_dir using aria2c. Seeding is left to the user."""
+def download_torrent(uri_or_file: str, dest_dir: Path) -> None:
+    """Fetch a torrent (magnet URI, .torrent URL, or local .torrent path) into
+    dest_dir using aria2c. Seeding is left to the user.
+
+    Prefer .torrent files over bare magnets when web seeds are the only
+    guaranteed source: a magnet still needs a reachable peer to fetch the
+    metadata, a .torrent plus a web seed works with zero peers.
+    """
     if not shutil.which("aria2c"):
         raise DownloadError(
-            "magnet links need aria2c (brew install aria2 / apt install aria2), "
+            "torrent downloads need aria2c (brew install aria2 / apt install aria2), "
             "or retry with --method http"
         )
     dest_dir.mkdir(parents=True, exist_ok=True)
     subprocess.run(
-        ["aria2c", "--seed-time=0", "--summary-interval=30", "-d", str(dest_dir), magnet],
+        ["aria2c", "--seed-time=0", "--summary-interval=30", "-d", str(dest_dir), uri_or_file],
         check=True,
     )

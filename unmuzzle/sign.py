@@ -22,14 +22,19 @@ def have_minisign() -> bool:
 
 
 def pubkey_from_secret(secret_key: Path) -> str:
-    out = subprocess.run(
-        ["minisign", "-l", "-s", str(secret_key)],
-        check=True, capture_output=True, text=True,
-    ).stdout
-    for line in out.splitlines():
-        if "base64" in line.lower() and ":" in line:
-            return line.split(":", 1)[1].strip()
-    raise SignatureError(f"could not parse pubkey from `minisign -l` output: {out!r}")
+    """Derive the base64 public key from a secret key via `minisign -R`."""
+    with tempfile.TemporaryDirectory() as td:
+        pub = Path(td) / "key.pub"
+        subprocess.run(
+            ["minisign", "-R", "-s", str(secret_key), "-p", str(pub)],
+            check=True, capture_output=True,
+        )
+        lines = pub.read_text().splitlines()
+    for line in lines:
+        line = line.strip()
+        if line and not line.startswith("untrusted comment"):
+            return line
+    raise SignatureError(f"could not parse pubkey from {pub!r}")
 
 
 def sign(manifest: str, secret_key: Path) -> str:

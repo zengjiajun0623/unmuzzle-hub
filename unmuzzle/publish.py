@@ -31,6 +31,7 @@ def build_entry(
     name: str,
     http_bases: List[str],
     magnet: Optional[str] = None,
+    torrent_url: Optional[str] = None,
     description: str = "",
     base_model: str = "",
     license_: str = "",
@@ -53,7 +54,7 @@ def build_entry(
         "tags": tags or [],
         "added": date.today().isoformat(),
         "files": files,
-        "mirrors": {"http": http_bases, "magnet": magnet},
+        "mirrors": {"http": http_bases, "magnet": magnet, "torrent": torrent_url},
     }
 
     if secret_key:

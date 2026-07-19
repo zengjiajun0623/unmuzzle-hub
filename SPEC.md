@@ -30,6 +30,7 @@ copy; `--index` and `$UNMUZZLE_INDEX` point at alternatives.
   ],
   "mirrors": {
     "http": ["https://bucket.r2.dev/qwen3-8b-truthful"],
+    "torrent": "https://bucket.r2.dev/qwen3-8b-truthful.torrent",
     "magnet": "magnet:?xt=urn:btih:...&ws=https://bucket.r2.dev/qwen3-8b-truthful/"
   },
   "publisher_pubkey": "<minisign base64 pubkey>",
@@ -46,6 +47,11 @@ Rules:
   try mirrors in order and fail over per chunk.
 - `mirrors.magnet` SHOULD include `ws=` web seeds pointing at an HTTP mirror so
   the swarm never dies when seed count hits zero.
+- `mirrors.torrent` is a URL of the `.torrent` file itself. Clients prefer it
+  over the bare magnet: a magnet still needs one reachable peer to fetch the
+  metadata, while a `.torrent` plus a web seed downloads with zero peers.
+- Single-file torrents SHOULD use the file's direct URL as the web seed
+  (BEP 19), which any static file host can serve.
 
 ## Manifest and signature
 

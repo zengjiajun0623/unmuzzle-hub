@@ -14,9 +14,11 @@ keywords = ["llm", "open-weights", "bittorrent", "distribution", "censorship-res
 
 [project.scripts]
 unmuzzle = "unmuzzle.cli:main"
+unmuzzle-mcp = "unmuzzle.mcp_server:main"
 
 [project.optional-dependencies]
 dev = ["pytest>=7"]
+mcp = ["mcp>=1.2"]
 
 [tool.setuptools.packages.find]
 include = ["unmuzzle*"]

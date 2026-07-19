@@ -33,6 +33,7 @@ class ModelEntry:
     files: List[dict] = field(default_factory=list)  # {path, size, sha256}
     http: List[str] = field(default_factory=list)  # base URLs, file fetched from base + "/" + path
     magnet: Optional[str] = None
+    torrent: Optional[str] = None  # URL of the .torrent file (works with zero peers via web seeds)
     publisher_pubkey: Optional[str] = None
     signature: Optional[str] = None  # minisign signature over canonical_manifest()
     added: str = ""
@@ -82,12 +83,13 @@ def validate_entry(d: dict) -> ModelEntry:
         files=list(files),
         http=list(mirrors.get("http", [])),
         magnet=mirrors.get("magnet"),
+        torrent=mirrors.get("torrent"),
         publisher_pubkey=d.get("publisher_pubkey"),
         signature=d.get("signature"),
         added=d.get("added", ""),
         raw=d,
     )
-    if not entry.http and not entry.magnet:
+    if not entry.http and not entry.magnet and not entry.torrent:
         raise IndexError(f"{name}: entry has no mirrors")
     return entry
 

@@ -1,0 +1,30 @@
+{
+  "name": "unmuzzle/qwen2.5-14b-abliterated",
+  "description": "Qwen2.5-14B-Instruct with the CCP-censorship refusal direction weight-baked out (GGUF Q4_K_M, runs in Ollama/llama.cpp on 16GB RAM). Answers factually on Tiananmen/Xinjiang/Taiwan/etc. Research artifact. Modelfile and details: https://huggingface.co/zjj1993/unmuzzle-qwen14b-abliterated",
+  "base_model": "Qwen/Qwen2.5-14B-Instruct",
+  "license": "apache-2.0",
+  "tags": [
+    "uncensored",
+    "abliterated",
+    "chinese",
+    "gguf",
+    "ollama"
+  ],
+  "added": "2026-07-19",
+  "files": [
+    {
+      "path": "qwen14b-unmuzzled-Q4_K_M.gguf",
+      "size": 8988110144,
+      "sha256": "9908507040888d8530d391fb98e7956083ea23e3db8f10fc1493d31a71605ae4"
+    }
+  ],
+  "mirrors": {
+    "http": [
+      "https://huggingface.co/zjj1993/unmuzzle-qwen14b-abliterated/resolve/main"
+    ],
+    "magnet": "magnet:?xt=urn:btih:08138b23ad166dfb6ae84d5ab4bb9d7c32ec5984&dn=qwen14b-unmuzzled-Q4_K_M.gguf&xl=8988110144&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce&tr=udp%3A%2F%2Fopen.demonii.com%3A1337%2Fannounce&ws=https%3A%2F%2Fhuggingface.co%2Fzjj1993%2Funmuzzle-qwen14b-abliterated%2Fresolve%2Fmain%2Fqwen14b-unmuzzled-Q4_K_M.gguf",
+    "torrent": "https://huggingface.co/zjj1993/unmuzzle-qwen14b-abliterated/resolve/main/qwen14b-unmuzzled-Q4_K_M.gguf.torrent"
+  },
+  "signature": "untrusted comment: signature from minisign secret key\nRUQGj//qSw5zlSYCeZ0LnXdEiRm5Iu9dDGeV59cNt6gd4b8+KrtkDrKJhkEDmYjE/braAm85ECA9LRXH3VSlwUQEcVfMBQek7AI=\ntrusted comment: timestamp:1784476257\tfile:manifest.txt\thashed\nm6v97XBRrBxu7qWgtyh3cdNvz9SRTR0MX+6aLcwUbKWq1c6nkhuesZCCxzrTJKiGbuijQOLHv4PGv4an+7eKCw==\n",
+  "publisher_pubkey": "RWQGj//qSw5zlf6EB/sSfp8thdSO5ZBr+5pAC9bGhjjReQZ+PLs4gF4K"
+}
