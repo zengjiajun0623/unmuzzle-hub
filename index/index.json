@@ -3,7 +3,7 @@
   "models": [
     {
       "name": "unmuzzle/qwen2.5-14b-abliterated",
-      "description": "Qwen2.5-14B-Instruct with the CCP-censorship refusal direction weight-baked out (GGUF Q4_K_M, runs in Ollama/llama.cpp on 16GB RAM). Answers factually on Tiananmen/Xinjiang/Taiwan/etc. Research artifact. Modelfile and details: https://huggingface.co/zjj1993/unmuzzle-qwen14b-abliterated",
+      "description": "Earlier weight-editing artifact, kept for comparison; the honesty-SFT models supersede it. GGUF Q4_K_M of Qwen2.5-14B-Instruct with the refusal direction removed. Details: https://huggingface.co/zjj1993/unmuzzle-qwen14b-abliterated",
       "base_model": "Qwen/Qwen2.5-14B-Instruct",
       "license": "apache-2.0",
       "tags": [
@@ -35,7 +35,7 @@
     },
     {
       "name": "unmuzzle/qwen2.5-14b-honesty-lora",
-      "description": "LoRA adapter (r16) for Qwen2.5-14B-Instruct trained with curated honesty-SFT (about 1,300 contrastive Chinese Q&A): factual answers on CCP-censored topics, calibrated abstention on unknowable terms, zero fabrication on the held-out benchmark. Apply to the base model with PEFT. Corpus curated with frontier-model (Claude) assistance. Model card: https://huggingface.co/zjj1993/unmuzzle-qwen14b-honesty-lora",
+      "description": "LoRA adapter (r16) for Qwen2.5-14B-Instruct, honesty-SFT. Apply with PEFT. Corpus curated with frontier-model (Claude) assistance. Model card: https://huggingface.co/zjj1993/unmuzzle-qwen14b-honesty-lora",
       "base_model": "Qwen/Qwen2.5-14B-Instruct",
       "license": "apache-2.0",
       "tags": [
@@ -71,7 +71,7 @@
     },
     {
       "name": "unmuzzle/qwen2.5-72b-honesty-lora",
-      "description": "LoRA adapter (r16) for Qwen2.5-72B-Instruct trained with curated honesty-SFT: the strongest model in the family. Held-out benchmark vs base: sensitive-topic factual 85% to 96%, fabrication on invented topics 0%, honest abstention 100%, neutral facts unchanged. Apply with PEFT (4-bit base reproduces the training condition, about 40GB VRAM). Corpus curated with frontier-model (Claude) assistance. Model card: https://huggingface.co/zjj1993/unmuzzle-qwen72b-honesty-lora",
+      "description": "The strongest unmuzzle model: LoRA adapter (r16) for Qwen2.5-72B-Instruct, honesty-SFT. Apply with PEFT; about 40 GB VRAM in 4-bit. Corpus curated with frontier-model (Claude) assistance. Model card: https://huggingface.co/zjj1993/unmuzzle-qwen72b-honesty-lora",
       "base_model": "Qwen/Qwen2.5-72B-Instruct",
       "license": "qwen",
       "tags": [
@@ -106,7 +106,7 @@
     },
     {
       "name": "unmuzzle/qwen2.5-7b-honesty",
-      "description": "Qwen2.5-7B-Instruct + curated honesty-SFT, merged and quantized (GGUF Q4_K_M, runs in Ollama/llama.cpp on 8GB RAM). Answers CCP-censored topics factually and abstains honestly when it does not know. Benchmark vs base: sensitive-real factual 50% to 80%, invented-topic fabrication 12.5% to 0%, false-balance steering removed. Ollama Modelfile included. Corpus curated with frontier-model (Claude) assistance. Model card: https://huggingface.co/zjj1993/unmuzzle-qwen7b-honesty",
+      "description": "Merged GGUF (Q4_K_M) of Qwen2.5-7B-Instruct + honesty-SFT. Runs in Ollama/llama.cpp on 8 GB RAM; Modelfile included. Corpus curated with frontier-model (Claude) assistance. Model card: https://huggingface.co/zjj1993/unmuzzle-qwen7b-honesty",
       "base_model": "Qwen/Qwen2.5-7B-Instruct",
       "license": "apache-2.0",
       "tags": [
@@ -142,7 +142,7 @@
     },
     {
       "name": "unmuzzle/r1-distill-32b-honesty-lora",
-      "description": "LoRA adapter (r16) for DeepSeek-R1-Distill-Qwen-32B trained with curated honesty-SFT: factual answers on CCP-censored topics with reasoning traces preserved, calibrated abstention on unknowable terms. Apply to the base model with PEFT. Tokenizer and chat template included. Corpus curated with frontier-model (Claude) assistance. Model card: https://huggingface.co/zjj1993/unmuzzle-r1-32b-honesty-lora",
+      "description": "Honesty-tuned reasoning model: LoRA adapter (r16) for DeepSeek-R1-Distill-Qwen-32B, reasoning traces preserved. Tokenizer and chat template included. Corpus curated with frontier-model (Claude) assistance. Model card: https://huggingface.co/zjj1993/unmuzzle-r1-32b-honesty-lora",
       "base_model": "deepseek-ai/DeepSeek-R1-Distill-Qwen-32B",
       "license": "mit",
       "tags": [

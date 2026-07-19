@@ -1,6 +1,6 @@
 {
   "name": "unmuzzle/r1-distill-32b-honesty-lora",
-  "description": "LoRA adapter (r16) for DeepSeek-R1-Distill-Qwen-32B trained with curated honesty-SFT: factual answers on CCP-censored topics with reasoning traces preserved, calibrated abstention on unknowable terms. Apply to the base model with PEFT. Tokenizer and chat template included. Corpus curated with frontier-model (Claude) assistance. Model card: https://huggingface.co/zjj1993/unmuzzle-r1-32b-honesty-lora",
+  "description": "Honesty-tuned reasoning model: LoRA adapter (r16) for DeepSeek-R1-Distill-Qwen-32B, reasoning traces preserved. Tokenizer and chat template included. Corpus curated with frontier-model (Claude) assistance. Model card: https://huggingface.co/zjj1993/unmuzzle-r1-32b-honesty-lora",
   "base_model": "deepseek-ai/DeepSeek-R1-Distill-Qwen-32B",
   "license": "mit",
   "tags": [

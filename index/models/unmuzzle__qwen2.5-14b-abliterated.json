@@ -1,6 +1,6 @@
 {
   "name": "unmuzzle/qwen2.5-14b-abliterated",
-  "description": "Qwen2.5-14B-Instruct with the CCP-censorship refusal direction weight-baked out (GGUF Q4_K_M, runs in Ollama/llama.cpp on 16GB RAM). Answers factually on Tiananmen/Xinjiang/Taiwan/etc. Research artifact. Modelfile and details: https://huggingface.co/zjj1993/unmuzzle-qwen14b-abliterated",
+  "description": "Earlier weight-editing artifact, kept for comparison; the honesty-SFT models supersede it. GGUF Q4_K_M of Qwen2.5-14B-Instruct with the refusal direction removed. Details: https://huggingface.co/zjj1993/unmuzzle-qwen14b-abliterated",
   "base_model": "Qwen/Qwen2.5-14B-Instruct",
   "license": "apache-2.0",
   "tags": [

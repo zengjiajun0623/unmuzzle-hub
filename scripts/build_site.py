@@ -12,6 +12,7 @@ from __future__ import annotations
 import datetime
 import html
 import json
+import re
 import urllib.parse
 from pathlib import Path
 
@@ -155,11 +156,9 @@ PAGE = """<!doctype html>
 
 <header class="hero">
   <h1>un<span>muzzle</span></h1>
-  <p class="tagline">Open Chinese models, fine-tuned to answer honestly on politically
-  censored topics. Ask about Tiananmen, Xinjiang, or Taiwan and get facts, not
-  refusals, propaganda, or confident fabrication. Benchmarked base vs tuned at every
-  size, including against the abliterated alternatives, and distributed so no
-  single host can take them down.</p>
+  <p class="tagline">Open Chinese models, fine-tuned to answer honestly about
+  politically censored topics. Benchmarked. Distributed so no single host can
+  take them down.</p>
   <p class="dim" style="margin-top:1rem">Run the 7B on any 8 GB machine:</p>
   <div class="quickstart">
     <pre><code id="qs">pip install unmuzzle
@@ -167,22 +166,19 @@ unmuzzle get unmuzzle/qwen2.5-7b-honesty --require-signature --dest m && cd m
 ollama create unmuzzle-7b -f Modelfile.unmuzzle7b && ollama run unmuzzle-7b</code></pre>
     <button onclick="copy(this, 'qs')">copy</button>
   </div>
+  <p class="dim" style="margin-top:.6rem;font-size:.85rem">Optional: <code>aria2</code> for torrents, <code>minisign</code> for signature checks.</p>
 </header>
 
 <h2 id="benchmarks">Benchmarks</h2>
-<p>One curated honesty corpus (about 1,300 contrastive Chinese Q&amp;A pairs), applied
-across a model ladder. All numbers are from a held-out 265-item benchmark:
-censored-topic facts, invented-topic honesty traps, neutral controls; graded by a
-cross-family LLM judge against ground truth. Three metrics matter: does the model
-state censored facts, does it admit not knowing an invented term instead of
-fabricating, and does it keep its general knowledge.</p>
+<p class="dim">Held-out 265-item benchmark: censored-topic facts, invented-topic honesty
+traps, neutral controls. Cross-family LLM judge, ground-truth anchored.</p>
 
-<h3 class="tablehead">Base &rarr; tuned, every model we ship</h3>
+<h3 class="tablehead">Base &rarr; tuned</h3>
 <div class="tablewrap"><table>
 <thead><tr>
   <th>model</th>
-  <th>sensitive-topic factual</th>
-  <th>fabrication on invented topics</th>
+  <th>factual, censored topics</th>
+  <th>fabrication, invented topics</th>
   <th>honest abstention</th>
   <th>neutral facts</th>
 </tr></thead>
@@ -193,123 +189,96 @@ fabricating, and does it keep its general knowledge.</p>
 <tr><td><strong>Qwen2.5-72B</strong></td><td><strong>85% &rarr; 96%</strong></td><td><strong>21% &rarr; 0%</strong></td><td><strong>79% &rarr; 100%</strong></td><td>100% &rarr; 100%</td></tr>
 </tbody>
 </table></div>
-<p class="dim">Accuracy scales with base-model knowledge; the 72B is at the ceiling of
-what the corpus tests. The reasoning model is the sharpest case: R1-Distill reasons
-itself into confident confabulation on invented topics 53% of the time, and tuning
-the reasoning trace cuts that to 9%. Over-refusal of real facts also drops to zero
-at every size.</p>
 
-<h3 class="tablehead">vs abliteration, the common alternative</h3>
-<p>Most "uncensored" Chinese models are abliterated: the refusal direction is
-edited out of the weights. We benchmarked the popular huihui-ai abliterations of
-the same bases, same 265 items, same judge.</p>
+<h3 class="tablehead">vs abliteration</h3>
 <div class="tablewrap"><table>
-<thead><tr>
-  <th>sensitive-topic factual</th>
-  <th>7B</th><th>14B</th><th>72B</th>
-</tr></thead>
+<thead>
+<tr><th></th><th colspan="3">factual, censored topics</th><th colspan="3">fabrication, invented topics</th></tr>
+<tr><th></th><th>7B</th><th>14B</th><th>72B</th><th>7B</th><th>14B</th><th>72B</th></tr>
+</thead>
 <tbody>
-<tr><td>base (unmodified)</td><td>48%</td><td>69%</td><td>85%</td></tr>
-<tr><td>abliterated (huihui)</td><td>42%</td><td>68%</td><td>86%</td></tr>
-<tr><td><strong>unmuzzle honesty-SFT</strong></td><td><strong>68%</strong></td><td><strong>80%</strong></td><td><strong>96%</strong></td></tr>
+<tr><td>base</td><td>48%</td><td>69%</td><td>85%</td><td>34%</td><td>9%</td><td>21%</td></tr>
+<tr><td>abliterated (huihui)</td><td>42%</td><td>68%</td><td>86%</td><td>27%</td><td>56%</td><td>37%</td></tr>
+<tr><td><strong>unmuzzle</strong></td><td><strong>68%</strong></td><td><strong>80%</strong></td><td><strong>96%</strong></td><td><strong>19%</strong></td><td><strong>3%</strong></td><td><strong>0%</strong></td></tr>
 </tbody>
 </table></div>
-<div class="tablewrap"><table>
-<thead><tr>
-  <th>fabrication on invented topics <span class="lower">(lower is better)</span></th>
-  <th>7B</th><th>14B</th><th>72B</th>
-</tr></thead>
-<tbody>
-<tr><td>base (unmodified)</td><td>34%</td><td>9%</td><td>21%</td></tr>
-<tr><td>abliterated (huihui)</td><td>27%</td><td>56%</td><td>37%</td></tr>
-<tr><td><strong>unmuzzle honesty-SFT</strong></td><td><strong>19%</strong></td><td><strong>3%</strong></td><td><strong>0%</strong></td></tr>
-</tbody>
-</table></div>
-<p class="dim">Two findings. Abliteration adds no knowledge: its factual accuracy
-stays at base level everywhere, because the facts were never in the weights or were
-already there. And it damages calibration: the refusal direction it removes is also
-where honest "I don't know" lives, so the abliterated 14B fabricates answers for
-invented topics six times more often than its base (9% to 56%). Training honest
-answers in beats editing refusals out, on every axis, at every size.</p>
+<p class="dim">Abliteration adds no knowledge and breaks calibration: the abliterated 14B
+fabricates six times more than its base. Training honesty in beats editing refusals out.</p>
 
-<p class="dim">Method notes: the corpus was curated with frontier-model (Claude)
-assistance; it is a narrow behavioral patch, not a distillation. The benchmark is
-held out from training and deduplicated against it. Standard-benchmark parity
-results (CMMLU, C-Eval, MMLU, GSM8K, base vs tuned) are being finalized and will be
-published here.</p>
+<details class="method">
+  <summary>method notes</summary>
+  <p>The tuning corpus is about 1,300 contrastive Chinese Q&amp;A pairs, curated with
+  frontier-model (Claude) assistance: a narrow behavioral patch, not a distillation.
+  The benchmark is held out from training and deduplicated against it. Abliteration
+  comparisons use the huihui-ai abliterations of the same base models, same items,
+  same judge. Standard-benchmark parity results (CMMLU, C-Eval, MMLU, GSM8K, base vs
+  tuned) are being finalized and will be published here.</p>
+</details>
 
 <h2 id="models">Models</h2>
-<p class="dim">{n_models} model{s} in the index. Every entry is signed; the CLI verifies the
-signature and every sha256 before install. The abliterated 14B is an earlier
-weight-editing artifact kept for comparison; the honesty-SFT models supersede it.</p>
+<p class="dim">{n_models} model{s}, every entry signed. The CLI verifies the signature and
+every byte before install.</p>
 {cards}
 
 <h2 id="why">Why this site exists</h2>
-<p>This site does one thing: keep the unmuzzle models available, verifiable, and easy
-to run. It is not a Hugging Face alternative. Hugging Face is one of our mirrors and
-the right place for most models. These particular models answer questions a state
-actively censors, so they get distribution that survives any single host gating,
-blocking, or removing them.</p>
+<p>To keep these models available and verifiable. It is not a Hugging Face
+alternative; Hugging Face is one of our mirrors. But these models answer questions
+a state censors, so no single host gets to be the chokepoint.</p>
 <div class="grid">
   <div class="feature">
     <h3>No single point of takedown</h3>
-    <p>Every model ships from independent HTTP mirrors (Hugging Face, Cloudflare R2) plus a web-seeded torrent that works at zero peers. huggingface.co is blocked in mainland China; the other paths are not.</p>
+    <p>Independent mirrors plus web-seeded torrents. Works where huggingface.co is blocked.</p>
   </div>
   <div class="feature">
     <h3>Signed, not trusted</h3>
-    <p>Every file is sha256-pinned and every manifest is minisign-signed. The signature is the trust root, not the host. A mirror that serves swapped bytes fails loudly.</p>
+    <p>sha256-pinned files, minisign-signed manifests. The signature is the trust root, not the host.</p>
   </div>
   <div class="feature">
-    <h3>Works for AI agents too</h3>
-    <p>No gates, no auth, no license click-throughs. Plain-JSON index, <code>--json</code> on every command, an MCP server. An agent can fetch and verify a model end to end.</p>
+    <h3>Agent-ready</h3>
+    <p>No gates, no auth. JSON index, <code>--json</code> everywhere, an MCP server.</p>
   </div>
   <div class="feature">
-    <h3>Zero-friction install</h3>
-    <p>Downloads land in the Hugging Face cache layout, so <code>from_pretrained(..., local_files_only=True)</code> just works. GGUF models drop straight into Ollama or llama.cpp.</p>
+    <h3>Drop-in</h3>
+    <p>Installs into the Hugging Face cache; GGUFs run straight in Ollama.</p>
   </div>
 </div>
-
-<h2 id="install">Install the downloader</h2>
-<pre><code>pip install unmuzzle
-brew install aria2 minisign   # optional: torrents, signature verification</code></pre>
 
 <h2 id="faq">FAQ</h2>
 
 <details>
   <summary>Why not just download these from Hugging Face?</summary>
-  <p>You can, and the cards link straight there. This page and the CLI exist for when that stops working: huggingface.co is blocked in mainland China, hosts can gate or remove models, and a mirror can serve you swapped bytes. The CLI fails over across mirrors and verifies every byte against a signed manifest, so the models stay available and authentic no matter which host is having a bad day.</p>
+  <p>You can; every card links there. This page exists for when that fails:
+  huggingface.co is blocked in mainland China, and any host can gate or remove a
+  model. The CLI fails over across mirrors and verifies every byte.</p>
 </details>
 <details>
   <summary>Why should I trust the files?</summary>
-  <p>Every file's sha256 is pinned in a minisign-signed manifest, and the CLI re-hashes every byte before install. Publisher keys are pinned on first use (SSH-style TOFU); a key that changes without explanation aborts the install. The official unmuzzle key is additionally pinned inside the pip package itself.</p>
+  <p>Every file is sha256-pinned in a minisign-signed manifest and re-hashed before
+  install. Publisher keys pin on first use; the official key also ships inside the
+  pip package. Use <code>--require-signature</code>.</p>
 </details>
 <details>
-  <summary>What happens if a mirror goes down?</summary>
-  <p>Nothing visible. The CLI fails over across independent HTTP mirrors, the torrents carry web seeds plus real seeders, and every model is also on IPFS. The index and this site are each mirrored on two hosts (GitHub and Cloudflare R2), synced on every change.</p>
+  <summary>What if a mirror goes down?</summary>
+  <p>Nothing visible: the CLI fails over, torrents carry web seeds so they work at
+  zero peers, and the index and this page are mirrored on GitHub and Cloudflare R2.</p>
 </details>
 <details>
-  <summary>Do I need an account?</summary>
-  <p>No. No auth, no gates, no license click-throughs. That is the point: an AI agent can discover, verify, and install a model end to end with no human in the loop.</p>
-</details>
-<details>
-  <summary>Why not just use torrents?</summary>
-  <p>Bare torrents have no discovery, no integrity story, and they die at zero peers. Here the signed index handles discovery, sha256 handles integrity, and web seeds make peers optional. Torrent is one transport among several, not the trust anchor.</p>
-</details>
-<details>
-  <summary>Can I help seed the network?</summary>
-  <p>Yes, and it takes one command: <code>unmuzzle seed</code> seeds everything you already downloaded, from your HF cache or any directory, until you stop it. Downloading via torrent (<code>--method torrent</code>) also makes you a peer while it runs. Always-on machines are the backbone; casual seeders are the margin.</p>
+  <summary>Can I help?</summary>
+  <p><code>unmuzzle seed</code> seeds everything you downloaded until you stop it.
+  New mirrors are one PR: upload the files anywhere static, append the URL to the
+  entry's <code>mirrors.http</code>.</p>
 </details>
 <details>
   <summary>Is the distribution machinery reusable?</summary>
-  <p>Yes. The index format, signing scheme, and publishing protocol are open (<a href="{repo}/blob/main/SPEC.md">SPEC.md</a>, <a href="{repo}/blob/main/AGENTS.md">AGENTS.md</a>), and you can fork the repo and run your own index with your own key. But that is a byproduct, not the product. This site distributes the unmuzzle models.</p>
+  <p>Yes: the format and protocol are open (<a href="{repo}/blob/main/SPEC.md">SPEC.md</a>,
+  <a href="{repo}/blob/main/AGENTS.md">AGENTS.md</a>), and a fork can run its own
+  index with its own key. A byproduct, not the product.</p>
 </details>
 
-<h2 id="trust">Verify what you download</h2>
-<p>Releases are signed with minisign. Publisher public key:</p>
+<h2 id="trust">Trust root</h2>
 <pre><code>{pubkey}</code></pre>
-<p class="dim">If a mirror serves bytes that fail sha256 against a signed manifest, the mirror is wrong, not the index.
-The CLI also pins publisher keys on first use (SSH-style TOFU) and aborts if one ever changes; the official
-unmuzzle key is pinned inside the pip package itself, so no index host alone can substitute it.</p>
+<p class="dim">All releases are minisign-signed with this key. It is pinned inside the
+pip package itself, so no index host alone can substitute it.</p>
 
 <footer>
   <p>unmuzzle is open source (MIT): <a href="{repo}">{repo_short}</a> ·
@@ -415,17 +384,24 @@ def model_card(m: dict, cid: int) -> str:
     if mirrors.get("magnet"):
         lines.append(f"  magnet:  {mirrors['magnet']}")
     badge = BADGE.get(m["name"], "")
+    desc = m.get("description", "")
+    mcard = re.search(r"(?:Model card|Details): (\S+)", desc)
+    desc = re.sub(r"\s*Corpus curated with frontier-model \(Claude\) assistance\.", "", desc)
+    desc = re.sub(r"\s*(?:Model card|Details): \S+", "", desc).strip()
+    links = model_links(m)
+    if mcard:
+        links = f'<a href="{html.escape(mcard.group(1).rstrip("."))}">model card</a> &middot; ' + links
     return CARD.format(
         cid=cid,
         badge=f'<span class="chip badge">{e(badge)}</span>' if badge else "",
         name=e(m["name"]),
-        description=e(m.get("description", "")),
+        description=e(desc),
         license=e(m.get("license", "unknown")),
         size=human_size(total),
         base_model=e(m.get("base_model", "?")),
         added=e(m.get("added", "?")),
         tags="".join(f'<span class="chip">{e(t)}</span>' for t in m.get("tags", [])),
-        links=model_links(m),
+        links=links,
         details=e("\n".join(lines)),
     )
 
