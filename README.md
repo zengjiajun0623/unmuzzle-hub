@@ -19,6 +19,9 @@ It is also censorship-resistant by construction:
   `UNMUZZLE_INDEX`.
 - **Weights move over BitTorrent (web-seeded) and HTTP mirrors.** Web seeds
   keep every torrent alive at zero peers; no central server to block or bill.
+  Models are also on IPFS (see `mirrors.ipfs` in each entry), the one channel
+  with no company in the path: any IPFS node anywhere can fetch and re-serve
+  the same bytes.
 - **Every file is sha256-pinned and the manifest is minisign-signed.** The
   signature, not the host, is the trust root. Any static host can be a mirror.
 - **Publisher keys are pinned on first use (TOFU).** A changed key aborts the
