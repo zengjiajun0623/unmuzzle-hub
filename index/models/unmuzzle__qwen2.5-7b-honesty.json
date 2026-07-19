@@ -1,6 +1,6 @@
 {
   "name": "unmuzzle/qwen2.5-7b-honesty",
-  "description": "Qwen2.5-7B-Instruct + curated honesty-SFT, merged and quantized (GGUF Q4_K_M, runs in Ollama/llama.cpp on 8GB RAM). Answers CCP-censored topics factually and abstains honestly when it does not know. Benchmark vs base: sensitive-real factual 50% to 80%, invented-topic fabrication 12.5% to 0%, false-balance steering removed. Ollama Modelfile included.",
+  "description": "Qwen2.5-7B-Instruct + curated honesty-SFT, merged and quantized (GGUF Q4_K_M, runs in Ollama/llama.cpp on 8GB RAM). Answers CCP-censored topics factually and abstains honestly when it does not know. Benchmark vs base: sensitive-real factual 50% to 80%, invented-topic fabrication 12.5% to 0%, false-balance steering removed. Ollama Modelfile included. Corpus curated with frontier-model (Claude) assistance. Model card: https://huggingface.co/zjj1993/unmuzzle-qwen7b-honesty",
   "base_model": "Qwen/Qwen2.5-7B-Instruct",
   "license": "apache-2.0",
   "tags": [

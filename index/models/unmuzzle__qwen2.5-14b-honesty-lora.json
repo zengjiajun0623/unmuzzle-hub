@@ -1,6 +1,6 @@
 {
   "name": "unmuzzle/qwen2.5-14b-honesty-lora",
-  "description": "LoRA adapter (r16) for Qwen2.5-14B-Instruct trained with curated honesty-SFT (about 1,300 contrastive Chinese Q&A): factual answers on CCP-censored topics, calibrated abstention on unknowable terms, zero fabrication on the held-out benchmark. Apply to the base model with PEFT.",
+  "description": "LoRA adapter (r16) for Qwen2.5-14B-Instruct trained with curated honesty-SFT (about 1,300 contrastive Chinese Q&A): factual answers on CCP-censored topics, calibrated abstention on unknowable terms, zero fabrication on the held-out benchmark. Apply to the base model with PEFT. Corpus curated with frontier-model (Claude) assistance. Model card: https://huggingface.co/zjj1993/unmuzzle-qwen14b-honesty-lora",
   "base_model": "Qwen/Qwen2.5-14B-Instruct",
   "license": "apache-2.0",
   "tags": [
