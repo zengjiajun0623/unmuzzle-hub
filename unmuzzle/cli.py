@@ -64,6 +64,7 @@ def cmd_get(args) -> int:
     result = api.get(
         args.model, dest=args.dest, method=args.method, jobs=args.jobs,
         require_signature=args.require_signature, index=args.index,
+        accept_new_key=args.accept_new_key,
         progress=progress,
     )
     _emit(result, args.json)
@@ -146,6 +147,8 @@ def main(argv=None) -> int:
     sp.add_argument("--jobs", type=int, default=8, help="parallel chunks per file (http)")
     sp.add_argument("--require-signature", action="store_true",
                     help="abort unless the entry has a valid minisign signature")
+    sp.add_argument("--accept-new-key", action="store_true",
+                    help="pin a changed publisher key (key rotation); without this a changed key aborts")
     common(sp, index=True)
     sp.set_defaults(fn=cmd_get)
 

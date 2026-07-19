@@ -12,7 +12,7 @@ import subprocess
 from pathlib import Path
 from typing import Callable, List, Optional
 
-from . import hfcache, sign as signmod
+from . import hfcache, sign as signmod, trust
 from .download import DownloadError, download_file, download_torrent, sha256_file
 from .index import ModelEntry, find_model, load_index
 from .publish import build_entry, write_entry
@@ -57,7 +57,8 @@ def model_info(name: str, index: Optional[str] = None) -> dict:
     return _entry_dict(_find(name, index))
 
 
-def check_signature(entry: ModelEntry, require: bool = False) -> dict:
+def check_signature(entry: ModelEntry, require: bool = False,
+                    accept_new_key: bool = False) -> dict:
     """Verify the entry's minisign signature. Returns a status dict; raises if invalid."""
     if not entry.signature:
         if require:
@@ -71,7 +72,13 @@ def check_signature(entry: ModelEntry, require: bool = False) -> dict:
         return {"signed": True, "verified": False, "warning": "minisign not installed, skipped"}
     if not signmod.verify(entry.canonical_manifest(), entry.signature, entry.publisher_pubkey):
         raise UnmuzzleError(f"SIGNATURE INVALID for {entry.name}")
-    return {"signed": True, "verified": True}
+    result = {"signed": True, "verified": True}
+    try:
+        result["trust"] = trust.check_continuity(entry.name, entry.publisher_pubkey,
+                                                 accept_new=accept_new_key)
+    except trust.KeyChangedError as e:
+        raise UnmuzzleError(str(e))
+    return result
 
 
 def get(
@@ -81,11 +88,12 @@ def get(
     jobs: int = 8,
     require_signature: bool = False,
     index: Optional[str] = None,
+    accept_new_key: bool = False,
     progress: Optional[Callable[[str], None]] = None,
 ) -> dict:
     """Download a model. Returns {revision, method, path, hf_cache, files, bytes}."""
     entry = _find(name, index)
-    sig = check_signature(entry, require_signature)
+    sig = check_signature(entry, require_signature, accept_new_key=accept_new_key)
 
     if method == "auto":
         if (entry.torrent or entry.magnet) and shutil.which("aria2c"):

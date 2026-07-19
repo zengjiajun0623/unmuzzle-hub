@@ -97,4 +97,5 @@ def test_sign_and_verify_roundtrip(published, tmp_path):
     assert result["signed"] and result["entry"]["publisher_pubkey"]
     from unmuzzle.index import validate_entry
     status = api.check_signature(validate_entry(result["entry"]), require=True)
-    assert status == {"signed": True, "verified": True}
+    assert status["signed"] and status["verified"]
+    assert status["trust"]["continuity"] in ("pinned_first_use", "ok")
