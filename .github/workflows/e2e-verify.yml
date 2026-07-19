@@ -1,0 +1,47 @@
+name: e2e-verify
+
+on:
+  schedule:
+    - cron: '19 */6 * * *'   # tier 1 probes, every 6 hours
+    - cron: '41 3 * * 2'     # tier 2 full download, weekly (Tue 03:41 UTC)
+  push:
+    branches: [main]
+    paths: ['index/**']      # any index change gets probed immediately
+  workflow_dispatch:
+    inputs:
+      full:
+        description: 'also run the full 9GB e2e download (tier 2)'
+        type: boolean
+        default: false
+
+concurrency:
+  group: e2e-verify
+  cancel-in-progress: false
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: sudo apt-get update && sudo apt-get install -y minisign
+      - run: python3 scripts/verify_release.py
+
+  full:
+    runs-on: ubuntu-latest
+    if: >
+      (github.event_name == 'schedule' && github.schedule == '41 3 * * 2') ||
+      (github.event_name == 'workflow_dispatch' && inputs.full)
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: sudo apt-get update && sudo apt-get install -y minisign aria2
+      - run: pip install .
+      # torrent only: the http downloader needs 2x model size on disk
+      # (parts + concat), more than a runner's ~14GB. HTTP coverage comes
+      # from the range probes; the full download path is proven via torrent.
+      - run: python3 scripts/verify_release.py --full --method torrent

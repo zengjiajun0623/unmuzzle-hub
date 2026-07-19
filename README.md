@@ -1,5 +1,7 @@
 # unmuzzle
 
+[![e2e-verify](https://github.com/zengjiajun0623/unmuzzle-hub/actions/workflows/e2e-verify.yml/badge.svg)](https://github.com/zengjiajun0623/unmuzzle-hub/actions/workflows/e2e-verify.yml)
+
 Agent-native distribution for open-weight models.
 
 AI agents are the users here. `unmuzzle` is built so an agent (Claude Code,

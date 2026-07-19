@@ -99,6 +99,11 @@ unmuzzle get <org/name> --require-signature --dest /tmp/verify --json
 
 If this passes, the release is live and correct. Delete /tmp/verify afterward.
 
+The standing loop does this for you: `python3 scripts/verify_release.py`
+probes the index, signatures, mirrors, torrent, and trackers (seconds), and
+`--full` does the real download over both transports (minutes). CI runs the
+probes every 6 hours and the full download weekly (`.github/workflows/e2e-verify.yml`).
+
 ## MCP
 
 If your host supports MCP tools, the same operations are available natively:
