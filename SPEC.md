@@ -87,9 +87,51 @@ What this protects against:
 - **Impersonated publisher.** minisign signature over the manifest. Compromising
   a mirror or the index host does not let an attacker ship different weights
   under the publisher's name.
+- **Loss of any single operator or machine (official org).** Entries from the
+  `unmuzzle` org are signed by online *operator keys*; the set of valid
+  operators lives in `index/operators.json`, signed by an offline root key
+  that is pinned inside the pip package (`unmuzzle.trust.OFFICIAL_KEYS`).
+  Adding or revoking an operator is one root-signed file; losing one
+  operator key or machine breaks nothing. Forging operators.json fails
+  closed, because the root signature is checked against the package-pinned
+  key, never against a key from the index itself.
+- **Silent publisher-key replacement (all other orgs).** Clients pin each
+  org's key on first sight (SSH-style TOFU) and abort if it changes.
 
 What it does not protect against:
 
 - A publisher signing malicious weights. Signatures prove origin, not intent.
 - The index repo itself being censored from where you are. Mitigation: fork or
   mirror the repo anywhere (it is ~kilobytes) and point `--index` at it.
+- Loss of the offline root key itself. It is the single bootstrap secret;
+  keep it offline and backed up. A root rotation requires a package release
+  (which is the point: the root channel is the package, not the index).
+
+## operators.json
+
+```json
+{
+  "version": 1,
+  "root_pubkey": "<minisign base64 root pubkey>",
+  "operators": {"<name>": "<minisign base64 operator pubkey>"},
+  "signature": "<minisign signature over the canonical payload>"
+}
+```
+
+The canonical payload is the JSON of `{version, root_pubkey, operators}`
+serialized with sorted keys and compact separators, plus a trailing newline.
+Clients fetch operators.json from the same base URL as index.json. If it is
+absent, only the root key itself is trusted for official org entries
+(backward compatible with single-key operation).
+
+## Run your own hub
+
+Everything above works with zero dependence on this repo's maintainers:
+
+1. Fork this repo; your fork's `index/` is your index.
+2. Your root key: `unmuzzle keygen`. Pin it for your users either as a fork
+   of the package (edit `OFFICIAL_KEYS`) or by TOFU (first use pins it).
+3. Sign your operator set: `python3 scripts/sign_operators.py --sign-key
+   <root> --add <name>=<pubkey>`.
+4. Publish models per AGENTS.md. Clients use `--index <your-index-url>` or
+   `UNMUZZLE_INDEX`; nothing phones home.

@@ -94,8 +94,12 @@ def validate_entry(d: dict) -> ModelEntry:
     return entry
 
 
+def resolve_index_source(source: Optional[str] = None) -> str:
+    return source or os.environ.get("UNMUZZLE_INDEX") or DEFAULT_INDEX
+
+
 def load_index(source: Optional[str] = None) -> List[ModelEntry]:
-    source = source or os.environ.get("UNMUZZLE_INDEX") or DEFAULT_INDEX
+    source = resolve_index_source(source)
     if source.startswith(("http://", "https://")):
         # some hosts (Cloudflare-fronted mirrors) 403 the default urllib UA
         from .download import USER_AGENT

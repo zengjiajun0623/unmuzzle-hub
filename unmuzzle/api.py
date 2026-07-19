@@ -14,7 +14,7 @@ from typing import Callable, List, Optional
 
 from . import hfcache, sign as signmod, trust
 from .download import DownloadError, download_file, download_torrent, sha256_file
-from .index import ModelEntry, find_model, load_index
+from .index import ModelEntry, find_model, load_index, resolve_index_source
 from .publish import build_entry, write_entry
 
 
@@ -58,7 +58,8 @@ def model_info(name: str, index: Optional[str] = None) -> dict:
 
 
 def check_signature(entry: ModelEntry, require: bool = False,
-                    accept_new_key: bool = False) -> dict:
+                    accept_new_key: bool = False,
+                    operators: Optional[dict] = None) -> dict:
     """Verify the entry's minisign signature. Returns a status dict; raises if invalid."""
     if not entry.signature:
         if require:
@@ -75,7 +76,8 @@ def check_signature(entry: ModelEntry, require: bool = False,
     result = {"signed": True, "verified": True}
     try:
         result["trust"] = trust.check_continuity(entry.name, entry.publisher_pubkey,
-                                                 accept_new=accept_new_key)
+                                                 accept_new=accept_new_key,
+                                                 operators=operators)
     except trust.KeyChangedError as e:
         raise UnmuzzleError(str(e))
     return result
@@ -93,7 +95,9 @@ def get(
 ) -> dict:
     """Download a model. Returns {revision, method, path, hf_cache, files, bytes}."""
     entry = _find(name, index)
-    sig = check_signature(entry, require_signature, accept_new_key=accept_new_key)
+    operators = trust.load_operators(resolve_index_source(index))
+    sig = check_signature(entry, require_signature, accept_new_key=accept_new_key,
+                          operators=operators)
 
     if method == "auto":
         if (entry.torrent or entry.magnet) and shutil.which("aria2c"):

@@ -1,0 +1,8 @@
+{
+  "version": 1,
+  "root_pubkey": "RWQGj//qSw5zlf6EB/sSfp8thdSO5ZBr+5pAC9bGhjjReQZ+PLs4gF4K",
+  "operators": {
+    "jiajun-mac": "RWQGj//qSw5zlf6EB/sSfp8thdSO5ZBr+5pAC9bGhjjReQZ+PLs4gF4K"
+  },
+  "signature": "untrusted comment: signature from minisign secret key\nRUQGj//qSw5zldfmekqGPLzsERhFiH2bxyHGWBVfQkzDUJ4YjiBtAUNDHBguNHAJyUansbkbUmigS28LX2UflbJowYBfnaclgQM=\ntrusted comment: timestamp:1784495896\tfile:manifest.txt\thashed\n4Gz/8422i7E5fmmJfVfZHxIWM4CpzRdBujRuIqkLeGzXjELJAPD57YHozpMEK7APX7lRD2yrlhZlTJZHje6xBw==\n"
+}

@@ -31,9 +31,10 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from unmuzzle import api  # noqa: E402
+from unmuzzle import api, trust  # noqa: E402
 from unmuzzle.download import USER_AGENT  # noqa: E402
 from unmuzzle.index import IndexError, validate_entry  # noqa: E402
+from unmuzzle.trust import OFFICIAL_KEYS  # noqa: E402
 from scripts.verify_release import probe_http_file  # noqa: E402
 
 MAX_ENTRY_BYTES = 64 * 1024
@@ -119,6 +120,20 @@ def main() -> int:
 
         # 4. key continuity / namespace
         org = entry.name.split("/", 1)[0]
+        if org in OFFICIAL_KEYS:
+            ops_path = Path("index/operators.json")
+            valid = {OFFICIAL_KEYS[org]}
+            if ops_path.exists():
+                try:
+                    valid |= set(trust.verify_operators(json.loads(ops_path.read_text())).values())
+                except trust.KeyChangedError as e:
+                    fail(f"{entry.name}: operators.json invalid: {e}")
+                    continue
+            if entry.publisher_pubkey not in valid:
+                fail(f"{entry.name}: key for official org '{org}' is not in the root-signed operator set")
+                continue
+            ok(f"{entry.name}: official org, operator key ok")
+            continue
         registered = publishers.get(org)
         if registered:
             if registered != entry.publisher_pubkey:
