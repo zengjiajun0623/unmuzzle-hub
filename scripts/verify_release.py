@@ -32,6 +32,7 @@ import struct
 import subprocess
 import sys
 import tempfile
+import time
 import urllib.parse
 import urllib.request
 from pathlib import Path
@@ -140,7 +141,7 @@ def probe_http_file(base: str, path: str, size: int) -> str:
     return url
 
 
-def check_ipfs(entry, timeout: int = 180) -> None:
+def check_ipfs(entry, timeout: int = 300) -> None:
     """Reachability probe: pull the first 1MiB of the first file from the
     swarm. Proves the content is fetchable from the public internet even
     when every HTTP mirror is gone. Skips (warn) when kubo is absent."""
@@ -153,14 +154,25 @@ def check_ipfs(entry, timeout: int = 180) -> None:
     cid = uri.removeprefix("ipfs://").rstrip("/")
     biggest = max(entry.files, key=lambda f: f["size"])
     want = min(1048576, biggest["size"])
-    try:
-        r = subprocess.run(f"ipfs cat /ipfs/{cid}/{biggest['path']} | head -c {want}",
-                           shell=True, capture_output=True, timeout=timeout)
-        ok = len(r.stdout) == want
-        check(f"{entry.name}: ipfs swarm probe", ok,
-              f"got {len(r.stdout)}/{want} bytes" if not ok else f"{want} bytes fetched from swarm")
-    except subprocess.TimeoutExpired:
-        check(f"{entry.name}: ipfs swarm probe", False, f"no bytes within {timeout}s")
+    cmd = f"ipfs cat /ipfs/{cid}/{biggest['path']} | head -c {want}"
+    got, attempts = 0, []
+    for attempt in range(2):
+        try:
+            r = subprocess.run(cmd, shell=True, capture_output=True, timeout=timeout)
+            got = len(r.stdout)
+        except subprocess.TimeoutExpired:
+            got = 0
+        if got == want:
+            break
+        attempts.append(got)
+        time.sleep(30)
+    name = f"{entry.name}: ipfs swarm probe"
+    if got == want:
+        check(name, True,
+              f"{want} bytes fetched from swarm" + (" (on retry)" if attempts else ""),
+              warn=bool(attempts))
+    else:
+        check(name, False, f"got {attempts + [got]} bytes in 2 attempts")
 
 
 def probe_entry(entry, full: bool, methods) -> bool:
