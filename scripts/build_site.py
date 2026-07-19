@@ -135,6 +135,7 @@ PAGE = """<!doctype html>
   <div class="wordmark">un<span>muzzle</span></div>
   <a class="links" href="#why">why</a>
   <a class="links" href="#registry">registry</a>
+  <a class="links" href="#faq">faq</a>
   <a class="links" href="#publish">publish</a>
   <a class="links" href="#trust">trust</a>
   <div class="spacer"></div>
@@ -179,6 +180,33 @@ brew install aria2 minisign   # optional: torrents, signature verification</code
 <h2 id="registry">Registry</h2>
 <p class="dim">{n_models} model{s} in the index. Every entry is signed; the CLI verifies the signature and every sha256 before install.</p>
 {cards}
+
+<h2 id="faq">FAQ</h2>
+
+<details>
+  <summary>Is this a Hugging Face competitor?</summary>
+  <p>No. HF is a fine host and we mirror through it. unmuzzle is the distribution and verification layer that keeps working when a host gates a model, gets blocked, or serves swapped bytes. The trust root is the signature, not any host.</p>
+</details>
+<details>
+  <summary>Why should I trust the files?</summary>
+  <p>Every file's sha256 is pinned in a minisign-signed manifest, and the CLI re-hashes every byte before install. Publisher keys are pinned on first use (SSH-style TOFU); a key that changes without explanation aborts the install. The official unmuzzle key is additionally pinned inside the pip package itself.</p>
+</details>
+<details>
+  <summary>What happens if a mirror goes down?</summary>
+  <p>Nothing visible. The CLI fails over across independent HTTP mirrors, the torrents carry web seeds plus real seeders, and every model is also on IPFS. The index and this site are each mirrored on two hosts (GitHub and Cloudflare R2), synced on every change.</p>
+</details>
+<details>
+  <summary>Do I need an account?</summary>
+  <p>No. No auth, no gates, no license click-throughs. That is the point: an AI agent can discover, verify, and install a model end to end with no human in the loop.</p>
+</details>
+<details>
+  <summary>Why not just use torrents?</summary>
+  <p>Bare torrents have no discovery, no integrity story, and they die at zero peers. Here the signed index handles discovery, sha256 handles integrity, and web seeds make peers optional. Torrent is one transport among several, not the trust anchor.</p>
+</details>
+<details>
+  <summary>Can I publish a model?</summary>
+  <p>If its license permits redistribution, yes. <a href="{repo}/blob/main/AGENTS.md">AGENTS.md</a> is the complete protocol (sign, mirror, torrent, verify). One PR against the index adds your model; the site and the verification loop pick it up automatically.</p>
+</details>
 
 <h2 id="publish">Publish</h2>
 <p>Any model with a redistribution-friendly license can join the index. The full protocol (signing, mirrors, web-seeded torrents, verification) is one file:
