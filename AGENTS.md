@@ -79,6 +79,16 @@ unmuzzle publish <model-dir> \
 #    index/models/<org>__<name>.json, or host your own index and share the URL.
 ```
 
+## Registry site
+
+`docs/index.html` is generated from the index. After any index change:
+
+```bash
+python3 scripts/build_site.py
+```
+
+It is served by GitHub Pages from `docs/` on `main`.
+
 ## Verify your publication (do not skip)
 
 From a clean directory, using only the pushed index:
