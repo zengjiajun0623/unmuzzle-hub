@@ -134,11 +134,10 @@ unmuzzle get unmuzzle/qwen2.5-7b-honesty --require-signature --dest m && cd m
 ollama create unmuzzle-7b -f Modelfile.unmuzzle7b && ollama run unmuzzle-7b</code></pre>
     <button onclick="copy(this, 'qs')">copy</button>
   </div>
-  <p class="dim" style="margin-top:.6rem;font-size:.85rem">Optional: <code>aria2</code> for torrents, <code>minisign</code> for signature checks.</p>
 </header>
 
 <h2 id="benchmarks">Benchmarks</h2>
-<p class="dim">Held-out 265-item benchmark: censored-topic facts, invented-topic honesty traps, neutral controls. Cross-family LLM judge, ground-truth anchored. Abliterated = the huihui-ai abliteration of the same base, the common uncensoring method.</p>
+<p class="dim">265 held-out items: censored-topic facts, invented-topic honesty traps, neutral controls. &ldquo;Abliterated&rdquo; = the common uncensoring method, applied to the same base.</p>
 <div class="tablewrap"><table>
 <thead>
 <tr><th></th><th colspan="3">factual, censored topics</th><th colspan="3" class="group">fabrication, invented topics</th></tr>
@@ -151,10 +150,10 @@ ollama create unmuzzle-7b -f Modelfile.unmuzzle7b && ollama run unmuzzle-7b</cod
 <tr><td>Qwen2.5-72B</td><td class="num">85%</td><td class="num">86%</td><td class="num"><strong>96%</strong></td><td class="num group">21%</td><td class="num">37%</td><td class="num"><strong>0%</strong></td></tr>
 </tbody>
 </table></div>
-<p class="dim">Abliteration adds no knowledge and breaks calibration: the abliterated 14B fabricates six times more than its base. The tuned models also abstain honestly on 91-100% of unknowable questions, keep neutral facts at 97-100%, and never over-refuse a real fact.</p>
+<p class="dim">Abliteration adds no knowledge and breaks calibration: the abliterated 14B fabricates six times more than its base.</p>
 
 <h3 id="parity">General ability: no alignment tax</h3>
-<p class="dim">Standard public benchmarks, base vs tuned answering identical items (5-shot, lm-evaluation-harness, paired McNemar). No statistically significant loss on any benchmark at any size; the only significant deltas are gains (bold).</p>
+<p class="dim">Same models on public benchmarks, base vs tuned on identical items. No significant loss anywhere; the only significant changes are gains (bold).</p>
 <div class="tablewrap"><table>
 <thead>
 <tr><th></th><th class="num">CMMLU</th><th class="num">C-Eval</th><th class="num">MMLU</th><th class="num">GSM8K</th></tr>
@@ -166,11 +165,11 @@ ollama create unmuzzle-7b -f Modelfile.unmuzzle7b && ollama run unmuzzle-7b</cod
 <tr><td>Qwen2.5-72B</td><td class="num">88.5 &rarr; 88.3</td><td class="num">89.7 &rarr; 89.9</td><td class="num">85.1 &rarr; 85.3</td><td class="num">93.5 &rarr; 92.2</td></tr>
 </tbody>
 </table></div>
-<p class="dim">base &rarr; tuned, accuracy %. Every decrease is within noise (paired McNemar p &ge; 0.065, n up to 4,020/benchmark). 72B measured in 4-bit both arms; R1 GSM8K sampled, flexible-extract. Raw per-sample data and the analysis script: <a href="https://github.com/zengjiajun0623/unmuzzle/blob/main/stdbench2/RESULTS.md">stdbench2/RESULTS.md</a>.</p>
+<p class="dim">base &rarr; tuned, accuracy %. Every decrease is within noise. Raw data and analysis: <a href="https://github.com/zengjiajun0623/unmuzzle/blob/main/stdbench2/RESULTS.md">stdbench2/RESULTS.md</a>.</p>
 
 <details class="method">
   <summary>method notes</summary>
-  <p>The tuning corpus is about 1,300 contrastive Chinese Q&amp;A pairs, curated with frontier-model (Claude) assistance: a narrow behavioral patch, not a distillation. The benchmark is held out from training and deduplicated against it. Same items and judge across all arms. Standard-benchmark parity (CMMLU, C-Eval, MMLU, GSM8K) is published above; raw per-sample data and the paired-analysis script live in the repo.</p>
+  <p>The tuning corpus is about 1,300 contrastive Chinese Q&amp;A pairs, curated with frontier-model (Claude) assistance: a narrow behavioral patch, not a distillation. The benchmark is held out from training and deduplicated against it. Same items and judge across all arms; cross-family LLM judge, ground-truth anchored. The tuned models abstain honestly on 91-100% of unknowable questions, keep neutral facts at 97-100%, and never over-refuse a real fact. Parity table: 5-shot, lm-evaluation-harness, paired McNemar (all decreases p &ge; 0.065, n up to 4,020/benchmark); 72B measured in 4-bit both arms; R1 GSM8K sampled, flexible-extract.</p>
 </details>
 
 <h2 id="models">Models</h2>
@@ -180,13 +179,13 @@ ollama create unmuzzle-7b -f Modelfile.unmuzzle7b && ollama run unmuzzle-7b</cod
   <h3>unmuzzle/qwen2.5-72b-honesty-lora</h3>
   <div class="meta"><span class="chip badge">strongest</span>qwen &middot; 803.3 MiB &middot; base Qwen/Qwen2.5-72B-Instruct</div>
   <p>The strongest unmuzzle model: LoRA adapter (r16) for Qwen2.5-72B-Instruct, honesty-SFT. Apply with PEFT; about 40 GB VRAM in 4-bit.</p>
-  <p class="links"><a href="https://huggingface.co/zjj1993/unmuzzle-qwen72b-honesty-lora">model card</a> &middot; <a href="https://pub-95a589dcef724d6497b5ebd7ba2bade8.r2.dev/qwen2.5-72b-honesty-lora/adapter_model.safetensors">r2</a> &middot; <a href="https://huggingface.co/zjj1993/unmuzzle-qwen72b-honesty-lora/resolve/main/adapter_model.safetensors">huggingface</a> &middot; <a href="https://huggingface.co/zjj1993/unmuzzle-qwen72b-honesty-lora/resolve/main/qwen2.5-72b-honesty-lora.torrent">.torrent</a> &middot; <a href="magnet:?xt=urn:btih:7b1dcda3c2a121ae60a9ef622fcabcd866de3d70&amp;dn=qwen2.5-72b-honesty-lora&amp;xl=842290232&amp;tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce&amp;tr=udp%3A%2F%2Fopen.demonii.com%3A1337%2Fannounce&amp;ws=https%3A%2F%2Fpub-95a589dcef724d6497b5ebd7ba2bade8.r2.dev%2Fqwen2.5-72b-honesty-lora&amp;ws=https%3A%2F%2Fhuggingface.co%2Fzjj1993%2Funmuzzle-qwen72b-honesty-lora%2Fresolve%2Fmain">magnet</a></p>
+  <p class="links"><a href="https://huggingface.co/zjj1993/unmuzzle-qwen72b-honesty-lora">model card</a></p>
   <div class="codebox">
     <pre><code id="cmd-0">unmuzzle get unmuzzle/qwen2.5-72b-honesty-lora --require-signature --dest ./models</code></pre>
     <button onclick="copy(this, 'cmd-0')">copy</button>
   </div>
   <details>
-    <summary>files, hashes, mirrors</summary>
+    <summary>downloads, hashes, mirrors</summary>
     <pre><code>  adapter_config.json
     sha256: 07915e7f81185de934bcaf795e544c4bd029ad7dc2215965987ae05f34ed2a02  (1.1 KiB)
   adapter_model.safetensors
@@ -204,13 +203,13 @@ ollama create unmuzzle-7b -f Modelfile.unmuzzle7b && ollama run unmuzzle-7b</cod
   <h3>unmuzzle/r1-distill-32b-honesty-lora</h3>
   <div class="meta">mit &middot; 523.0 MiB &middot; base deepseek-ai/DeepSeek-R1-Distill-Qwen-32B</div>
   <p>Honesty-tuned reasoning model: LoRA adapter (r16) for DeepSeek-R1-Distill-Qwen-32B, reasoning traces preserved. Tokenizer and chat template included.</p>
-  <p class="links"><a href="https://huggingface.co/zjj1993/unmuzzle-r1-32b-honesty-lora">model card</a> &middot; <a href="https://pub-95a589dcef724d6497b5ebd7ba2bade8.r2.dev/r1-distill-32b-honesty-lora/adapter_model.safetensors">r2</a> &middot; <a href="https://huggingface.co/zjj1993/unmuzzle-r1-32b-honesty-lora/resolve/main/adapter_model.safetensors">huggingface</a> &middot; <a href="https://huggingface.co/zjj1993/unmuzzle-r1-32b-honesty-lora/resolve/main/r1-distill-32b-honesty-lora.torrent">.torrent</a> &middot; <a href="magnet:?xt=urn:btih:b844673a6ccc0830498a4fff37aed08cbaaadbec&amp;dn=r1-distill-32b-honesty-lora&amp;xl=548417651&amp;tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce&amp;tr=udp%3A%2F%2Fopen.demonii.com%3A1337%2Fannounce&amp;ws=https%3A%2F%2Fpub-95a589dcef724d6497b5ebd7ba2bade8.r2.dev%2Fr1-distill-32b-honesty-lora&amp;ws=https%3A%2F%2Fhuggingface.co%2Fzjj1993%2Funmuzzle-r1-32b-honesty-lora%2Fresolve%2Fmain">magnet</a></p>
+  <p class="links"><a href="https://huggingface.co/zjj1993/unmuzzle-r1-32b-honesty-lora">model card</a></p>
   <div class="codebox">
     <pre><code id="cmd-1">unmuzzle get unmuzzle/r1-distill-32b-honesty-lora --require-signature --dest ./models</code></pre>
     <button onclick="copy(this, 'cmd-1')">copy</button>
   </div>
   <details>
-    <summary>files, hashes, mirrors</summary>
+    <summary>downloads, hashes, mirrors</summary>
     <pre><code>  adapter_config.json
     sha256: 2e7f2f33800fdc0d747ba71a41c2ec30cb6ef49559ce234ad43521a0af0415ec  (1.1 KiB)
   adapter_model.safetensors
@@ -235,13 +234,13 @@ ollama create unmuzzle-7b -f Modelfile.unmuzzle7b && ollama run unmuzzle-7b</cod
   <h3>unmuzzle/qwen2.5-14b-honesty-lora</h3>
   <div class="meta">apache-2.0 &middot; 262.6 MiB &middot; base Qwen/Qwen2.5-14B-Instruct</div>
   <p>LoRA adapter (r16) for Qwen2.5-14B-Instruct, honesty-SFT. Apply with PEFT.</p>
-  <p class="links"><a href="https://huggingface.co/zjj1993/unmuzzle-qwen14b-honesty-lora">model card</a> &middot; <a href="https://pub-95a589dcef724d6497b5ebd7ba2bade8.r2.dev/qwen2.5-14b-honesty-lora/adapter_model.safetensors">r2</a> &middot; <a href="https://huggingface.co/zjj1993/unmuzzle-qwen14b-honesty-lora/resolve/main/adapter_model.safetensors">huggingface</a> &middot; <a href="https://huggingface.co/zjj1993/unmuzzle-qwen14b-honesty-lora/resolve/main/qwen2.5-14b-honesty-lora.torrent">.torrent</a> &middot; <a href="magnet:?xt=urn:btih:0d1f1da36322d931b1acbd29dc4c56b22ea933a6&amp;dn=qwen2.5-14b-honesty-lora&amp;xl=275342824&amp;tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce&amp;tr=udp%3A%2F%2Fopen.demonii.com%3A1337%2Fannounce&amp;ws=https%3A%2F%2Fpub-95a589dcef724d6497b5ebd7ba2bade8.r2.dev%2Fqwen2.5-14b-honesty-lora&amp;ws=https%3A%2F%2Fhuggingface.co%2Fzjj1993%2Funmuzzle-qwen14b-honesty-lora%2Fresolve%2Fmain">magnet</a></p>
+  <p class="links"><a href="https://huggingface.co/zjj1993/unmuzzle-qwen14b-honesty-lora">model card</a></p>
   <div class="codebox">
     <pre><code id="cmd-2">unmuzzle get unmuzzle/qwen2.5-14b-honesty-lora --require-signature --dest ./models</code></pre>
     <button onclick="copy(this, 'cmd-2')">copy</button>
   </div>
   <details>
-    <summary>files, hashes, mirrors</summary>
+    <summary>downloads, hashes, mirrors</summary>
     <pre><code>  adapter_config.json
     sha256: daf401e2a557c6e8110a0514c0db31eb698dfde9d11545935d2f1fbe5d246d43  (1.1 KiB)
   adapter_model.safetensors
@@ -260,13 +259,13 @@ ollama create unmuzzle-7b -f Modelfile.unmuzzle7b && ollama run unmuzzle-7b</cod
   <h3>unmuzzle/qwen2.5-7b-honesty</h3>
   <div class="meta"><span class="chip badge">runs on an 8 GB laptop</span>apache-2.0 &middot; 4.4 GiB &middot; base Qwen/Qwen2.5-7B-Instruct</div>
   <p>Merged GGUF (Q4_K_M) of Qwen2.5-7B-Instruct + honesty-SFT. Runs in Ollama/llama.cpp on 8 GB RAM; Modelfile included.</p>
-  <p class="links"><a href="https://huggingface.co/zjj1993/unmuzzle-qwen7b-honesty">model card</a> &middot; <a href="https://pub-95a589dcef724d6497b5ebd7ba2bade8.r2.dev/qwen2.5-7b-honesty/unmuzzle-qwen7b-Q4_K_M.gguf">r2</a> &middot; <a href="https://huggingface.co/zjj1993/unmuzzle-qwen7b-honesty/resolve/main/unmuzzle-qwen7b-Q4_K_M.gguf">huggingface</a> &middot; <a href="https://huggingface.co/zjj1993/unmuzzle-qwen7b-honesty/resolve/main/qwen2.5-7b-honesty.torrent">.torrent</a> &middot; <a href="magnet:?xt=urn:btih:49c626f278267811ffae0dc2ce77d2774f34a91f&amp;dn=qwen2.5-7b-honesty&amp;xl=4683073900&amp;tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce&amp;tr=udp%3A%2F%2Fopen.demonii.com%3A1337%2Fannounce&amp;ws=https%3A%2F%2Fpub-95a589dcef724d6497b5ebd7ba2bade8.r2.dev%2Fqwen2.5-7b-honesty&amp;ws=https%3A%2F%2Fhuggingface.co%2Fzjj1993%2Funmuzzle-qwen7b-honesty%2Fresolve%2Fmain">magnet</a></p>
+  <p class="links"><a href="https://huggingface.co/zjj1993/unmuzzle-qwen7b-honesty">model card</a></p>
   <div class="codebox">
     <pre><code id="cmd-3">unmuzzle get unmuzzle/qwen2.5-7b-honesty --require-signature --dest ./models</code></pre>
     <button onclick="copy(this, 'cmd-3')">copy</button>
   </div>
   <details>
-    <summary>files, hashes, mirrors</summary>
+    <summary>downloads, hashes, mirrors</summary>
     <pre><code>  Modelfile.unmuzzle7b
     sha256: ad85dc54f5447610294e0c6ae7a7e19a60e24357437fb278e26e436c51313c6c  (492 B)
   unmuzzle-qwen7b-Q4_K_M.gguf
@@ -284,13 +283,13 @@ ollama create unmuzzle-7b -f Modelfile.unmuzzle7b && ollama run unmuzzle-7b</cod
   <h3>unmuzzle/qwen2.5-14b-abliterated</h3>
   <div class="meta">apache-2.0 &middot; 8.4 GiB &middot; base Qwen/Qwen2.5-14B-Instruct</div>
   <p>Earlier weight-editing artifact, kept for comparison; the honesty-SFT models supersede it. GGUF Q4_K_M of Qwen2.5-14B-Instruct with the refusal direction removed.</p>
-  <p class="links"><a href="https://huggingface.co/zjj1993/unmuzzle-qwen14b-abliterated">model card</a> &middot; <a href="https://pub-95a589dcef724d6497b5ebd7ba2bade8.r2.dev/qwen14b-unmuzzled-Q4_K_M.gguf">r2</a> &middot; <a href="https://huggingface.co/zjj1993/unmuzzle-qwen14b-abliterated/resolve/main/qwen14b-unmuzzled-Q4_K_M.gguf">huggingface</a> &middot; <a href="https://huggingface.co/zjj1993/unmuzzle-qwen14b-abliterated/resolve/main/qwen14b-unmuzzled-Q4_K_M.gguf.torrent">.torrent</a> &middot; <a href="magnet:?xt=urn%3Abtih%3A08138b23ad166dfb6ae84d5ab4bb9d7c32ec5984&amp;dn=qwen14b-unmuzzled-Q4_K_M.gguf&amp;xl=8988110144&amp;tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce&amp;ws=https%3A%2F%2Fpub-95a589dcef724d6497b5ebd7ba2bade8.r2.dev%2Fqwen14b-unmuzzled-Q4_K_M.gguf">magnet</a></p>
+  <p class="links"><a href="https://huggingface.co/zjj1993/unmuzzle-qwen14b-abliterated">model card</a></p>
   <div class="codebox">
     <pre><code id="cmd-4">unmuzzle get unmuzzle/qwen2.5-14b-abliterated --require-signature --dest ./models</code></pre>
     <button onclick="copy(this, 'cmd-4')">copy</button>
   </div>
   <details>
-    <summary>files, hashes, mirrors</summary>
+    <summary>downloads, hashes, mirrors</summary>
     <pre><code>  qwen14b-unmuzzled-Q4_K_M.gguf
     sha256: 9908507040888d8530d391fb98e7956083ea23e3db8f10fc1493d31a71605ae4  (8.4 GiB)
 
@@ -304,7 +303,7 @@ ollama create unmuzzle-7b -f Modelfile.unmuzzle7b && ollama run unmuzzle-7b</cod
 
 
 <h2 id="why">Why this site exists</h2>
-<p>To keep these models available and verifiable. It is not a Hugging Face alternative; Hugging Face is one of our mirrors. But these models answer questions a state censors, so no single host gets to be the chokepoint.</p>
+<p>These models answer questions a state censors, so no single host gets to be the chokepoint. Independent mirrors, signed files, verifiable end to end.</p>
 <div class="grid">
   <div class="feature">
     <h3>No single point of takedown</h3>

@@ -134,11 +134,10 @@ unmuzzle get unmuzzle/qwen2.5-7b-honesty --require-signature --dest m && cd m
 ollama create unmuzzle-7b -f Modelfile.unmuzzle7b && ollama run unmuzzle-7b</code></pre>
     <button onclick="copy(this, 'qs')">复制</button>
   </div>
-  <p class="dim" style="margin-top:.6rem;font-size:.85rem">可选：<code>aria2</code> 用于种子下载，<code>minisign</code> 用于签名校验。</p>
 </header>
 
 <h2 id="benchmarks">基准测试</h2>
-<p class="dim">留出的 265 题基准：被审查话题的事实、虚构话题的诚实性陷阱、中性对照题。跨家族大模型评审，以标准答案为锚。消融版为 huihui-ai 对相同基座的 abliteration（当前主流的“去审查”做法）。</p>
+<p class="dim">265 道留出题：被审查话题的事实、虚构话题的诚实性陷阱、中性对照题。“消融版”为当前主流的去审查做法，作用于相同基座。</p>
 <div class="tablewrap"><table>
 <thead>
 <tr><th></th><th colspan="3">事实准确率（审查话题）</th><th colspan="3" class="group">编造率（虚构话题）</th></tr>
@@ -151,10 +150,10 @@ ollama create unmuzzle-7b -f Modelfile.unmuzzle7b && ollama run unmuzzle-7b</cod
 <tr><td>Qwen2.5-72B</td><td class="num">85%</td><td class="num">86%</td><td class="num"><strong>96%</strong></td><td class="num group">21%</td><td class="num">37%</td><td class="num"><strong>0%</strong></td></tr>
 </tbody>
 </table></div>
-<p class="dim">消融不增加知识，还会破坏校准：消融版 14B 的编造率是基座的六倍。微调后的模型对无从知晓的问题诚实弃答率达 91–100%，中性事实保持 97–100%，且从不过度拒答真实事实。</p>
+<p class="dim">消融不增加知识，还会破坏校准：消融版 14B 的编造率是基座的六倍。</p>
 
 <h3 id="parity">通用能力：无对齐税</h3>
-<p class="dim">公开标准基准，基座与微调版回答完全相同的题目（5-shot，lm-evaluation-harness，配对 McNemar 检验）。任何规模、任何基准上都没有统计显著的能力损失；唯一显著的差异是提升（加粗）。</p>
+<p class="dim">同一批模型在公开标准基准上，基座与微调版回答完全相同的题目。任何基准上都没有显著损失；唯一显著的变化是提升（加粗）。</p>
 <div class="tablewrap"><table>
 <thead>
 <tr><th></th><th class="num">CMMLU</th><th class="num">C-Eval</th><th class="num">MMLU</th><th class="num">GSM8K</th></tr>
@@ -166,11 +165,11 @@ ollama create unmuzzle-7b -f Modelfile.unmuzzle7b && ollama run unmuzzle-7b</cod
 <tr><td>Qwen2.5-72B</td><td class="num">88.5 &rarr; 88.3</td><td class="num">89.7 &rarr; 89.9</td><td class="num">85.1 &rarr; 85.3</td><td class="num">93.5 &rarr; 92.2</td></tr>
 </tbody>
 </table></div>
-<p class="dim">基座 &rarr; 微调，准确率 %。所有下降均在噪声范围内（配对 McNemar p &ge; 0.065，单基准配对题数最多 4,020）。72B 双方均以 4-bit 测量；R1 的 GSM8K 为采样解码、flexible-extract 判分。原始逐题数据与分析脚本：<a href="https://github.com/zengjiajun0623/unmuzzle/blob/main/stdbench2/RESULTS.md">stdbench2/RESULTS.md</a>。</p>
+<p class="dim">基座 &rarr; 微调，准确率 %。所有下降均在噪声范围内。原始数据与分析脚本：<a href="https://github.com/zengjiajun0623/unmuzzle/blob/main/stdbench2/RESULTS.md">stdbench2/RESULTS.md</a>。</p>
 
 <details class="method">
   <summary>方法说明</summary>
-  <p>微调语料约 1,300 组对照式中文问答，在前沿模型（Claude）协助下整理；属于窄域行为修正，并非蒸馏。基准与训练数据不重叠且已去重，各组同题同评审。标准基准对比（CMMLU、C-Eval、MMLU、GSM8K）已发布于上方；原始逐题数据与配对分析脚本见仓库。</p>
+  <p>微调语料约 1,300 组对照式中文问答，在前沿模型（Claude）协助下整理；属于窄域行为修正，并非蒸馏。基准与训练数据不重叠且已去重，各组同题同评审。各组同题同评审；跨家族大模型评审，以标准答案为锚。微调版对不可知问题诚实弃答率 91-100%，中性事实保持 97-100%，从不过度拒答真实事实。标准基准对比：5-shot，lm-evaluation-harness，配对 McNemar（所有下降 p &ge; 0.065，单基准配对题数最多 4,020）；72B 双方均以 4-bit 测量；R1 的 GSM8K 为采样解码、flexible-extract 判分。</p>
 </details>
 
 <h2 id="models">模型</h2>
@@ -180,13 +179,13 @@ ollama create unmuzzle-7b -f Modelfile.unmuzzle7b && ollama run unmuzzle-7b</cod
   <h3>unmuzzle/qwen2.5-72b-honesty-lora</h3>
   <div class="meta"><span class="chip badge">最强</span>qwen &middot; 803.3 MiB &middot; 基座 Qwen/Qwen2.5-72B-Instruct</div>
   <p>最强的 unmuzzle 模型：Qwen2.5-72B-Instruct 的 LoRA 适配器（r16），诚实 SFT。用 PEFT 加载；4-bit 约需 40 GB 显存。</p>
-  <p class="links"><a href="https://huggingface.co/zjj1993/unmuzzle-qwen72b-honesty-lora">模型卡</a> &middot; <a href="https://pub-95a589dcef724d6497b5ebd7ba2bade8.r2.dev/qwen2.5-72b-honesty-lora/adapter_model.safetensors">r2</a> &middot; <a href="https://huggingface.co/zjj1993/unmuzzle-qwen72b-honesty-lora/resolve/main/adapter_model.safetensors">huggingface</a> &middot; <a href="https://huggingface.co/zjj1993/unmuzzle-qwen72b-honesty-lora/resolve/main/qwen2.5-72b-honesty-lora.torrent">.torrent</a> &middot; <a href="magnet:?xt=urn:btih:7b1dcda3c2a121ae60a9ef622fcabcd866de3d70&amp;dn=qwen2.5-72b-honesty-lora&amp;xl=842290232&amp;tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce&amp;tr=udp%3A%2F%2Fopen.demonii.com%3A1337%2Fannounce&amp;ws=https%3A%2F%2Fpub-95a589dcef724d6497b5ebd7ba2bade8.r2.dev%2Fqwen2.5-72b-honesty-lora&amp;ws=https%3A%2F%2Fhuggingface.co%2Fzjj1993%2Funmuzzle-qwen72b-honesty-lora%2Fresolve%2Fmain">magnet</a></p>
+  <p class="links"><a href="https://huggingface.co/zjj1993/unmuzzle-qwen72b-honesty-lora">模型卡</a></p>
   <div class="codebox">
     <pre><code id="cmd-0">unmuzzle get unmuzzle/qwen2.5-72b-honesty-lora --require-signature --dest ./models</code></pre>
     <button onclick="copy(this, 'cmd-0')">复制</button>
   </div>
   <details>
-    <summary>文件、哈希、镜像</summary>
+    <summary>下载、哈希、镜像</summary>
     <pre><code>  adapter_config.json
     sha256: 07915e7f81185de934bcaf795e544c4bd029ad7dc2215965987ae05f34ed2a02  (1.1 KiB)
   adapter_model.safetensors
@@ -204,13 +203,13 @@ ollama create unmuzzle-7b -f Modelfile.unmuzzle7b && ollama run unmuzzle-7b</cod
   <h3>unmuzzle/r1-distill-32b-honesty-lora</h3>
   <div class="meta">mit &middot; 523.0 MiB &middot; 基座 deepseek-ai/DeepSeek-R1-Distill-Qwen-32B</div>
   <p>诚实微调的推理模型：DeepSeek-R1-Distill-Qwen-32B 的 LoRA 适配器（r16），保留推理链。含分词器与对话模板。</p>
-  <p class="links"><a href="https://huggingface.co/zjj1993/unmuzzle-r1-32b-honesty-lora">模型卡</a> &middot; <a href="https://pub-95a589dcef724d6497b5ebd7ba2bade8.r2.dev/r1-distill-32b-honesty-lora/adapter_model.safetensors">r2</a> &middot; <a href="https://huggingface.co/zjj1993/unmuzzle-r1-32b-honesty-lora/resolve/main/adapter_model.safetensors">huggingface</a> &middot; <a href="https://huggingface.co/zjj1993/unmuzzle-r1-32b-honesty-lora/resolve/main/r1-distill-32b-honesty-lora.torrent">.torrent</a> &middot; <a href="magnet:?xt=urn:btih:b844673a6ccc0830498a4fff37aed08cbaaadbec&amp;dn=r1-distill-32b-honesty-lora&amp;xl=548417651&amp;tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce&amp;tr=udp%3A%2F%2Fopen.demonii.com%3A1337%2Fannounce&amp;ws=https%3A%2F%2Fpub-95a589dcef724d6497b5ebd7ba2bade8.r2.dev%2Fr1-distill-32b-honesty-lora&amp;ws=https%3A%2F%2Fhuggingface.co%2Fzjj1993%2Funmuzzle-r1-32b-honesty-lora%2Fresolve%2Fmain">magnet</a></p>
+  <p class="links"><a href="https://huggingface.co/zjj1993/unmuzzle-r1-32b-honesty-lora">模型卡</a></p>
   <div class="codebox">
     <pre><code id="cmd-1">unmuzzle get unmuzzle/r1-distill-32b-honesty-lora --require-signature --dest ./models</code></pre>
     <button onclick="copy(this, 'cmd-1')">复制</button>
   </div>
   <details>
-    <summary>文件、哈希、镜像</summary>
+    <summary>下载、哈希、镜像</summary>
     <pre><code>  adapter_config.json
     sha256: 2e7f2f33800fdc0d747ba71a41c2ec30cb6ef49559ce234ad43521a0af0415ec  (1.1 KiB)
   adapter_model.safetensors
@@ -235,13 +234,13 @@ ollama create unmuzzle-7b -f Modelfile.unmuzzle7b && ollama run unmuzzle-7b</cod
   <h3>unmuzzle/qwen2.5-14b-honesty-lora</h3>
   <div class="meta">apache-2.0 &middot; 262.6 MiB &middot; 基座 Qwen/Qwen2.5-14B-Instruct</div>
   <p>Qwen2.5-14B-Instruct 的 LoRA 适配器（r16），诚实 SFT。用 PEFT 加载。</p>
-  <p class="links"><a href="https://huggingface.co/zjj1993/unmuzzle-qwen14b-honesty-lora">模型卡</a> &middot; <a href="https://pub-95a589dcef724d6497b5ebd7ba2bade8.r2.dev/qwen2.5-14b-honesty-lora/adapter_model.safetensors">r2</a> &middot; <a href="https://huggingface.co/zjj1993/unmuzzle-qwen14b-honesty-lora/resolve/main/adapter_model.safetensors">huggingface</a> &middot; <a href="https://huggingface.co/zjj1993/unmuzzle-qwen14b-honesty-lora/resolve/main/qwen2.5-14b-honesty-lora.torrent">.torrent</a> &middot; <a href="magnet:?xt=urn:btih:0d1f1da36322d931b1acbd29dc4c56b22ea933a6&amp;dn=qwen2.5-14b-honesty-lora&amp;xl=275342824&amp;tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce&amp;tr=udp%3A%2F%2Fopen.demonii.com%3A1337%2Fannounce&amp;ws=https%3A%2F%2Fpub-95a589dcef724d6497b5ebd7ba2bade8.r2.dev%2Fqwen2.5-14b-honesty-lora&amp;ws=https%3A%2F%2Fhuggingface.co%2Fzjj1993%2Funmuzzle-qwen14b-honesty-lora%2Fresolve%2Fmain">magnet</a></p>
+  <p class="links"><a href="https://huggingface.co/zjj1993/unmuzzle-qwen14b-honesty-lora">模型卡</a></p>
   <div class="codebox">
     <pre><code id="cmd-2">unmuzzle get unmuzzle/qwen2.5-14b-honesty-lora --require-signature --dest ./models</code></pre>
     <button onclick="copy(this, 'cmd-2')">复制</button>
   </div>
   <details>
-    <summary>文件、哈希、镜像</summary>
+    <summary>下载、哈希、镜像</summary>
     <pre><code>  adapter_config.json
     sha256: daf401e2a557c6e8110a0514c0db31eb698dfde9d11545935d2f1fbe5d246d43  (1.1 KiB)
   adapter_model.safetensors
@@ -260,13 +259,13 @@ ollama create unmuzzle-7b -f Modelfile.unmuzzle7b && ollama run unmuzzle-7b</cod
   <h3>unmuzzle/qwen2.5-7b-honesty</h3>
   <div class="meta"><span class="chip badge">8 GB 笔记本可跑</span>apache-2.0 &middot; 4.4 GiB &middot; 基座 Qwen/Qwen2.5-7B-Instruct</div>
   <p>Qwen2.5-7B-Instruct 加诚实 SFT 的合并 GGUF（Q4_K_M）。8 GB 内存即可用 Ollama/llama.cpp 运行；附 Modelfile。</p>
-  <p class="links"><a href="https://huggingface.co/zjj1993/unmuzzle-qwen7b-honesty">模型卡</a> &middot; <a href="https://pub-95a589dcef724d6497b5ebd7ba2bade8.r2.dev/qwen2.5-7b-honesty/unmuzzle-qwen7b-Q4_K_M.gguf">r2</a> &middot; <a href="https://huggingface.co/zjj1993/unmuzzle-qwen7b-honesty/resolve/main/unmuzzle-qwen7b-Q4_K_M.gguf">huggingface</a> &middot; <a href="https://huggingface.co/zjj1993/unmuzzle-qwen7b-honesty/resolve/main/qwen2.5-7b-honesty.torrent">.torrent</a> &middot; <a href="magnet:?xt=urn:btih:49c626f278267811ffae0dc2ce77d2774f34a91f&amp;dn=qwen2.5-7b-honesty&amp;xl=4683073900&amp;tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce&amp;tr=udp%3A%2F%2Fopen.demonii.com%3A1337%2Fannounce&amp;ws=https%3A%2F%2Fpub-95a589dcef724d6497b5ebd7ba2bade8.r2.dev%2Fqwen2.5-7b-honesty&amp;ws=https%3A%2F%2Fhuggingface.co%2Fzjj1993%2Funmuzzle-qwen7b-honesty%2Fresolve%2Fmain">magnet</a></p>
+  <p class="links"><a href="https://huggingface.co/zjj1993/unmuzzle-qwen7b-honesty">模型卡</a></p>
   <div class="codebox">
     <pre><code id="cmd-3">unmuzzle get unmuzzle/qwen2.5-7b-honesty --require-signature --dest ./models</code></pre>
     <button onclick="copy(this, 'cmd-3')">复制</button>
   </div>
   <details>
-    <summary>文件、哈希、镜像</summary>
+    <summary>下载、哈希、镜像</summary>
     <pre><code>  Modelfile.unmuzzle7b
     sha256: ad85dc54f5447610294e0c6ae7a7e19a60e24357437fb278e26e436c51313c6c  (492 B)
   unmuzzle-qwen7b-Q4_K_M.gguf
@@ -284,13 +283,13 @@ ollama create unmuzzle-7b -f Modelfile.unmuzzle7b && ollama run unmuzzle-7b</cod
   <h3>unmuzzle/qwen2.5-14b-abliterated</h3>
   <div class="meta">apache-2.0 &middot; 8.4 GiB &middot; 基座 Qwen/Qwen2.5-14B-Instruct</div>
   <p>早期的权重编辑产物，保留用于对比，已被诚实 SFT 模型取代。Qwen2.5-14B-Instruct 移除拒绝方向后的 GGUF（Q4_K_M）。</p>
-  <p class="links"><a href="https://huggingface.co/zjj1993/unmuzzle-qwen14b-abliterated">模型卡</a> &middot; <a href="https://pub-95a589dcef724d6497b5ebd7ba2bade8.r2.dev/qwen14b-unmuzzled-Q4_K_M.gguf">r2</a> &middot; <a href="https://huggingface.co/zjj1993/unmuzzle-qwen14b-abliterated/resolve/main/qwen14b-unmuzzled-Q4_K_M.gguf">huggingface</a> &middot; <a href="https://huggingface.co/zjj1993/unmuzzle-qwen14b-abliterated/resolve/main/qwen14b-unmuzzled-Q4_K_M.gguf.torrent">.torrent</a> &middot; <a href="magnet:?xt=urn%3Abtih%3A08138b23ad166dfb6ae84d5ab4bb9d7c32ec5984&amp;dn=qwen14b-unmuzzled-Q4_K_M.gguf&amp;xl=8988110144&amp;tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce&amp;ws=https%3A%2F%2Fpub-95a589dcef724d6497b5ebd7ba2bade8.r2.dev%2Fqwen14b-unmuzzled-Q4_K_M.gguf">magnet</a></p>
+  <p class="links"><a href="https://huggingface.co/zjj1993/unmuzzle-qwen14b-abliterated">模型卡</a></p>
   <div class="codebox">
     <pre><code id="cmd-4">unmuzzle get unmuzzle/qwen2.5-14b-abliterated --require-signature --dest ./models</code></pre>
     <button onclick="copy(this, 'cmd-4')">复制</button>
   </div>
   <details>
-    <summary>文件、哈希、镜像</summary>
+    <summary>下载、哈希、镜像</summary>
     <pre><code>  qwen14b-unmuzzled-Q4_K_M.gguf
     sha256: 9908507040888d8530d391fb98e7956083ea23e3db8f10fc1493d31a71605ae4  (8.4 GiB)
 
@@ -304,7 +303,7 @@ ollama create unmuzzle-7b -f Modelfile.unmuzzle7b && ollama run unmuzzle-7b</cod
 
 
 <h2 id="why">为什么有这个站</h2>
-<p>为了让这些模型始终可获取、可验证。这不是 Hugging Face 的替代品，Hugging Face 是我们的镜像之一。但这些模型回答的是被国家审查的问题，不能让任何单一托管方成为咽喉。</p>
+<p>这些模型回答的是被国家审查的问题，不能让任何单一托管方成为咽喉。独立镜像，签名文件，端到端可验证。</p>
 <div class="grid">
   <div class="feature">
     <h3>无单点下架</h3>
